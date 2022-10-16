@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/button/Button";
@@ -13,6 +13,7 @@ import AuthenticationPage from "./AuthenticationPage";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
+import userApi from "../api/userApi";
 
 const schema = yup.object({
   email: yup
@@ -45,18 +46,26 @@ const SignInPage = () => {
   });
   const navigate = useNavigate();
 
-  const handleSignIn = (values) => {
-    if (!isValid) return;
-    console.log(
-      "🚀 ~ file: SignInPage.jsx ~ line 45 ~ handleSignIn ~ values",
-      values
-    );
-    reset({
-      email: "",
-      password: "",
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
     });
-    toast.success("Chào mừng bạn đến HC.VN");
-    navigate("/");
+  }, []);
+
+  const handleSignIn = async (values) => {
+    if (!isValid) return;
+    try {
+      const result = await userApi.login(values);
+      toast.success("Chào mừng bạn đến HC.VN", { pauseOnHover: false });
+      reset({
+        email: "",
+        password: "",
+      });
+      navigate("/");
+    } catch (error) {
+      toast.error(error.message, { pauseOnHover: false });
+    }
   };
   return (
     <div className="bg-[#f8f8fc]">
@@ -108,7 +117,7 @@ const SignInPage = () => {
             </div>
 
             <Link
-              to="/password"
+              to="/forgot-password"
               className="text-xl text-[#1DC071] font-semibold"
             >
               Quên mật khẩu

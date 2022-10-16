@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/button/Button";
@@ -14,6 +14,7 @@ import AuthenticationPage from "./AuthenticationPage";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
+import userApi from "../api/userApi";
 
 const schema = yup.object({
   fullname: yup
@@ -63,24 +64,35 @@ const SignUpPage = () => {
 
   const navigate = useNavigate();
 
-  const handleSignUp = (values) => {
-    if (!isValid) return;
-    console.log(
-      "🚀 ~ file: SignUpPage.jsx ~ line 39 ~ handleSignUp ~ values",
-      values
-    );
-    toast.success("Đăng ký tài khoản thành công");
-    reset({
-      fullname: "",
-      email: "",
-      password: "",
-      retypePassword: "",
-      term: false,
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
     });
+  }, []);
 
-    const timeout = setTimeout(() => {
-      navigate("/sign-in");
-    }, 1500);
+  const handleSignUp = async (values) => {
+    if (!isValid) return;
+    const data = {
+      name: values.fullname,
+      email: values.email,
+      password: values.password,
+      passwordConfirm: values.retypePassword,
+    };
+    try {
+      const result = await userApi.register(data);
+      toast.success("Đăng ký tài khoản thành công", { pauseOnHover: false });
+      reset({
+        fullname: "",
+        email: "",
+        password: "",
+        retypePassword: "",
+        term: false,
+      });
+      navigate("/verify");
+    } catch (error) {
+      toast.error(error.message, { pauseOnHover: false });
+    }
   };
 
   return (

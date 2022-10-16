@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
-    <nav className="w-full bg-primary h-[115px] sticky z-50 shadow-md transition-all top-0 text-white">
+    <nav className="w-full bg-primary h-[100px] sticky z-50 shadow-md transition-all top-0 text-white">
       <div className="container flex items-center h-full justify-between">
         <div>
           <svg
