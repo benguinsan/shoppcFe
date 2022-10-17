@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const AuthenticationPage = ({ children }) => {
+const AuthenticationPage = ({ children, className = "" }) => {
   return (
-    <div className="max-w-[1000px] w-full bg-white mx-auto mt-5 rounded-xl">
+    <div
+      className={`max-w-[1000px] w-full bg-white mx-auto mt-5 rounded-xl ${className}`}
+    >
       <Link to="/">
         <div className="w-[200px] h-[150px] mx-auto">
           <img
