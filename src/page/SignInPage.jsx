@@ -14,6 +14,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import userApi from "../api/userApi";
+import { useDispatch, useSelector } from "react-redux";
+import { clearError, login } from "../redux/actions/UserActions";
 
 const schema = yup.object({
   email: yup
@@ -45,6 +47,25 @@ const SignInPage = () => {
     resolver: yupResolver(schema),
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isAuthenticated, error, user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+      toast.success("Chào mừng bạn đến HC.VN", { pauseOnHover: false });
+      reset({
+        email: "",
+        password: "",
+      });
+      console.log(user);
+    }
+    if (error) {
+      console.log("Error:", error);
+      toast.error(error);
+      dispatch(clearError());
+    }
+  }, [dispatch, isAuthenticated, error, toast]);
 
   useEffect(() => {
     window.scrollTo({
@@ -55,17 +76,7 @@ const SignInPage = () => {
 
   const handleSignIn = async (values) => {
     if (!isValid) return;
-    try {
-      const result = await userApi.login(values);
-      toast.success("Chào mừng bạn đến HC.VN", { pauseOnHover: false });
-      reset({
-        email: "",
-        password: "",
-      });
-      navigate("/");
-    } catch (error) {
-      toast.error(error.message, { pauseOnHover: false });
-    }
+    dispatch(login(values));
   };
   return (
     <div className="bg-[#f8f8fc]">
@@ -138,6 +149,7 @@ const SignInPage = () => {
           </Button>
         </form>
       </AuthenticationPage>
+
       <Footer></Footer>
     </div>
   );
