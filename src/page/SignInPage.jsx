@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import userApi from "../api/userApi";
 import { useDispatch, useSelector } from "react-redux";
 import { clearError, login } from "../redux/actions/UserActions";
+import LoadingPage from "../components/loading/LoadingPage";
 
 const schema = yup.object({
   email: yup
@@ -48,20 +49,14 @@ const SignInPage = () => {
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAuthenticated, error, user } = useSelector((state) => state.auth);
-
+  const { isAuthenticated, error, loading } = useSelector(
+    (state) => state.login
+  );
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
-      toast.success("Chào mừng bạn đến HC.VN", { pauseOnHover: false });
-      reset({
-        email: "",
-        password: "",
-      });
-      console.log(user);
     }
     if (error) {
-      console.log("Error:", error);
       toast.error(error);
       dispatch(clearError());
     }
@@ -77,81 +72,92 @@ const SignInPage = () => {
   const handleSignIn = async (values) => {
     if (!isValid) return;
     dispatch(login(values));
+    toast.success("Chào mừng bạn đến HC.VN", { pauseOnHover: false });
+    reset({
+      email: "",
+      password: "",
+    });
   };
   return (
-    <div className="bg-[#f8f8fc]">
-      <Header></Header>
-      <Navbar></Navbar>
-      <AuthenticationPage>
-        <form
-          className="pb-6"
-          autoComplete="off"
-          onSubmit={handleSubmit(handleSignIn)}
-        >
-          <Field>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              type="email"
-              name="email"
-              placeholder="Mời bạn nhập email"
-              control={control}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.email?.message}
-              </p>
-            )}
-          </Field>
-
-          <Field>
-            <Label htmlFor="password">Mật khẩu</Label>
-            <InputPasswordToggle control={control}></InputPasswordToggle>
-            {errors.password && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.password?.message}
-              </p>
-            )}
-          </Field>
-
-          <div className="flex items-center justify-between px-44 mt-8">
-            <div className="flex items-center">
-              <span className="text-black text-xl">
-                Bạn chưa có tài khoản? &nbsp;
-              </span>
-
-              <Link
-                to="/sign-up"
-                className="text-xl text-[#1DC071] font-semibold"
-              >
-                Đăng ký
-              </Link>
-            </div>
-
-            <Link
-              to="/forgot-password"
-              className="text-xl text-[#1DC071] font-semibold"
+    <>
+      {loading ? (
+        <LoadingPage />
+      ) : (
+        <div className="bg-[#f8f8fc]">
+          <Header></Header>
+          <Navbar></Navbar>
+          <AuthenticationPage>
+            <form
+              className="pb-6"
+              autoComplete="off"
+              onSubmit={handleSubmit(handleSignIn)}
             >
-              Quên mật khẩu
-            </Link>
-          </div>
+              <Field>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder="Mời bạn nhập email"
+                  control={control}
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-lg font-medium">
+                    {errors.email?.message}
+                  </p>
+                )}
+              </Field>
 
-          <Button
-            type="submit"
-            isLoading={isSubmitting}
-            disable={isSubmitting}
-            style={{
-              width: "100%",
-              maxWidth: 300,
-              margin: "30px auto",
-            }}
-          >
-            Đăng nhập
-          </Button>
-        </form>
-      </AuthenticationPage>
+              <Field>
+                <Label htmlFor="password">Mật khẩu</Label>
+                <InputPasswordToggle control={control}></InputPasswordToggle>
+                {errors.password && (
+                  <p className="text-red-500 text-lg font-medium">
+                    {errors.password?.message}
+                  </p>
+                )}
+              </Field>
 
-      <Footer></Footer>
-    </div>
+              <div className="flex items-center justify-between px-44 mt-8">
+                <div className="flex items-center">
+                  <span className="text-black text-xl">
+                    Bạn chưa có tài khoản? &nbsp;
+                  </span>
+
+                  <Link
+                    to="/sign-up"
+                    className="text-xl text-[#1DC071] font-semibold"
+                  >
+                    Đăng ký
+                  </Link>
+                </div>
+
+                <Link
+                  to="/forgot-password"
+                  className="text-xl text-[#1DC071] font-semibold"
+                >
+                  Quên mật khẩu
+                </Link>
+              </div>
+
+              <Button
+                type="submit"
+                isLoading={isSubmitting}
+                disable={isSubmitting}
+                style={{
+                  width: "100%",
+                  maxWidth: 300,
+                  margin: "30px auto",
+                }}
+              >
+                Đăng nhập
+              </Button>
+            </form>
+          </AuthenticationPage>
+
+          <Footer></Footer>
+        </div>
+      )}
+    </>
   );
 };
 
