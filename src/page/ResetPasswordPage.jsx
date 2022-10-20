@@ -3,13 +3,10 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../components/button/Button";
 import Field from "../components/field/Field";
-import Header from "../components/header/Header";
 import InputPasswordToggle from "../components/input/InputPasswordToggle";
 import Label from "../components/label/Label";
-import Navbar from "../components/navbar/Navbar";
 import AuthenticationPage from "./AuthenticationPage";
 import * as yup from "yup";
-import Footer from "../components/footer/Footer";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -63,9 +60,7 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="bg-[#f8f8fc]">
-      <Header />
-      <Navbar />
+    <div>
       <AuthenticationPage>
         <form
           autoComplete="off"
@@ -110,7 +105,6 @@ const ResetPasswordPage = () => {
           </Button>
         </form>
       </AuthenticationPage>
-      <Footer></Footer>
     </div>
   );
 };

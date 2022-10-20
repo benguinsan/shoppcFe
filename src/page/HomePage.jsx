@@ -6,8 +6,6 @@ import Navbar from "../components/navbar/Navbar";
 const HomePage = () => {
   return (
     <>
-      <Header />
-      <Navbar />
       <Banner />
     </>
   );

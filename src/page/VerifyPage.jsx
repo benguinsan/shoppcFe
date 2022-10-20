@@ -1,18 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import Field from "../components/field/Field";
-import Header from "../components/header/Header";
 import Input from "../components/input/Input";
 import Label from "../components/label/Label";
-import Navbar from "../components/navbar/Navbar";
 import AuthenticationPage from "./AuthenticationPage";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "../components/button/Button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Footer from "../components/footer/Footer";
-
+import userApi from "../api/userApi";
 const schema = yup.object({
   verify: yup
     .string()
@@ -23,7 +20,7 @@ const VerifyPage = () => {
   const {
     control,
     handleSubmit,
-    formState: { isValid, isSubmitting, errors },
+    formState: { isValid, errors, isSubmitting },
     reset,
   } = useForm({
     mode: "onChange",
@@ -40,18 +37,39 @@ const VerifyPage = () => {
     });
   }, []);
 
-  const handleVerify = (values) => {
+  const dem = useRef(0);
+
+  const handleVerify = async (values) => {
     if (!isValid) return;
-    toast.success("Đăng ký tài khoản thành công", { pauseOnHover: false });
-    reset({
-      verify: "",
-    });
-    navigate("/sign-in");
+    console.log(values);
+    const data = {
+      encode: values.verify,
+    };
+    try {
+      await userApi.verify(data);
+      toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
+      reset({
+        verify: "",
+      });
+      navigate("/");
+    } catch (error) {
+      dem.current = dem.current + 1;
+      console.log(dem.current);
+      if (dem.current === 3) {
+        const data = {
+          state: "ban",
+        };
+        toast.warning("Bạn nhập sai mã xác nhận 3 lần");
+        await userApi.changeState(data);
+        navigate("/sign-up");
+        dem.current = 0;
+      } else {
+        toast.error(error.message, { pauseOnHover: false });
+      }
+    }
   };
   return (
-    <div className="bg-[#f8f8fc]">
-      <Header />
-      <Navbar />
+    <div>
       <AuthenticationPage>
         <form
           onSubmit={handleSubmit(handleVerify)}
@@ -86,7 +104,6 @@ const VerifyPage = () => {
           </Button>
         </form>
       </AuthenticationPage>
-      <Footer />
     </div>
   );
 };

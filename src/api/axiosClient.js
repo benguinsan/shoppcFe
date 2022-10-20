@@ -4,6 +4,7 @@ const axiosClient = axios.create({
   headers: {
     "Content-Type": "application/JSON",
   },
+  withCredentials: true,
 });
 axiosClient.interceptors.request.use(
   function (config) {
@@ -25,11 +26,17 @@ axiosClient.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     const { config, status, data } = error.response;
-    const URLs = ["/api/v1/users/signup", "/api/v1/users/login"];
+    const URLs = [
+      "/api/v1/users/signup",
+      "/api/v1/users/login",
+      "/api/v1/users/verify",
+      "/api/v1/users/forgotPassword",
+    ];
     if (
       (URLs.includes(config.url) && status === 500) ||
       status == 400 ||
-      status == 401
+      status == 401 ||
+      status == 404
     ) {
       throw new Error(data.message);
     }
