@@ -10,6 +10,10 @@ import Button from "../components/button/Button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import userApi from "../api/userApi";
+import { verify } from "../redux/auth/userSlice";
+import { useDispatch } from "react-redux";
+import { unwrapResult } from "@reduxjs/toolkit";
+
 const schema = yup.object({
   verify: yup
     .string()
@@ -35,9 +39,20 @@ const VerifyPage = () => {
       top: 0,
       behavior: "smooth",
     });
+    if (
+      JSON.parse(localStorage.getItem("user")) === null &&
+      localStorage.getItem("jwt") === null
+    ) {
+      toast.warning("Tài khoản của bạn đã bị khóa. Liên hệ admin");
+      return navigate("/sign-up");
+    } else if (JSON.parse(localStorage.getItem("user")).active === "active") {
+      toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
+      return navigate("/");
+    }
   }, []);
 
   const dem = useRef(0);
+  const dispatch = useDispatch();
 
   const handleVerify = async (values) => {
     if (!isValid) return;
@@ -46,23 +61,30 @@ const VerifyPage = () => {
       encode: values.verify,
     };
     try {
-      await userApi.verify(data);
+      const action = verify(data);
+      const resultAction = await dispatch(action);
+      const user = unwrapResult(resultAction);
+      console.log("Verify", user);
       toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
+      navigate("/");
       reset({
         verify: "",
       });
-      navigate("/");
     } catch (error) {
       dem.current = dem.current + 1;
       console.log(dem.current);
-      if (dem.current === 3) {
+      if (dem.current >= 3) {
         const data = {
           state: "ban",
         };
         toast.warning("Bạn nhập sai mã xác nhận 3 lần");
-        await userApi.changeState(data);
-        navigate("/sign-up");
-        dem.current = 0;
+        if (JSON.parse(localStorage.getItem("user")).active === "verify") {
+          const response = await userApi.changeState(data);
+          console.log(response.data.user);
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+          navigate("/sign-up");
+          dem.current = 0;
+        }
       } else {
         toast.error(error.message, { pauseOnHover: false });
       }

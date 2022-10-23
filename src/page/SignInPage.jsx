@@ -12,6 +12,7 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/auth/userSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const schema = yup.object({
   email: yup
@@ -50,6 +51,13 @@ const SignInPage = () => {
       top: 0,
       behavior: "smooth",
     });
+    if (
+      localStorage.getItem("jwt") &&
+      JSON.parse(localStorage.getItem("user")).active === "verify"
+    ) {
+      toast.warning("Vui lòng xác thực tài khoản");
+      return navigate("/verify");
+    }
   }, []);
 
   const handleSignIn = async (values) => {
@@ -58,8 +66,11 @@ const SignInPage = () => {
       const action = login(values);
       const resultAction = await dispatch(action);
       const user = unwrapResult(resultAction);
-      console.log("Login:", user);
-
+      console.log(user);
+      if (user.active === "verify") {
+        toast.warning("Vui lòng xác thựct tài khoản trước khi đăng nhập");
+        return navigate("/verify");
+      }
       toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
       reset({
         email: "",

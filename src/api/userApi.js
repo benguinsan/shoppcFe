@@ -21,5 +21,9 @@ const userApi = {
     const url = "/api/v1/users/changeState";
     return axiosClient.patch(url, data);
   },
+  logout() {
+    const url = "/api/v1/users/logout";
+    return axiosClient.get(url);
+  },
 };
 export default userApi;

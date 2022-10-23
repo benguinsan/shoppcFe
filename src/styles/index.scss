@@ -45,3 +45,55 @@ input::-moz-input-placeholder {
 .clock {
   background-image: linear-gradient(to right bottom, #1dc071, #a4d96c);
 }
+
+.profile:hover .dropdown {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hidden-input {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+//zoom
+.zoom-enter .content {
+  opacity: 0;
+  transform: scale(0.5);
+}
+.zoom-enter-active .content {
+  opacity: 1;
+  transform: scale(1);
+}
+.zoom-exit .content {
+  opacity: 1;
+}
+.zoom-exit-active .content {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  box-shadow: inset 0 0 5px grey;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+  height: 50px;
+  border-radius: 8px;
+}

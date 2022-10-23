@@ -1,7 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import Footer from "../components/footer/Footer";
-import Header from "../components/header/Header";
-import Navbar from "../components/navbar/Navbar";
 import AuthenticationPage from "./AuthenticationPage";
 import SendMail from "../components/form/SendMail";
 import Verify from "../components/form/Verify";

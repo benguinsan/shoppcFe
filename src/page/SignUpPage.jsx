@@ -70,6 +70,13 @@ const SignUpPage = () => {
       top: 0,
       behavior: "smooth",
     });
+    if (
+      localStorage.getItem("jwt") &&
+      JSON.parse(localStorage.getItem("user")).active === "verify"
+    ) {
+      toast.warning("Vui lòng xác thực tài khoản");
+      return navigate("/verify");
+    }
   }, []);
 
   const handleSignUp = async (values) => {
@@ -85,7 +92,6 @@ const SignUpPage = () => {
       const resultAction = await dispatch(action);
       const user = unwrapResult(resultAction);
       toast.success("Đăng ký tài khoản thành công", { pauseOnHover: false });
-      console.log("New user:", user);
       reset({
         fullname: "",
         email: "",
