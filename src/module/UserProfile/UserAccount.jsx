@@ -13,6 +13,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import moment from "moment";
 import ImageUpload from "../../components/images/ImageUpload";
 import axios from "axios";
+import useUserProfile from "../../hooks/useUserProfile";
+import Navbar from "../../components/navbar/Navbar";
 
 const today = moment();
 const schema = yup.object({
@@ -67,6 +69,9 @@ const UserAccount = () => {
       gender: "nam",
     },
   });
+
+  const { user } = useUserProfile();
+  console.log(user);
 
   const watchGender = watch("gender");
   const [image, setImage] = useState("");
@@ -144,20 +149,6 @@ const UserAccount = () => {
         <Field>
           <Label htmlFor="fullname">Email</Label>
           <Input name="email" control={control} disabled></Input>
-        </Field>
-
-        <Field>
-          <Label htmlFor="password">Password</Label>
-          <InputPasswordToggle
-            name="password"
-            type="text"
-            control={control}
-          ></InputPasswordToggle>
-          {errors.password && (
-            <p className="text-red-500 text-lg font-medium">
-              {errors.password?.message}
-            </p>
-          )}
         </Field>
 
         <Field>

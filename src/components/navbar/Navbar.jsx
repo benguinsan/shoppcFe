@@ -14,14 +14,11 @@ const Navbar = () => {
   const isLoggedIn =
     loggedInUser === null ? null : loggedInUser.active === "active";
 
-  console.log(isLoggedIn);
-  console.log(islogout);
+  // console.log(isLoggedIn);
+  // console.log(islogout);
 
   useEffect(() => {
-    if (
-      localStorage.getItem("jwt") &&
-      JSON.parse(localStorage.getItem("user")).active === "verify"
-    ) {
+    if (localStorage.getItem("jwt") && loggedInUser.active === "verify") {
       setIsLogout(true);
     }
   }, []);

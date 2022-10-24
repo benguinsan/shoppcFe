@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form";
 import Field from "../field/Field";
 import Input from "../input/Input";
 import Button from "../button/Button";
+import userApi from "../../api/userApi";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 const schema = yup.object({
   verify: yup
     .string()
@@ -23,8 +27,22 @@ const Verify = () => {
     resolver: yupResolver(schema),
   });
 
-  const handleVerify = (values) => {
+  const navigate = useNavigate();
+
+  const handleVerify = async (values) => {
     if (!isValid) return;
+    console.log(values);
+    const data = {
+      token: values.verify,
+    };
+    try {
+      const response = await userApi.verifyResetPassword(data);
+      console.log(response);
+      navigate(`/reset-password/${response.hashedToken}`);
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error.message);
+    }
 
     reset({
       verify: "",

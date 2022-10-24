@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import AuthenticationPage from "./AuthenticationPage";
 import SendMail from "../components/form/SendMail";
 import Verify from "../components/form/Verify";
+import Navbar from "../components/navbar/Navbar";
 
 const ForgotPasswordPage = () => {
   const [verify, setVerify] = useState(false);
@@ -17,12 +18,15 @@ const ForgotPasswordPage = () => {
     setVerify(true);
   };
   return (
-    <div>
-      <AuthenticationPage className="pb-20">
-        <SendMail onClick={handleClick} />
-        {verify && <Verify />}
-      </AuthenticationPage>
-    </div>
+    <>
+      <Navbar />
+      <div>
+        <AuthenticationPage className="pb-20">
+          <SendMail onClick={handleClick} />
+          {verify && <Verify />}
+        </AuthenticationPage>
+      </div>
+    </>
   );
 };
 

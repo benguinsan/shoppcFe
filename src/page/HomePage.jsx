@@ -5,10 +5,14 @@ import { useNavigate } from "react-router-dom";
 import ProductList from "../module/product/ProductListHome";
 import { ProductLapTopData } from "../api/ProductLaptopData";
 import BackToTopButton from "../components/backtotop/BackToTopButton";
+import Navbar from "../components/navbar/Navbar";
+
 const HomePage = () => {
   const navigate = useNavigate();
 
   const dataLapTopMacBook = ProductLapTopData;
+  const bg = "'../../public/images/bg-laptop.png'";
+  const bg1 = "'../../public/images/bg-laptop-1.png'";
 
   useEffect(() => {
     if (
@@ -22,10 +26,10 @@ const HomePage = () => {
 
   return (
     <>
+      <Navbar />
       <Banner />
-      <ProductList data={dataLapTopMacBook} bg="laptop-gaming" />
-      <ProductList data={dataLapTopMacBook} bg="laptop" />
-
+      <ProductList data={dataLapTopMacBook} bg={bg} />
+      <ProductList data={dataLapTopMacBook} bg={bg1} />
       <BackToTopButton />
     </>
   );

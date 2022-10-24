@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { register } from "../redux/auth/userSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import Navbar from "../components/navbar/Navbar";
 
 const schema = yup.object({
   fullname: yup
@@ -106,104 +107,107 @@ const SignUpPage = () => {
   };
 
   return (
-    <div>
-      <AuthenticationPage>
-        <form autoComplete="off" onSubmit={handleSubmit(handleSignUp)}>
-          <Field>
-            <Label htmlFor="fullname">Họ tên</Label>
-            <Input
-              type="text"
-              name="fullname"
-              placeholder="Mời bạn nhập tên của bạn"
-              control={control}
-            />
-            {errors.fullname && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.fullname?.message}
-              </p>
-            )}
-          </Field>
+    <>
+      <Navbar />
+      <div>
+        <AuthenticationPage>
+          <form autoComplete="off" onSubmit={handleSubmit(handleSignUp)}>
+            <Field>
+              <Label htmlFor="fullname">Họ tên</Label>
+              <Input
+                type="text"
+                name="fullname"
+                placeholder="Mời bạn nhập tên của bạn"
+                control={control}
+              />
+              {errors.fullname && (
+                <p className="text-red-500 text-lg font-medium">
+                  {errors.fullname?.message}
+                </p>
+              )}
+            </Field>
 
-          <Field>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              type="email"
-              name="email"
-              placeholder="Mời bạn nhập email"
-              control={control}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.email?.message}
-              </p>
-            )}
-          </Field>
+            <Field>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                type="email"
+                name="email"
+                placeholder="Mời bạn nhập email"
+                control={control}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-lg font-medium">
+                  {errors.email?.message}
+                </p>
+              )}
+            </Field>
 
-          <Field>
-            <Label htmlFor="password">Mật khẩu</Label>
-            <InputPasswordToggle control={control}></InputPasswordToggle>
-            {errors.password && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.password?.message}
-              </p>
-            )}
-          </Field>
+            <Field>
+              <Label htmlFor="password">Mật khẩu</Label>
+              <InputPasswordToggle control={control}></InputPasswordToggle>
+              {errors.password && (
+                <p className="text-red-500 text-lg font-medium">
+                  {errors.password?.message}
+                </p>
+              )}
+            </Field>
 
-          <Field>
-            <Label htmlFor="password">Nhập lại mật khẩu</Label>
-            <InputPasswordToggle
-              control={control}
-              name="retypePassword"
-            ></InputPasswordToggle>
-            {errors.retypePassword && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.retypePassword?.message}
-              </p>
-            )}
-          </Field>
+            <Field>
+              <Label htmlFor="password">Nhập lại mật khẩu</Label>
+              <InputPasswordToggle
+                control={control}
+                name="retypePassword"
+              ></InputPasswordToggle>
+              {errors.retypePassword && (
+                <p className="text-red-500 text-lg font-medium">
+                  {errors.retypePassword?.message}
+                </p>
+              )}
+            </Field>
 
-          <Field>
-            <Checkbox
-              control={control}
-              text="Tôi đồng ý với các điều khoản"
-              name="term"
-            />
-            {errors.term && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.term?.message}
-              </p>
-            )}
-          </Field>
+            <Field>
+              <Checkbox
+                control={control}
+                text="Tôi đồng ý với các điều khoản"
+                name="term"
+              />
+              {errors.term && (
+                <p className="text-red-500 text-lg font-medium">
+                  {errors.term?.message}
+                </p>
+              )}
+            </Field>
 
-          <Button
-            type="submit"
-            isLoading={isSubmitting}
-            disable={isSubmitting}
-            style={{
-              width: "100%",
-              maxWidth: 300,
-              margin: "30px auto",
-            }}
-          >
-            Đăng ký
-          </Button>
-        </form>
-        <Field>
-          <div className="flex items-center mx-auto pb-10">
-            {" "}
-            <span className="text-black text-xl">
-              Bạn đã có tài khoản? &nbsp;
-            </span>
-            <Link
-              to="/sign-in"
-              className="text-xl text-[#1DC071] font-semibold"
+            <Button
+              type="submit"
+              isLoading={isSubmitting}
+              disable={isSubmitting}
+              style={{
+                width: "100%",
+                maxWidth: 300,
+                margin: "30px auto",
+              }}
             >
-              Đăng nhập
-            </Link>
-          </div>
-        </Field>
-      </AuthenticationPage>
-    </div>
+              Đăng ký
+            </Button>
+          </form>
+          <Field>
+            <div className="flex items-center mx-auto pb-10">
+              {" "}
+              <span className="text-black text-xl">
+                Bạn đã có tài khoản? &nbsp;
+              </span>
+              <Link
+                to="/sign-in"
+                className="text-xl text-[#1DC071] font-semibold"
+              >
+                Đăng nhập
+              </Link>
+            </div>
+          </Field>
+        </AuthenticationPage>
+      </div>
+    </>
   );
 };
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
+import Navbar from "../../components/navbar/Navbar";
 import Sidebar from "../dashboard/Sidebar";
 
 const DashboardStyles = styled.div`
@@ -25,14 +26,18 @@ const DashboardStyles = styled.div`
 `;
 const DashboardLayout = ({ children }) => {
   return (
-    <DashboardStyles>
-      <div className="dashboard-main">
-        <Sidebar></Sidebar>
-        <div className="dashboard-children">
-          <Outlet></Outlet>
+    <>
+      {" "}
+      <Navbar />
+      <DashboardStyles>
+        <div className="dashboard-main">
+          <Sidebar></Sidebar>
+          <div className="dashboard-children">
+            <Outlet></Outlet>
+          </div>
         </div>
-      </div>
-    </DashboardStyles>
+      </DashboardStyles>
+    </>
   );
 };
 

@@ -31,6 +31,11 @@ axiosClient.interceptors.response.use(
       "/api/v1/users/login",
       "/api/v1/users/verify",
       "/api/v1/users/forgotPassword",
+      "/api/v1/users/changeState",
+      "/api/v1/users/logout",
+      "/api/v1/users/verifyResetPass",
+      "/api/v1/users/me",
+      "/api/v1/api/v1/users/resetPassword/:token",
     ];
     if (
       (URLs.includes(config.url) && status === 500) ||

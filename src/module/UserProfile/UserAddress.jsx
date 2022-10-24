@@ -11,6 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "../../components/button/Button";
 import ListAddress from "./ListAddress";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
+import Navbar from "../../components/navbar/Navbar";
 
 const schema = yup.object({
   fullname: yup

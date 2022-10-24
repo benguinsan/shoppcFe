@@ -7,11 +7,11 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-cards";
 
-const ProductList = ({ data, bg, className = "" }) => {
+const ProductList = ({ data, bg = "", className = "" }) => {
   return (
     <div className="m-20">
       <div
-        className={`container bg-[${bg}] h-[500px] bg-no-repeat w-full bg-cover rounded-lg ${className}`}
+        className={`container bg-[url("../../../public/images/bg-laptop.png")] h-[500px] bg-no-repeat w-full bg-cover rounded-lg ${className}`}
       >
         <Swiper
           modules={[Navigation, Pagination, EffectCards]}

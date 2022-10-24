@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import React, { Suspense } from "react";
 import Header from "./components/header/Header";
-import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import HomePage from "./page/HomePage";
 import NotFoundPage from "./page/NotFoundPage";
@@ -14,6 +13,7 @@ import UserAccount from "./module/UserProfile/UserAccount";
 import UserOrder from "./module/UserProfile/UserOrder";
 import UserAddress from "./module/UserProfile/UserAddress";
 import DashboardLayout from "./module/dashboard/DashboardLayout";
+import Navbar from "./components/navbar/Navbar";
 
 // const HomePage = React.lazy(() => import("./page/HomePage"));
 // const NotFoundPage = React.lazy(() => import("./page/NotFoundPage"));
@@ -40,13 +40,15 @@ function App() {
     <>
       <Suspense>
         <Header />
-        <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="sign-in" element={<SignInPage />}></Route>
           <Route path="sign-up" element={<SignUpPage />}></Route>
           <Route path="verify" element={<VerifyPage />}></Route>
-          <Route path="reset-password" element={<ResetPasswordPage />}></Route>
+          <Route
+            path="reset-password/:token"
+            element={<ResetPasswordPage />}
+          ></Route>
           <Route
             path="forgot-password"
             element={<ForgotPasswordPage />}

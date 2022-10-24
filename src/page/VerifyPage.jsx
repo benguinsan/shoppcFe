@@ -13,6 +13,7 @@ import userApi from "../api/userApi";
 import { verify } from "../redux/auth/userSlice";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
+import Navbar from "../components/navbar/Navbar";
 
 const schema = yup.object({
   verify: yup
@@ -43,7 +44,6 @@ const VerifyPage = () => {
       JSON.parse(localStorage.getItem("user")) === null &&
       localStorage.getItem("jwt") === null
     ) {
-      toast.warning("Bạn không thể vào trang xác thực khi chưa đăng ký");
       return navigate("/sign-up");
     } else if (JSON.parse(localStorage.getItem("user")).active === "active") {
       toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
@@ -91,42 +91,45 @@ const VerifyPage = () => {
     }
   };
   return (
-    <div>
-      <AuthenticationPage>
-        <form
-          onSubmit={handleSubmit(handleVerify)}
-          autoComplete="off"
-          className="pb-3"
-        >
-          <Field>
-            <Label htmlFor="verify">Mã xác nhận</Label>
-            <Input
-              name="verify"
-              type="text"
-              placeholder="Mời bạn nhập mã xác nhận"
-              control={control}
-            ></Input>
-            {errors.verify && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.verify?.message}
-              </p>
-            )}
-          </Field>
-          <Button
-            type="submit"
-            isLoading={isSubmitting}
-            disable={isSubmitting}
-            style={{
-              width: "100%",
-              maxWidth: 300,
-              margin: "30px auto",
-            }}
+    <>
+      <Navbar />
+      <div>
+        <AuthenticationPage>
+          <form
+            onSubmit={handleSubmit(handleVerify)}
+            autoComplete="off"
+            className="pb-3"
           >
-            Xác nhận
-          </Button>
-        </form>
-      </AuthenticationPage>
-    </div>
+            <Field>
+              <Label htmlFor="verify">Mã xác nhận</Label>
+              <Input
+                name="verify"
+                type="text"
+                placeholder="Mời bạn nhập mã xác nhận"
+                control={control}
+              ></Input>
+              {errors.verify && (
+                <p className="text-red-500 text-lg font-medium">
+                  {errors.verify?.message}
+                </p>
+              )}
+            </Field>
+            <Button
+              type="submit"
+              isLoading={isSubmitting}
+              disable={isSubmitting}
+              style={{
+                width: "100%",
+                maxWidth: 300,
+                margin: "30px auto",
+              }}
+            >
+              Xác nhận
+            </Button>
+          </form>
+        </AuthenticationPage>
+      </div>
+    </>
   );
 };
 

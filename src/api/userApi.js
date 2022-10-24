@@ -1,3 +1,4 @@
+import { data } from "autoprefixer";
 import axiosClient from "./axiosClient";
 
 const userApi = {
@@ -24,6 +25,19 @@ const userApi = {
   logout() {
     const url = "/api/v1/users/logout";
     return axiosClient.get(url);
+  },
+  verifyResetPassword(data) {
+    const url = "/api/v1/users/verifyResetPass";
+    return axiosClient.post(url, data);
+  },
+  getUser() {
+    const url = "/api/v1/users/me";
+    return axiosClient.get(url);
+  },
+  resetPassword(data, token) {
+    const url = `/api/v1/users/resetPassword/${token}`;
+    console.log(url);
+    return axiosClient.patch(url, data);
   },
 };
 export default userApi;
