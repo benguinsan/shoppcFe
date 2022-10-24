@@ -9,6 +9,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const dataLapTopMacBook = ProductLapTopData;
+
   useEffect(() => {
     if (
       localStorage.getItem("jwt") &&
@@ -22,7 +23,9 @@ const HomePage = () => {
   return (
     <>
       <Banner />
-      <ProductList data={dataLapTopMacBook} />
+      <ProductList data={dataLapTopMacBook} bg="laptop-gaming" />
+      <ProductList data={dataLapTopMacBook} bg="laptop" />
+
       <BackToTopButton />
     </>
   );

@@ -9,41 +9,44 @@ const Navbar = () => {
   const loggedInUser = useSelector((state) => state.user.current);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const [islogout, setIsLogout] = useState(true);
+  const [islogout, setIsLogout] = useState(false);
 
   const isLoggedIn =
     loggedInUser === null ? null : loggedInUser.active === "active";
 
-  // useEffect(() => {
-  //   if (
-  //     localStorage.getItem("jwt") &&
-  //     JSON.parse(localStorage.getItem("user")).active === "verify"
-  //   ) {
-  //     setIsLogout(true);
-  //   }
-  // }, []);
+  console.log(isLoggedIn);
+  console.log(islogout);
 
-  // const handleLogout = () => {
-  //   Swal.fire({
-  //     title: "Đăng xuất ",
-  //     text: "Bạn có chắc chắn muốn đăng xuất không ?",
-  //     showCancelButton: true,
-  //     icon: "question",
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Có",
-  //     cancelButtonText: "Không",
-  //   }).then(async (result) => {
-  //     if (result.isConfirmed) {
-  //       const action = logout();
-  //       dispatch(action);
-  //       await userApi.logout();
-  //       navigate("/");
-  //       Swal.fire("Tạm biệt! Hẹn gặp lại quý khách");
-  //       setIsLogout(false);
-  //     }
-  //   });
-  // };
+  useEffect(() => {
+    if (
+      localStorage.getItem("jwt") &&
+      JSON.parse(localStorage.getItem("user")).active === "verify"
+    ) {
+      setIsLogout(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Đăng xuất ",
+      text: "Bạn có chắc chắn muốn đăng xuất không ?",
+      showCancelButton: true,
+      icon: "question",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Có",
+      cancelButtonText: "Không",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const action = logout();
+        dispatch(action);
+        await userApi.logout();
+        navigate("/");
+        Swal.fire("Tạm biệt! Hẹn gặp lại quý khách");
+        setIsLogout(false);
+      }
+    });
+  };
 
   return (
     <nav className="w-full bg-primary h-[100px] sticky z-50 shadow-md transition-all top-0 text-white">
@@ -99,7 +102,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {!isLoggedIn && (
+        {!isLoggedIn && !islogout && (
           <Link
             to="/sign-in"
             className="flex items-center justify-center hover:text-yellow-400"
@@ -122,10 +125,9 @@ const Navbar = () => {
           </Link>
         )}
 
-        {isLoggedIn && <Profile data={loggedInUser} />}
+        {isLoggedIn && !islogout && <Profile data={loggedInUser} />}
 
-        {/* {islogout && !isLoggedIn && (
-          (
+        {islogout && !isLoggedIn && (
           <button
             type="button"
             className="flex items-center justify-center cursor-pointer hover:text-yellow-400"
@@ -147,8 +149,7 @@ const Navbar = () => {
             </svg>
             <span className="px-2 font-bold text-lg">Đăng xuất</span>
           </button>
-        )
-        )} */}
+        )}
 
         <Link to="/" className="hover:text-yellow-400">
           <svg

@@ -28,10 +28,7 @@ const Profile = ({ data }) => {
     <>
       <ProfileStyles className="profile">
         <div className="avatar">
-          <img
-            src="https://i.pinimg.com/564x/7d/9b/80/7d9b80fff2c220628dac3d11f985991b.jpg"
-            alt=""
-          />
+          <img src={data.avatar} alt="" />
         </div>
         <div className="flex flex-col items-start justify-center text-white font-semibold gap-y-1 text-base name">
           <span className="">Xin chào ,</span>

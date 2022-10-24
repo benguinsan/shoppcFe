@@ -43,7 +43,7 @@ const VerifyPage = () => {
       JSON.parse(localStorage.getItem("user")) === null &&
       localStorage.getItem("jwt") === null
     ) {
-      toast.warning("Tài khoản của bạn đã bị khóa. Liên hệ admin");
+      toast.warning("Bạn không thể vào trang xác thực khi chưa đăng ký");
       return navigate("/sign-up");
     } else if (JSON.parse(localStorage.getItem("user")).active === "active") {
       toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });

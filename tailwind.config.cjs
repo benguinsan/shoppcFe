@@ -9,6 +9,10 @@ module.exports = {
       colors: {
         primary: "#1846be",
       },
+      backgroundImage: {
+        laptop_gaming: "url('./public/images/bg-laptop.png')",
+        laptop: "url('./public/images/bg-laptop-1.png')",
+      },
     },
   },
   plugins: [require("@tailwindcss/line-clamp")],
