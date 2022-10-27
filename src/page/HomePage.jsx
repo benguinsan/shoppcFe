@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Banner from "../components/banner/Banner";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import ProductList from "../module/product/ProductListHome";
+import ProductListHome from "../module/product/ProductListHome";
 import { ProductLapTopData } from "../api/ProductLaptopData";
 import BackToTopButton from "../components/backtotop/BackToTopButton";
 import Navbar from "../components/navbar/Navbar";
@@ -19,7 +19,7 @@ const HomePage = () => {
       localStorage.getItem("jwt") &&
       JSON.parse(localStorage.getItem("user")).active === "verify"
     ) {
-      toast.warning("Vui lòng xác thực tài khoản");
+      toast.warning("Vui lòng xác thực tài khoản", { pauseOnHover: false });
       return navigate("/verify");
     }
   }, []);
@@ -28,8 +28,8 @@ const HomePage = () => {
     <>
       <Navbar />
       <Banner />
-      <ProductList data={dataLapTopMacBook} bg={bg} />
-      <ProductList data={dataLapTopMacBook} bg={bg1} />
+      <ProductListHome data={dataLapTopMacBook} bg="bg1" className="pt-20" />
+      <ProductListHome data={dataLapTopMacBook} bg={bg1} className="pt-20" />
       <BackToTopButton />
     </>
   );

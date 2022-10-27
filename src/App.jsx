@@ -13,7 +13,9 @@ import UserAccount from "./module/UserProfile/UserAccount";
 import UserOrder from "./module/UserProfile/UserOrder";
 import UserAddress from "./module/UserProfile/UserAddress";
 import DashboardLayout from "./module/dashboard/DashboardLayout";
-import Navbar from "./components/navbar/Navbar";
+import ProductDetail from "./page/ProductDetail";
+import UpdatePassword from "./module/UserProfile/UpdatePassword";
+import CartPage from "./module/cart/CartPage";
 
 // const HomePage = React.lazy(() => import("./page/HomePage"));
 // const NotFoundPage = React.lazy(() => import("./page/NotFoundPage"));
@@ -42,22 +44,28 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
-          <Route path="sign-in" element={<SignInPage />}></Route>
-          <Route path="sign-up" element={<SignUpPage />}></Route>
-          <Route path="verify" element={<VerifyPage />}></Route>
+          <Route path="/sign-in" element={<SignInPage />}></Route>
+          <Route path="/sign-up" element={<SignUpPage />}></Route>
+          <Route path="/verify" element={<VerifyPage />}></Route>
           <Route
-            path="reset-password/:token"
+            path="/reset-password/:token"
             element={<ResetPasswordPage />}
           ></Route>
           <Route
-            path="forgot-password"
+            path="/forgot-password"
             element={<ForgotPasswordPage />}
           ></Route>
           <Route element={<DashboardLayout />}>
             <Route path="/account" element={<UserAccount />}></Route>
             <Route path="/account/orders" element={<UserOrder />}></Route>
             <Route path="/account/address" element={<UserAddress />}></Route>
+            <Route
+              path="/account/reset-password"
+              element={<UpdatePassword />}
+            ></Route>
           </Route>
+          <Route element={<ProductDetail />} path="/:slug"></Route>
+          <Route path="/cart" element={<CartPage />}></Route>
           <Route path="*" element={<NotFoundPage />}></Route>
         </Routes>
         <Footer />

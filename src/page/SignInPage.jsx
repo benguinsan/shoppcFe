@@ -66,7 +66,6 @@ const SignInPage = () => {
       const action = login(values);
       const resultAction = await dispatch(action);
       const user = unwrapResult(resultAction);
-      console.log(user);
       if (user.active === "verify") {
         return navigate("/verify");
       }

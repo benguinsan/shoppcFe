@@ -5,6 +5,7 @@ import Profile from "../profile/Profile";
 import Swal from "sweetalert2";
 import userApi from "../../api/userApi";
 import { logout } from "../../redux/auth/userSlice";
+
 const Navbar = () => {
   const loggedInUser = useSelector((state) => state.user.current);
   const dispatch = useDispatch();
@@ -13,9 +14,6 @@ const Navbar = () => {
 
   const isLoggedIn =
     loggedInUser === null ? null : loggedInUser.active === "active";
-
-  // console.log(isLoggedIn);
-  // console.log(islogout);
 
   useEffect(() => {
     if (localStorage.getItem("jwt") && loggedInUser.active === "verify") {

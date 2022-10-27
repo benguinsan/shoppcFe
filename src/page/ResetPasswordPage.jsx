@@ -66,10 +66,10 @@ const ResetPasswordPage = () => {
         StorageKeys.USER,
         JSON.stringify(response.data.user)
       );
-      toast.success("Mật khẩu đã cập nhật thành công");
+      toast.success("Mật khẩu đã cập nhật thành công", { pauseOnHover: false });
       navigate("/");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message, { pauseOnHover: false });
     }
 
     reset({

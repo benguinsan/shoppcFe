@@ -6,24 +6,42 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-cards";
+import { useNavigate } from "react-router-dom";
+import slugify from "slugify";
+import queryString from "query-string";
 
-const ProductList = ({ data, bg = "", className = "" }) => {
+const ProductListHome = ({ data, bg = "", className = "" }) => {
+  const navigate = useNavigate();
+
+  const handleClick = (item) => {
+    const path = slugify(item.title, { strict: true });
+    const filters = {
+      sku: item.id,
+    };
+    navigate({
+      pathname: `/${path}`,
+      search: queryString.stringify(filters),
+    });
+  };
   return (
-    <div className="m-20">
+    <div className={`${className}`}>
       <div
-        className={`container bg-[url("../../../public/images/bg-laptop.png")] h-[500px] bg-no-repeat w-full bg-cover rounded-lg ${className}`}
+        className={`container ${
+          bg === "bg1" ? 'bg-[url("../../../public/images/bg-laptop.png")]' : ""
+        }
+          h-[500px] bg-no-repeat w-full bg-cover rounded-lg`}
       >
         <Swiper
           modules={[Navigation, Pagination, EffectCards]}
           slidesPerView={5}
           navigation
           pagination={{ clickable: true }}
-          className="w-full rounded-lg pt-20"
+          className={`w-full rounded-lg ${className}`}
         >
           {data.length > 0 &&
             data.map((item) => (
               <SwiperSlide key={item.id}>
-                <ProdictItem product={item} />
+                <ProdictItem product={item} onClick={() => handleClick(item)} />
               </SwiperSlide>
             ))}
         </Swiper>
@@ -32,4 +50,4 @@ const ProductList = ({ data, bg = "", className = "" }) => {
   );
 };
 
-export default ProductList;
+export default ProductListHome;

@@ -74,7 +74,7 @@ const Dropdown = () => {
   };
   return (
     <DropdownStyles className="dropdown">
-      <NavLink to="/account">
+      <NavLink to="/account" end>
         <div className="flex items-center gap-x-4 border-b-2 border-solid px-4 py-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +94,7 @@ const Dropdown = () => {
         </div>
       </NavLink>
 
-      <NavLink to="/account/orders">
+      <NavLink to="/account/orders" end>
         <div className="flex items-center gap-x-4 border-b-2 border-solid px-3 py-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +115,7 @@ const Dropdown = () => {
         </div>
       </NavLink>
 
-      <NavLink to="/account/address">
+      <NavLink to="/account/address" end>
         <div className="flex items-center gap-x-4 border-b-2 border-solid px-3 py-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -138,6 +138,27 @@ const Dropdown = () => {
           </svg>
 
           <span>Sổ địa chỉ</span>
+        </div>
+      </NavLink>
+
+      <NavLink to="/account/reset-password" end>
+        <div className="flex items-center gap-x-4 border-b-2 border-solid px-3 py-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
+            />
+          </svg>
+
+          <span>Đổi mật khẩu</span>
         </div>
       </NavLink>
 

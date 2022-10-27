@@ -39,5 +39,33 @@ const userApi = {
     console.log(url);
     return axiosClient.patch(url, data);
   },
+  updateUser(data) {
+    const url = "/api/v1/users/updateMe";
+    return axiosClient.patch(url, data);
+  },
+  addAddress(data) {
+    const url = "/api/v1/users/createAddress";
+    return axiosClient.patch(url, data);
+  },
+  getAddress() {
+    const url = "/api/v1/users/me/address";
+    return axiosClient.get(url);
+  },
+  deleteAddress(data) {
+    const url = "/api/v1/users/deleteAddress";
+    return axiosClient.patch(url, data);
+  },
+  updateAddress(data) {
+    const url = "/api/v1/users/updateAddress";
+    return axiosClient.patch(url, data);
+  },
+  updatePassword(data) {
+    const url = "/api/v1/users/updateMyPassword";
+    return axiosClient.patch(url, data);
+  },
+  updateDefault(data) {
+    const url = "/api/v1/users/setDefaultAddress";
+    return axiosClient.patch(url, data);
+  },
 };
 export default userApi;

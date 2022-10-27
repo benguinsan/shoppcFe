@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../../components/navbar/Navbar";
 import Sidebar from "../dashboard/Sidebar";
+import { useSelector } from "react-redux";
 
 const DashboardStyles = styled.div`
   max-width: 1600px;
@@ -25,6 +26,8 @@ const DashboardStyles = styled.div`
   }
 `;
 const DashboardLayout = ({ children }) => {
+  const loggedInUser = useSelector((state) => state.user.current);
+  useEffect(() => {}, [loggedInUser]);
   return (
     <>
       {" "}

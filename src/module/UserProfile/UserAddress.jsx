@@ -11,7 +11,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "../../components/button/Button";
 import ListAddress from "./ListAddress";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
-import Navbar from "../../components/navbar/Navbar";
+import userApi from "../../api/userApi";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object({
   fullname: yup
@@ -27,7 +29,7 @@ const schema = yup.object({
     }),
   address: yup.string().required("Vui lòng nhập địa chỉ nhà"),
   province: yup.string().required("Vui lòng chọn Tỉnh/ Thành phố"),
-  dictrict: yup.string().required("Vui lòng chọn Quận/ Huyện"),
+  dictrict: yup.string().required("Vui lòng chọn Quận/Huyện"),
   ward: yup.string().required("Vui lòng chọn Phường/Xã"),
 });
 const UserAddress = () => {
@@ -56,6 +58,7 @@ const UserAddress = () => {
   const [district, setDistrict] = useState([]);
   const [districtId, setDistrictId] = useState("");
   const [ward, setWard] = useState([]);
+  const navigate = useNavigate();
 
   const bodyStyle = document.body.style;
   let isLocked = false;
@@ -94,9 +97,9 @@ const UserAddress = () => {
       reset({
         fullname: "",
         sdt: "",
-        province: "",
-        dictrict: "",
-        ward: "",
+        province: setValue("province", ""),
+        dictrict: setValue("dictrict", ""),
+        ward: setValue("ward", ""),
         address: "",
       });
       enableBodyScroll(bodyStyle);
@@ -107,24 +110,35 @@ const UserAddress = () => {
     }
   }, [showModal]);
 
-  const handleSend = (values) => {
+  const handleSend = async (values) => {
     if (!isValid) return null;
-    const data = {
-      ...values,
+    const dataAddress = {
+      name: values.fullname,
+      phone: values.sdt,
+      detail: values.address,
       province: getValues("province"),
-      district: getValues("district"),
+      district: getValues("dictrict"),
       ward: getValues("ward"),
     };
+    console.log(getValues("dictrict"));
+
+    try {
+      await userApi.addAddress(dataAddress);
+      toast.success("Cập nhật thành công địa chỉ");
+      setShowModal(false);
+      location.reload();
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error.message);
+    }
     reset({
       fullname: "",
-      email: "",
       sdt: "",
-      province: "",
-      dictrict: "",
-      ward: "",
+      province: "" && setValue("province", ""),
+      dictrict: "" && setValue("dictrict", ""),
+      ward: "" && setValue("ward", ""),
       address: "",
     });
-    console.log(data);
   };
   return (
     <div>
@@ -223,7 +237,7 @@ const UserAddress = () => {
               <Label htmlFor="district">* Quận/Huyện</Label>
               <DropdownSelect
                 control={control}
-                name="district"
+                name="dictrict"
                 dropdownLabel="Chọn"
                 setValue={setValue}
                 data={district}

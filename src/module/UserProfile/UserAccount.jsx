@@ -5,7 +5,6 @@ import Field from "../../components/field/Field";
 import Label from "../../components/label/Label";
 import Input from "../../components/input/Input";
 import { useForm } from "react-hook-form";
-import InputPasswordToggle from "../../components/input/InputPasswordToggle";
 import FieldCheckboxes from "../../components/field/FieldCheckboxes";
 import Radio from "../../components/checkbox/Radio";
 import * as yup from "yup";
@@ -14,7 +13,10 @@ import moment from "moment";
 import ImageUpload from "../../components/images/ImageUpload";
 import axios from "axios";
 import useUserProfile from "../../hooks/useUserProfile";
-import Navbar from "../../components/navbar/Navbar";
+import { toast } from "react-toastify";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
+import { updateInfoUser } from "../../redux/auth/userSlice";
 
 const today = moment();
 const schema = yup.object({
@@ -23,24 +25,13 @@ const schema = yup.object({
     .required("Vui lòng nhập họ tên")
     .min(3, "Tối thiểu phải có 3 ký tự")
     .max(30, "Vượt quá 30 ký tự cho phép"),
-  password: yup
-    .string()
-    .required("Vui lòng nhập mật khẩu")
-    .min(8, "Tối thiểu 8 ký tự")
-    .max(30, "Vượt quá 30 ký tự cho phép")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message: "Bắt buộc phải có chữ hoa, chữ thường, ký tự đặc biệt, số",
-      }
-    ),
   sdt: yup
     .string()
     .required("Vui lòng nhập số điện thoại")
     .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/, {
       message: "Định dạng số điện thoại không đúng",
     }),
-  birthday: yup
+  dateOfBirth: yup
     .date()
     .required("Vui lòng chọn ngày sinh")
     .nullable()
@@ -66,12 +57,27 @@ const UserAccount = () => {
     mode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: {
-      gender: "nam",
+      fullname: "",
+      email: "",
+      sdt: "",
+      gender: "",
     },
   });
 
   const { user } = useUserProfile();
-  console.log(user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    reset({
+      fullname: user.name,
+      image: user.avatar,
+      email: user.email,
+      sdt: user.phone || "",
+      dateOfBirth: user.dateOfBirth,
+      gender: user.gender,
+    });
+    setImage(getValues("image"));
+  }, [user]);
 
   const watchGender = watch("gender");
   const [image, setImage] = useState("");
@@ -79,7 +85,6 @@ const UserAccount = () => {
 
   const handleSelectImage = async (e) => {
     const file = e.target.files[0];
-    console.log(file);
     if (!file) return;
     const urlImage = await handleUpLoadImage(file);
     setImage(urlImage);
@@ -110,111 +115,129 @@ const UserAccount = () => {
     });
   }, []);
 
-  const handleUpdate = (values) => {
+  const handleUpdate = async (values) => {
     if (!isValid) return;
     const cloneValues = { ...values };
     cloneValues.gender = getValues("gender");
-    cloneValues.image = image;
+    cloneValues.dateOfBirth = getValues("birthday");
+    cloneValues.avatar = image;
+    cloneValues.name = values.fullname;
+    cloneValues.phone = values.sdt;
     console.log(cloneValues);
+    try {
+      const action = updateInfoUser(cloneValues);
+      const resultAction = await dispatch(action);
+      const user = unwrapResult(resultAction);
+      toast.success("Cập nhật thông tin thành công", { pauseOnHover: false });
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleDeleteImage = () => {
+    setImage("");
+    setProgress(0);
   };
 
   return (
-    <div className="bg-white rounded-lg">
-      <DashboardHeading
-        title="Thông tin tài khoản"
-        className="px-5 py-5"
-      ></DashboardHeading>
-      <form className="pb-16" onSubmit={handleSubmit(handleUpdate)}>
-        <Field>
-          <Label>Image</Label>
-          <ImageUpload
-            onChange={handleSelectImage}
-            className="mx-auto"
-            progress={progress}
-            image={image}
-            // handleDeleteImage={handleDeleteImage}
-          ></ImageUpload>
-        </Field>
+    <>
+      <div className="bg-white rounded-lg">
+        <DashboardHeading
+          title="Thông tin tài khoản"
+          className="px-5 py-5"
+        ></DashboardHeading>
+        <form className="pb-16" onSubmit={handleSubmit(handleUpdate)}>
+          <Field>
+            <Label>Image</Label>
+            <ImageUpload
+              onChange={handleSelectImage}
+              className="mx-auto"
+              progress={progress}
+              image={image}
+              handleDeleteImage={handleDeleteImage}
+            ></ImageUpload>
+          </Field>
 
-        <Field>
-          <Label htmlFor="fullname">Họ tên</Label>
-          <Input name="fullname" control={control} type="text"></Input>
-          {errors.fullname && (
-            <p className="text-red-500 text-lg font-medium">
-              {errors.fullname?.message}
-            </p>
-          )}
-        </Field>
+          <Field>
+            <Label htmlFor="fullname">Họ tên</Label>
+            <Input name="fullname" control={control} type="text"></Input>
+            {errors.fullname && (
+              <p className="text-red-500 text-lg font-medium">
+                {errors.fullname?.message}
+              </p>
+            )}
+          </Field>
 
-        <Field>
-          <Label htmlFor="fullname">Email</Label>
-          <Input name="email" control={control} disabled></Input>
-        </Field>
+          <Field>
+            <Label htmlFor="fullname">Email</Label>
+            <Input name="email" control={control} disabled></Input>
+          </Field>
 
-        <Field>
-          <Label htmlFor="sdt">Số điện thoại</Label>
-          <Input name="sdt" type="number" control={control}></Input>
-          {errors.sdt && (
-            <p className="text-red-500 text-lg font-medium">
-              {errors.sdt?.message}
-            </p>
-          )}
-        </Field>
+          <Field>
+            <Label htmlFor="sdt">Số điện thoại</Label>
+            <Input name="sdt" type="number" control={control}></Input>
+            {errors.sdt && (
+              <p className="text-red-500 text-lg font-medium">
+                {errors.sdt?.message}
+              </p>
+            )}
+          </Field>
 
-        <Field>
-          <Label htmlFor="birthday">Ngày sinh</Label>
-          <Input name="birthday" type="date" control={control}></Input>
-          {errors.birthday && (
-            <p className="text-red-500 text-lg font-medium">
-              {errors.birthday?.message}
-            </p>
-          )}
-        </Field>
+          <Field>
+            <Label htmlFor="dateOfBirth">Ngày sinh</Label>
+            <Input name="dateOfBirth" type="date" control={control}></Input>
+            {errors.dateOfBirth && (
+              <p className="text-red-500 text-lg font-medium">
+                {errors.dateOfBirth?.message}
+              </p>
+            )}
+          </Field>
 
-        <Field>
-          <FieldCheckboxes>
-            <Label htmlFor="gender">Giới tính</Label>
-            <Radio
-              name="gender"
-              control={control}
-              checked={watchGender === Gender.NAM}
-              value={Gender.NAM}
-              onClick={() => setValue("gender", "nam")}
-            >
-              Nam
-            </Radio>
-            <Radio
-              name="gender"
-              control={control}
-              checked={watchGender === Gender.NU}
-              value={Gender.NU}
-              onClick={() => setValue("gender", "nu")}
-            >
-              Nữ
-            </Radio>
-            <Radio
-              name="gender"
-              control={control}
-              checked={watchGender === Gender.Diff}
-              value={Gender.Diff}
-              onClick={() => setValue("gender", "khac")}
-            >
-              Khác
-            </Radio>
-          </FieldCheckboxes>
-        </Field>
+          <Field>
+            <FieldCheckboxes>
+              <Label htmlFor="gender">Giới tính</Label>
+              <Radio
+                name="gender"
+                control={control}
+                checked={watchGender === Gender.NAM}
+                value={Gender.NAM}
+                onClick={() => setValue("gender", "nam")}
+              >
+                Nam
+              </Radio>
+              <Radio
+                name="gender"
+                control={control}
+                checked={watchGender === Gender.NU}
+                value={Gender.NU}
+                onClick={() => setValue("gender", "nu")}
+              >
+                Nữ
+              </Radio>
+              <Radio
+                name="gender"
+                control={control}
+                checked={watchGender === Gender.Diff}
+                value={Gender.Diff}
+                onClick={() => setValue("gender", "khac")}
+              >
+                Khác
+              </Radio>
+            </FieldCheckboxes>
+          </Field>
 
-        <Button
-          kind="primary"
-          className="mx-auto w-[200px] mt-10"
-          type="submit"
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-        >
-          Cập nhật thông tin
-        </Button>
-      </form>
-    </div>
+          <Button
+            kind="primary"
+            className="mx-auto w-[200px] mt-10"
+            type="submit"
+            disabled={isSubmitting}
+            isLoading={isSubmitting}
+          >
+            Cập nhật thông tin
+          </Button>
+        </form>
+      </div>
+    </>
   );
 };
 

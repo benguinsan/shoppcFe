@@ -1,8 +1,11 @@
 import React from "react";
 import { formatPrice } from "../../utils/formatPrice";
-const ProductItem = ({ product }) => {
+const ProductItem = ({ product, onClick }) => {
   return (
-    <div className="flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer">
+    <div
+      className="flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer"
+      onClick={onClick}
+    >
       <img
         src={product.linkImg}
         alt=""
@@ -11,7 +14,7 @@ const ProductItem = ({ product }) => {
       <div className="flex flex-col flex-1">
         <h3 className="mb-3 line-clamp-2">{product.title}</h3>
         <div className="flex items-center justify-between text-sm opacity-50 mb-2">
-          <span className="text-lg text-blue font-bold">
+          <span className="text-lg text-blue-700 font-bold">
             {formatPrice(product.promotion)}
           </span>
           <span>

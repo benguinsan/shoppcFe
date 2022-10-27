@@ -75,7 +75,7 @@ const SignUpPage = () => {
       localStorage.getItem("jwt") &&
       JSON.parse(localStorage.getItem("user")).active === "verify"
     ) {
-      toast.warning("Vui lòng xác thực tài khoản");
+      toast.warning("Vui lòng xác thực tài khoản", { pauseOnHover: false });
       return navigate("/verify");
     }
   }, []);

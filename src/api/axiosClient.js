@@ -36,6 +36,13 @@ axiosClient.interceptors.response.use(
       "/api/v1/users/verifyResetPass",
       "/api/v1/users/me",
       "/api/v1/api/v1/users/resetPassword/:token",
+      "/api/v1/users/updateMe",
+      "/api/v1/users/createAddress",
+      "/api/v1/users/me/address",
+      "/api/v1/users/deleteAddress",
+      "/api/v1/users/updateAddress",
+      "/api/v1/users/updateMyPassword",
+      "/api/v1/users/setDefaultAddress",
     ];
     if (
       (URLs.includes(config.url) && status === 500) ||

@@ -9,6 +9,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "../../components/button/Button";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import axios from "axios";
+import userApi from "../../api/userApi";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const schema = yup.object({
   fullname: yup
@@ -24,16 +27,17 @@ const schema = yup.object({
     }),
   address: yup.string().required("Vui lòng nhập địa chỉ nhà"),
   province: yup.string().required("Vui lòng chọn Tỉnh/ Thành phố"),
-  dictrict: yup.string().required("Vui lòng chọn Quận/ Huyện"),
+  district: yup.string().required("Vui lòng chọn Quận/ Huyện"),
   ward: yup.string().required("Vui lòng chọn Phường/Xã"),
 });
-const ItemAddress = ({ data }) => {
+const ItemAddress = ({ data, data_key }) => {
   const [showModal, setShowModal] = useState(false);
   const bodyStyle = document.body.style;
   let isLocked = false;
   const {
     control,
     reset,
+    handleSubmit,
     formState: { isSubmitting, isValid, errors },
     setValue,
     getValues,
@@ -43,7 +47,7 @@ const ItemAddress = ({ data }) => {
       fullname: "",
       sdt: "",
       province: "",
-      dictrict: "",
+      district: "",
       ward: "",
       address: "",
     },
@@ -82,44 +86,138 @@ const ItemAddress = ({ data }) => {
   }, [provinceId, districtId]);
 
   useEffect(() => {
-    if (showModal === false) {
+    if (showModal === true) {
+      setValue("province", data.province);
+      setValue("district", data.district);
+      setValue("ward", data.ward);
       reset({
-        fullname: "",
-        sdt: "",
-        province: "",
-        dictrict: "",
-        ward: "",
-        address: "",
+        fullname: data.name,
+        sdt: data.phone,
+        province: getValues("province"),
+        district: getValues("district"),
+        ward: getValues("ward"),
+        address: data.detail,
       });
-      enableBodyScroll(bodyStyle);
-      isLocked = false;
-    } else {
       disableBodyScroll(bodyStyle);
       isLocked = true;
+    } else {
+      enableBodyScroll(bodyStyle);
+      isLocked = false;
     }
   }, [showModal]);
+
+  const handleDelete = async () => {
+    Swal.fire({
+      title: "Xóa ",
+      text: "Bạn có chắc chắn muốn xóa không ?",
+      showCancelButton: true,
+      icon: "question",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Có",
+      cancelButtonText: "Không",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        console.log(data_key);
+        try {
+          const data = {
+            id: data_key,
+          };
+          const response = await userApi.deleteAddress(data);
+          console.log(response);
+          Swal.fire("Xóa thành công");
+          location.reload();
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+    });
+  };
+
+  const handleEdit = async (values) => {
+    const dataEdit = {
+      id: data_key,
+      name: values.fullname,
+      phone: values.sdt,
+      province: getValues("province"),
+      district: getValues("district"),
+      ward: getValues("ward"),
+      detail: values.address,
+    };
+    try {
+      const response = await userApi.updateAddress(dataEdit);
+      console.log(response);
+      toast.success("Update địa chỉ thành công");
+      setShowModal(false);
+      location.reload();
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleDefault = async (data_key) => {
+    const dataKey = {
+      id: data_key,
+    };
+    console.log(dataKey);
+    try {
+      await userApi.updateDefault(dataKey);
+      location.reload();
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <>
       <div className="w-full bg-white  border-2 border-dotted text-black px-5 py-5 rounded-lg flex items-center justify-between my-7 focus:border-solid">
-        <div className="flex flex-col justify-between">
-          <h3 className="font-semibold text-lg mb-2">{data.name}</h3>
+        <div className="flex flex-col justify-between ">
+          <div className="flex items-center gap-x-5 mb-2">
+            <h3 className="font-semibold text-lg ">{data.name}</h3>
+            {data.setDefault && (
+              <div className="px-1 py-1 bg-blue-100 rounded-md font-medium">
+                Mặc định
+              </div>
+            )}
+          </div>
+
           <div className="flex flex-col">
             <span className="text-base font-normal">
-              Địa chỉ: {data.address}
+              Địa chỉ: {data.detail} , {data.ward}, {data.district} ,
+              {data.province}
             </span>
             <span className="text-base font-normal">
               Điện thoại: {data.phone}
             </span>
           </div>
         </div>
-        <button
-          className="border-2 border-solid px-4 py-3 text-red-600 font-medium border-[red]"
-          type="button"
-          onClick={() => setShowModal(true)}
-        >
-          Chỉnh sửa
-        </button>
+
+        <div className="flex items-center justify-start gap-x-8">
+          {!data.setDefault && (
+            <button
+              className="border-2 border-solid px-4 py-3 text-green-400 font-medium border-green-400"
+              type="button"
+              onClick={() => handleDefault(data_key)}
+            >
+              Đặt làm mặc định
+            </button>
+          )}
+
+          <button
+            className="border-2 border-solid px-4 py-3 text-blue-400 font-medium border-blue-400"
+            type="button"
+            onClick={() => setShowModal(true)}
+          >
+            Chỉnh sửa
+          </button>
+          <button
+            className="border-2 border-solid px-4 py-3 text-red-600 font-medium border-[red]"
+            type="button"
+            onClick={handleDelete}
+          >
+            Xóa
+          </button>
+        </div>
       </div>
 
       <ModalAdvanced
@@ -132,7 +230,7 @@ const ItemAddress = ({ data }) => {
         <h3 className="text-2xl font-semibold text-black text-left mb-5">
           Thông tin người nhận hàng
         </h3>
-        <form autoComplete="off">
+        <form autoComplete="off" onSubmit={handleSubmit(handleEdit)}>
           <div className="flex flex-col items-start gap-4 mb-10">
             <Label htmlFor="fullname">* Họ tên</Label>
             <Input
@@ -173,7 +271,7 @@ const ItemAddress = ({ data }) => {
               <DropdownSelect
                 control={control}
                 name="province"
-                dropdownLabel="Chọn"
+                dropdownLabel={data.province}
                 setValue={setValue}
                 data={province}
                 onClick={(id) => setProvinceId(id)}
@@ -190,7 +288,7 @@ const ItemAddress = ({ data }) => {
               <DropdownSelect
                 control={control}
                 name="district"
-                dropdownLabel="Chọn"
+                dropdownLabel={data.district}
                 setValue={setValue}
                 data={district}
                 onClick={(id) => setDistrictId(id)}
@@ -209,7 +307,7 @@ const ItemAddress = ({ data }) => {
               <DropdownSelect
                 control={control}
                 name="ward"
-                dropdownLabel="Chọn"
+                dropdownLabel={data.ward}
                 setValue={setValue}
                 data={ward}
               ></DropdownSelect>

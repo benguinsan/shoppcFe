@@ -37,10 +37,9 @@ const Verify = () => {
     };
     try {
       const response = await userApi.verifyResetPassword(data);
-      console.log(response);
       navigate(`/reset-password/${response.hashedToken}`);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message, { pauseOnHover: false });
       console.log(error.message);
     }
 

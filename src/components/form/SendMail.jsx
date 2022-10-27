@@ -43,7 +43,7 @@ const SendMail = ({ onClick }) => {
       countdownTimer();
       onClick();
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message, { pauseOnHover: false });
     }
   };
 

@@ -23,6 +23,16 @@ export const login = createAsyncThunk("user/login", async (payload) => {
   return response.data.user;
 });
 
+export const updateInfoUser = createAsyncThunk(
+  "user/updateInfoUser",
+  async (payload) => {
+    const response = await userApi.updateUser(payload);
+    localStorage.setItem(StorageKeys.TOKEN, response.token);
+    localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data.user));
+    return response.data.user;
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -43,6 +53,9 @@ const userSlice = createSlice({
       state.current = action.payload;
     },
     [verify.fulfilled]: (state, action) => {
+      state.current = action.payload;
+    },
+    [updateInfoUser.fulfilled]: (state, action) => {
       state.current = action.payload;
     },
   },

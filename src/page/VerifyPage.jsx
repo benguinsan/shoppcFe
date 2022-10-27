@@ -77,10 +77,11 @@ const VerifyPage = () => {
         const data = {
           state: "ban",
         };
-        toast.warning("Bạn nhập sai mã xác nhận 3 lần");
+        toast.warning("Bạn nhập sai mã xác nhận 3 lần", {
+          pauseOnHover: false,
+        });
         if (JSON.parse(localStorage.getItem("user")).active === "verify") {
           const response = await userApi.changeState(data);
-          console.log(response.data.user);
           localStorage.setItem("user", JSON.stringify(response.data.user));
           navigate("/sign-up");
           dem.current = 0;

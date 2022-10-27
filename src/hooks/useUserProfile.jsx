@@ -9,9 +9,8 @@ export default function useProductDetail() {
     (async () => {
       try {
         // setLoading(true);
-        const response = await userApi.getUser();
-        console.log(response);
-        setUser(response);
+        const { data } = await userApi.getUser();
+        setUser(data.data);
       } catch (error) {
         console.log("Failed to fetch user", error.message);
       }
