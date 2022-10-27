@@ -12,6 +12,12 @@ const ProductInformation = () => {
       top: 0,
       behavior: "smooth",
     });
+    if (
+      localStorage.getItem("jwt") &&
+      JSON.parse(localStorage.getItem("user")).active === "verify"
+    ) {
+      return navigate("/verify");
+    }
   }, []);
   return (
     <div className="mt-10">

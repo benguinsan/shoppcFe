@@ -142,4 +142,5 @@ tr:nth-child(even) {
 .cart {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 0 10px;
 }

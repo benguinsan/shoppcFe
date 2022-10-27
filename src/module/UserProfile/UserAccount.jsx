@@ -65,6 +65,7 @@ const UserAccount = () => {
   });
 
   const { user } = useUserProfile();
+  console.log(user);
   const dispatch = useDispatch();
 
   useEffect(() => {

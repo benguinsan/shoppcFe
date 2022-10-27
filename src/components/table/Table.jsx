@@ -7,9 +7,6 @@ const TableStyles = styled.div`
   table {
     width: 100%;
   }
-  thead {
-    background-color: white;
-  }
   th {
     white-space: nowrap;
   }
@@ -22,11 +19,10 @@ const TableStyles = styled.div`
     font-weight: 600;
     text-align: left;
     border-bottom: thin solid #f7f7f7;
+    text-align: center;
   }
   td {
     padding: 15px 20px;
-  }
-  tbody {
   }
 `;
 const Table = ({ children }) => {
