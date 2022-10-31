@@ -29,11 +29,17 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
         className={`container ${
           bg === "bg1" ? 'bg-[url("../../../public/images/bg-laptop.png")]' : ""
         }
+        ${
+          bg === "bg2"
+            ? 'bg-[url("../../../public/images/bg-laptop-1.png")]'
+            : ""
+        }
           h-[500px] bg-no-repeat w-full bg-cover rounded-lg`}
       >
         <Swiper
           modules={[Navigation, Pagination, EffectCards]}
           slidesPerView={5}
+          slidesPerGroup={5}
           navigation
           pagination={{ clickable: true }}
           className={`w-full rounded-lg ${className}`}

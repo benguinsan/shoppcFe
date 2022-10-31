@@ -31,6 +31,9 @@ const CartPage = () => {
   const handleClick = () => {
     navigate("/sign-in");
   };
+  const handleCheckout = () => {
+    navigate("/checkout");
+  };
   return (
     <>
       <Navbar />
@@ -95,29 +98,36 @@ const CartPage = () => {
             <div className="information-price bg-white mt-7 text-lg rounded-lg pb-14 pt-4 px-3 flex flex-col justify-start">
               <span className="text-xl font-semibold">Thanh toán</span>
               <div className="flex items-center justify-between py-4">
-                <span>Tổng tạm tính</span>
+                <span className="text-[#8b8f9b] text-lg font-normal">
+                  Tổng tạm tính
+                </span>
                 <span>{formatPrice(27000000)}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span>Thành tiền</span>
-                <span className="text-blue-700 font-semibold">
+                <span className="text-[#8b8f9b] text-lg font-normal">
+                  Thành tiền
+                </span>
+                <span className="text-blue-700 font-semibold text-xl">
                   {formatPrice(27000000)}
                 </span>
               </div>
               {!isLoggedIn ? (
                 <button
-                  className="w-full px-2 py-2 bg-blue-600 text-white mt-10 rounded-lg flex flex-col items-center"
+                  className="w-full px-2 py-2 bg-blue-700 text-white mt-12 rounded-lg flex flex-col items-center"
                   type="button"
                   onClick={handleClick}
                 >
-                  <span className="font-medium">THANH TOÁN</span>
+                  <span className="font-medium text-xl">THANH TOÁN</span>
                   <span className="text-base">
                     Bạn cần đăng nhập để tiếp tục
                   </span>
                 </button>
               ) : (
-                <button className="w-full px-4 py-4 bg-blue-600 text-white mt-10 rounded-lg font-medium">
-                  Tiếp tục
+                <button
+                  className="w-full px-3 py-3 bg-blue-700 text-white mt-12 rounded-lg"
+                  onClick={handleCheckout}
+                >
+                  <span className="font-medium text-xl ">TIẾP TỤC</span>
                 </button>
               )}
             </div>

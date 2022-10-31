@@ -9,6 +9,7 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   function (config) {
     // Do something before request is sent
+
     return config;
   },
   function (error) {
@@ -43,6 +44,7 @@ axiosClient.interceptors.response.use(
       "/api/v1/users/updateAddress",
       "/api/v1/users/updateMyPassword",
       "/api/v1/users/setDefaultAddress",
+      "/api/v1/products",
     ];
     if (
       (URLs.includes(config.url) && status === 500) ||

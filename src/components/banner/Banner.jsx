@@ -15,7 +15,8 @@ const Banner = () => {
           modules={[Navigation, Pagination, Autoplay]}
           slidesPerView={1}
           navigation
-          autoplay={{ delay: 4000 }}
+          effect="fade"
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
           pagination={{ clickable: true }}
           className="w-full rounded-lg"
         >

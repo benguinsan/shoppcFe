@@ -16,6 +16,8 @@ import DashboardLayout from "./module/dashboard/DashboardLayout";
 import ProductDetail from "./page/ProductDetail";
 import UpdatePassword from "./module/UserProfile/UpdatePassword";
 import CartPage from "./module/cart/CartPage";
+import PaymentPage from "./module/payment/PaymentPage";
+import ProductFilterPage from "./page/ProductFilterPage";
 
 // const HomePage = React.lazy(() => import("./page/HomePage"));
 // const NotFoundPage = React.lazy(() => import("./page/NotFoundPage"));
@@ -66,6 +68,8 @@ function App() {
           </Route>
           <Route element={<ProductDetail />} path="/:slug"></Route>
           <Route path="/cart" element={<CartPage />}></Route>
+          <Route path="/checkout" element={<PaymentPage />}></Route>
+          <Route path="/product" element={<ProductFilterPage />}></Route>
           <Route path="*" element={<NotFoundPage />}></Route>
         </Routes>
         <Footer />

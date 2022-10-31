@@ -1,9 +1,9 @@
 import React from "react";
 import { formatPrice } from "../../utils/formatPrice";
-const ProductItem = ({ product, onClick }) => {
+const ProductItem = ({ product, onClick, className = "" }) => {
   return (
     <div
-      className="flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer"
+      className={`flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer ${className}`}
       onClick={onClick}
     >
       <img

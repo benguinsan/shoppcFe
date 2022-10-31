@@ -34,7 +34,8 @@ const InformationProduct = () => {
           navigation={true}
           modules={[Navigation, Thumbs, Autoplay]}
           grabCursor={true}
-          autoplay={{ delay: 4000 }}
+          effect="fade"
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
           thumbs={{ swiper: activeThumb }}
           className="product-images-slider"
         >
@@ -85,7 +86,7 @@ const InformationProduct = () => {
           <span className="text-blue"> - 11.7%</span>
         </div>
         <span className="w-full border-dotted border-2 mb-6"></span>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between px-10">
           <button
             className="px-24 py-4 bg-blue-800 text-white text-xl font-medium rounded-md"
             type="button"

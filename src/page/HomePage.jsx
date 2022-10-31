@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Banner from "../components/banner/Banner";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,8 @@ import ProductListHome from "../module/product/ProductListHome";
 import { ProductLapTopData } from "../api/ProductLaptopData";
 import BackToTopButton from "../components/backtotop/BackToTopButton";
 import Navbar from "../components/navbar/Navbar";
+import productApi from "../api/productApi";
+import ProductList from "../module/product/ProductList";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -13,6 +15,8 @@ const HomePage = () => {
   const dataLapTopMacBook = ProductLapTopData;
   const bg = "'../../public/images/bg-laptop.png'";
   const bg1 = "'../../public/images/bg-laptop-1.png'";
+
+  const [product, setProduct] = useState([]);
 
   useEffect(() => {
     if (
@@ -24,12 +28,26 @@ const HomePage = () => {
     }
   }, []);
 
+  // useEffect(() => {
+  //   async function fetchDataProduct() {
+  //     try {
+  //       const response = await productApi.getAllProduct();
+  //       console.log(response.data);
+  //       setProduct(response.data);
+  //     } catch (error) {
+  //       console.log(error.message);
+  //     }
+  //   }
+  //   fetchDataProduct();
+  // }, []);
+
   return (
     <>
       <Navbar />
       <Banner />
       <ProductListHome data={dataLapTopMacBook} bg="bg1" className="pt-20" />
-      <ProductListHome data={dataLapTopMacBook} bg={bg1} className="pt-20" />
+      <ProductListHome data={dataLapTopMacBook} bg="bg2" className="pt-20" />
+      <ProductList data={dataLapTopMacBook} />
       <BackToTopButton />
     </>
   );

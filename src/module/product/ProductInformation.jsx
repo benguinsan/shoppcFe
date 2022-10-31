@@ -5,7 +5,7 @@ import InformationProduct from "./information/InformationProduct";
 import InformationService from "./information/InformationService";
 import ProductDescription from "./information/ProductDescription";
 import ProductParameters from "./information/ProductParameters";
-
+import BackToTopButton from "../../components/backtotop/BackToTopButton";
 const ProductInformation = () => {
   useEffect(() => {
     window.scrollTo({
@@ -54,6 +54,7 @@ const ProductInformation = () => {
           <ProductParameters />
         </div>
         <CategoryBrand />
+        <BackToTopButton />
       </div>
     </div>
   );
