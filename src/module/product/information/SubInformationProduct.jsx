@@ -14,8 +14,6 @@ const SubInformationProduct = ({ data }) => {
       quantity: 1,
     });
     dispatch(action);
-    toast.success("Đã thêm sản phẩm vào giỏ hàng", { pauseOnHover: false });
-    location.reload();
   };
   const handleBuy = () => {
     const action = addToCart({
@@ -24,7 +22,6 @@ const SubInformationProduct = ({ data }) => {
       quantity: 1,
     });
     dispatch(action);
-    toast.success("Đã thêm sản phẩm vào giỏ hàng", { pauseOnHover: false });
     navigate("/cart");
   };
   return (
@@ -41,9 +38,11 @@ const SubInformationProduct = ({ data }) => {
         <span>|</span>
         <span className="text-lg text-slate-400">SKU: {data.id}</span>
       </div>
-      <span className="text-orange-500 font-medium mb-4">
-        Chỉ còn {data.inventory} sản phẩm
-      </span>
+      {data.inventory < 5 && (
+        <span className="text-orange-500 font-medium mb-4">
+          Chỉ còn {data.inventory} sản phẩm
+        </span>
+      )}
       <span className="text-2xl font-semibold text-blue-700 mb-2">
         {formatPrice(data.promotion)}
       </span>

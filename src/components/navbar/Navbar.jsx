@@ -7,6 +7,8 @@ import userApi from "../../api/userApi";
 import { logout } from "../../redux/auth/userSlice";
 import Cart from "../cart/Cart";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
+import { getCart } from "../../redux/cart/cartSlice";
+import CartHollow from "../cart/CartHollow";
 
 const Navbar = () => {
   const loggedInUser = useSelector((state) => state.user.current);
@@ -35,11 +37,6 @@ const Navbar = () => {
     if (localStorage.getItem("jwt") && loggedInUser.active === "verify") {
       setIsLogout(true);
     }
-    // let cart = JSON.parse(localStorage.getItem("cart"));
-    // if (!cart) {
-    //   cart = [];
-    //   localStorage.setItem("cart", JSON.stringify(cart));
-    // }
   }, []);
 
   const handleLogout = () => {
@@ -65,7 +62,12 @@ const Navbar = () => {
   };
 
   // cart
-  let cart = JSON.parse(localStorage.getItem("cart"));
+  let { cart } = useSelector((state) => state.cart);
+  useEffect(() => {
+    if (!cart) {
+      dispatch(getCart());
+    }
+  }, [cart]);
 
   return (
     <nav className="w-full bg-primary h-[100px] sticky z-50 shadow-md transition-all top-0 text-white">
@@ -171,7 +173,7 @@ const Navbar = () => {
         )}
 
         <div
-          className="relative flex items-center gap-x-3 cart-home"
+          className="relative flex items-center gap-x-3 cart-home cursor-pointer"
           onMouseOver={hanleMouseOver}
           onMouseOut={hanleMouseOut}
         >
@@ -190,12 +192,11 @@ const Navbar = () => {
             />
           </svg>
           <div className="flex flex-col items-start justify-between ">
-            <span className="font-medium cursor-pointer">Giỏ hàng của bạn</span>
-            <span className="font-medium cursor-pointer">
-              ({cart?.length || 0}) sản phẩm
-            </span>
+            <span className="font-medium">Giỏ hàng của bạn</span>
+            <span className="font-medium ">({cart?.length || 0}) sản phẩm</span>
           </div>
           {cart?.length > 0 && <Cart />}
+          {!cart || (cart.length === 0 && <CartHollow />)}
         </div>
       </div>
     </nav>

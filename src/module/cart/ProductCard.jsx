@@ -13,7 +13,6 @@ const ProductCard = ({ data }) => {
       pathname: `/${path}`,
       search: queryString.stringify(filters),
     });
-    location.reload();
   };
   return (
     <div className="flex items-center justify-start gap-x-3">

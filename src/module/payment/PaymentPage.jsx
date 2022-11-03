@@ -3,10 +3,14 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
 import UserAddress from "../UserProfile/UserAddress";
 import { formatPrice } from "../../utils/formatPrice";
+import { useSelector } from "react-redux";
+import InformationOrder from "./InformationOrder";
 
 const PaymentPage = () => {
   const [check, setCheck] = useState(true);
   const navigate = useNavigate();
+  const { cart } = useSelector((state) => state.cart);
+
   return (
     <>
       <Navbar />
@@ -56,32 +60,25 @@ const PaymentPage = () => {
                 Chỉnh sửa
               </span>
             </div>
-            <div className="flex items-center justify-between px-5 gap-x-5">
-              <img
-                src="https://lh3.googleusercontent.com/YvbLR5xADVTTWcGf_4GNDCfFdXZlwldcxn0L9Fm2WQoOmjimmaKV6d9hIehVgfGN9tpnixKBRYOsp1puN9ceiHhiH6oGYP3c-g=rw"
-                alt=""
-                className="w-[100px] h-[100px] border-2 border-solid"
-              />
-              <div className="flex flex-col justify-start items-start">
-                <span className="text-base">
-                  Laptop APPLE MacBook Air 2020 MGNA3SA/A
-                </span>
-                <span className="text-base text-[#a28faa]">Số lượng: 1</span>
-                <span className="text-lg font-medium">
-                  {formatPrice(36900000)}
-                </span>
-                <span className="text-base text-[#a28faa] line-through">
-                  {formatPrice(40000000)}
-                </span>
-              </div>
-            </div>
+            {cart?.length > 0 &&
+              cart.map((item) => (
+                <InformationOrder key={item.id} data={item} />
+              ))}
           </div>
           <div className="flex flex-col bg-white rounded-lg pb-10 mt-10">
             <div className="flex items-center justify-between p-5">
               <span className="text-[#8b8f9b] text-lg font-normal">
                 Tổng tạm tính
               </span>
-              <span className="text-lg font-bold">{formatPrice(36900000)}</span>
+              <span className="text-lg font-bold">
+                {formatPrice(
+                  cart?.reduce(
+                    (count, item) =>
+                      count + item.quantity * item.data.promotion,
+                    0
+                  )
+                )}
+              </span>
             </div>
             <div className="flex items-center justify-between px-5 pb-5">
               <span className="text-[#8b8f9b] text-lg font-normal">
@@ -94,7 +91,13 @@ const PaymentPage = () => {
                 Thành tiền
               </span>
               <span className="text-2xl font-bold text-red-600">
-                {formatPrice(36900000)}
+                {formatPrice(
+                  cart?.reduce(
+                    (count, item) =>
+                      count + item.quantity * item.data.promotion,
+                    0
+                  )
+                )}
               </span>
             </div>
             <button className="bg-blue-700 text-white rounded-lg font-medium text-xl mx-5 py-4 mt-5">

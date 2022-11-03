@@ -6,11 +6,12 @@ import PriceCard from "./PriceCard";
 import ProductCard from "./ProductCard";
 import QuantityCard from "./QuantityCard";
 import { formatPrice } from "../../utils/formatPrice";
+import { useSelector } from "react-redux";
 
 const CartPage = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const productCart = JSON.parse(localStorage.getItem("cart"));
+  const { cart } = useSelector((state) => state.cart);
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -66,15 +67,15 @@ const CartPage = () => {
               <Table>
                 <thead>
                   <tr>
-                    <th>HC.VN</th>
+                    <th>Tên sản phẩm</th>
                     <th>Đơn giá</th>
                     <th>Số lượng</th>
                     <th>Thành tiền</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {productCart?.length > 0 &&
-                    productCart.map((item) => (
+                  {cart?.length > 0 &&
+                    cart.map((item) => (
                       <tr key={item.id}>
                         <td>
                           <ProductCard data={item} />
@@ -86,7 +87,7 @@ const CartPage = () => {
                           <QuantityCard data={item} />
                         </td>
                         <td className="text-xl font-semibold">
-                          {formatPrice(27700000)}
+                          {formatPrice(item.data.promotion * item.quantity)}
                         </td>
                       </tr>
                     ))}
@@ -99,14 +100,28 @@ const CartPage = () => {
                 <span className="text-[#8b8f9b] text-lg font-normal">
                   Tổng tạm tính
                 </span>
-                <span>{formatPrice(27000000)}</span>
+                <span>
+                  {formatPrice(
+                    cart?.reduce(
+                      (count, item) =>
+                        count + item.quantity * item.data.promotion,
+                      0
+                    )
+                  )}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[#8b8f9b] text-lg font-normal">
                   Thành tiền
                 </span>
                 <span className="text-blue-700 font-semibold text-xl">
-                  {formatPrice(27000000)}
+                  {formatPrice(
+                    cart?.reduce(
+                      (count, item) =>
+                        count + item.quantity * item.data.promotion,
+                      0
+                    )
+                  )}
                 </span>
               </div>
               {!isLoggedIn ? (
