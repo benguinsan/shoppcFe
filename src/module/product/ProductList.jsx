@@ -8,7 +8,6 @@ import ReactPaginate from "react-paginate";
 // số sản phẩm hiển thị
 const itemsPerPage = 20;
 const ProductList = ({ data }) => {
-  console.log(data);
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);

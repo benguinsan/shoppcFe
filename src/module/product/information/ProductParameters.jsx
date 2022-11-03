@@ -2,9 +2,9 @@ import React from "react";
 
 const ProductParameters = () => {
   return (
-    <div className="product-parameters px-5">
+    <div className="product-parameters px-5 pb-10">
       <div className="text-2xl font-semibold mb-8">Thông tin chi tiết</div>
-      <table>
+      <table className="table-product">
         <thead>
           <tr>
             <td>Thương hiệu</td>

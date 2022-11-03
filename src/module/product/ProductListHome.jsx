@@ -22,6 +22,7 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
       pathname: `/${path}`,
       search: queryString.stringify(filters),
     });
+    location.reload();
   };
   return (
     <div className={`${className}`}>

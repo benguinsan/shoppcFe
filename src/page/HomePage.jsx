@@ -32,8 +32,7 @@ const HomePage = () => {
   //   async function fetchDataProduct() {
   //     try {
   //       const response = await productApi.getAllProduct();
-  //       console.log(response.data);
-  //       setProduct(response.data);
+  //       setProduct(response.data.data);
   //     } catch (error) {
   //       console.log(error.message);
   //     }
@@ -48,6 +47,9 @@ const HomePage = () => {
       <ProductListHome data={dataLapTopMacBook} bg="bg1" className="pt-20" />
       <ProductListHome data={dataLapTopMacBook} bg="bg2" className="pt-20" />
       <ProductList data={dataLapTopMacBook} />
+      {/* <ProductListHome data={product} bg="bg1" className="pt-20" />
+      <ProductListHome data={product} bg="bg2" className="pt-20" />
+      <ProductList data={product} /> */}
       <BackToTopButton />
     </>
   );

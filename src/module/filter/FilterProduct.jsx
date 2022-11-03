@@ -6,11 +6,11 @@ import queryString from "query-string";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import ProductItem from "../product/ProductItem";
+import FilterSort from "./FilterSort";
 
 const itemsPerPage = 20;
 const FilterProduct = ({ data }) => {
   const navigate = useNavigate();
-  const [isActive, setIsActive] = useState(false);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
@@ -41,39 +41,19 @@ const FilterProduct = ({ data }) => {
       search: queryString.stringify(filters),
     });
   };
+
   return (
     <div>
-      <div className="flex flex-col container rounded-lg bg-white ">
-        <div className="flex items-center p-5 gap-x-10 ">
-          <span className="font-medium text-lg ">Sắp xếp theo</span>
-          <button
-            className={`border-2 border-solid border-[#f6f6f6] px-3 py-2 ${
-              isActive ? "border-blue-700" : ""
-            }`}
-            onClick={() => setIsActive(!isActive)}
-          >
-            Giá giảm dần
-          </button>
-          <button
-            className={`border-2 border-solid border-[#f6f6f6] px-3 py-2 ${
-              isActive ? "" : "border-blue-700"
-            }`}
-            onClick={() => setIsActive(!isActive)}
-          >
-            Giá tăng dần
-          </button>
-        </div>
-        <div className="grid-cols-5 grid gap-y-2 pb-10">
-          {data.length > 0 &&
-            data.map((item, index) => (
-              <ProductItem
-                product={item}
-                onClick={() => handleClick(item)}
-                key={index}
-                className="border-2 border-solid border-[#f6f6f6]"
-              />
-            ))}
-        </div>
+      <div className="grid-cols-5 grid gap-y-2 pb-10">
+        {data.length > 0 &&
+          data.map((item, index) => (
+            <ProductItem
+              product={item}
+              onClick={() => handleClick(item)}
+              key={index}
+              className="border-2 border-solid border-[#f6f6f6]"
+            />
+          ))}
       </div>
       <div className="flex justify-center items-center">
         <ReactPaginate

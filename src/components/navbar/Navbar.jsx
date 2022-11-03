@@ -35,6 +35,11 @@ const Navbar = () => {
     if (localStorage.getItem("jwt") && loggedInUser.active === "verify") {
       setIsLogout(true);
     }
+    // let cart = JSON.parse(localStorage.getItem("cart"));
+    // if (!cart) {
+    //   cart = [];
+    //   localStorage.setItem("cart", JSON.stringify(cart));
+    // }
   }, []);
 
   const handleLogout = () => {
@@ -58,6 +63,9 @@ const Navbar = () => {
       }
     });
   };
+
+  // cart
+  let cart = JSON.parse(localStorage.getItem("cart"));
 
   return (
     <nav className="w-full bg-primary h-[100px] sticky z-50 shadow-md transition-all top-0 text-white">
@@ -163,7 +171,7 @@ const Navbar = () => {
         )}
 
         <div
-          className="relative flex items-center gap-x-3 cart-home cursor-pointer"
+          className="relative flex items-center gap-x-3 cart-home"
           onMouseOver={hanleMouseOver}
           onMouseOut={hanleMouseOut}
         >
@@ -173,7 +181,7 @@ const Navbar = () => {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="w-10 h-10 text-white"
+            className="w-10 h-10 text-white cursor-pointer"
           >
             <path
               strokeLinecap="round"
@@ -182,10 +190,12 @@ const Navbar = () => {
             />
           </svg>
           <div className="flex flex-col items-start justify-between ">
-            <span className="font-medium">Giỏ hàng của bạn</span>
-            <span className="font-medium">(1) sản phẩm</span>
+            <span className="font-medium cursor-pointer">Giỏ hàng của bạn</span>
+            <span className="font-medium cursor-pointer">
+              ({cart?.length || 0}) sản phẩm
+            </span>
           </div>
-          <Cart />
+          {cart?.length > 0 && <Cart />}
         </div>
       </div>
     </nav>

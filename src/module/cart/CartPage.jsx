@@ -10,6 +10,7 @@ import { formatPrice } from "../../utils/formatPrice";
 const CartPage = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const productCart = JSON.parse(localStorage.getItem("cart"));
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -65,9 +66,6 @@ const CartPage = () => {
               <Table>
                 <thead>
                   <tr>
-                    <th>
-                      <input type="checkbox" className="w-5 h-5"></input>
-                    </th>
                     <th>HC.VN</th>
                     <th>Đơn giá</th>
                     <th>Số lượng</th>
@@ -75,23 +73,23 @@ const CartPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>
-                      <input type="checkbox" className="w-5 h-5"></input>
-                    </td>
-                    <td>
-                      <ProductCard />
-                    </td>
-                    <td>
-                      <PriceCard />
-                    </td>
-                    <td>
-                      <QuantityCard />
-                    </td>
-                    <td className="text-xl font-semibold">
-                      {formatPrice(27700000)}
-                    </td>
-                  </tr>
+                  {productCart?.length > 0 &&
+                    productCart.map((item) => (
+                      <tr key={item.id}>
+                        <td>
+                          <ProductCard data={item} />
+                        </td>
+                        <td>
+                          <PriceCard data={item} />
+                        </td>
+                        <td>
+                          <QuantityCard data={item} />
+                        </td>
+                        <td className="text-xl font-semibold">
+                          {formatPrice(27700000)}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </Table>
             </div>

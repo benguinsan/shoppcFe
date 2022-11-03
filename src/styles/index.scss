@@ -1,6 +1,7 @@
 @import "reset";
 @import "product-images-slider";
 @import "accordion";
+@import "_content";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -135,7 +136,7 @@ td {
   text-align: left;
   padding: 20px 20px 20px 20px;
 }
-tr:nth-child(even) {
+.table-product tr:nth-child(even) {
   background-color: #f6f6f6;
 }
 

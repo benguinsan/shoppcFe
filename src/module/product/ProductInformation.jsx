@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { ProductLapTopData } from "../../api/ProductLaptopData";
 import CategoryBrand from "./information/CategoryBrand";
 import InformationProduct from "./information/InformationProduct";
 import InformationService from "./information/InformationService";
 import ProductDescription from "./information/ProductDescription";
 import ProductParameters from "./information/ProductParameters";
 import BackToTopButton from "../../components/backtotop/BackToTopButton";
+import queryString from "query-string";
+
 const ProductInformation = () => {
+  const location = useLocation();
+  const params = queryString.parse(location.search).sku;
+  const dataLapTopMacBook = ProductLapTopData;
+  const data = dataLapTopMacBook.filter((item) => item.id === Number(params));
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -41,16 +48,15 @@ const ProductInformation = () => {
             </svg>
           </Link>
           <span className="text-lg text-[#a8b4c9]">
-            Laptop APPLE MacBook Air 2020 MGNA3SA/A (13.3" Apple M1/8GB/512GB
-            SSD/Onboard/macOS/1.3kg)
+            {data.length > 0 && data.map((item) => item.title)}
           </span>
         </div>
         <div className="ProductDetail">
-          <InformationProduct />
+          <InformationProduct data={data} />
           <InformationService />
         </div>
         <div className="ProductDescription">
-          <ProductDescription />
+          <ProductDescription data={data} />
           <ProductParameters />
         </div>
         <CategoryBrand />

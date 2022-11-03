@@ -7,7 +7,10 @@ const ProductItem = ({ product, onClick, className = "" }) => {
       onClick={onClick}
     >
       <img
-        src={product.linkImg}
+        src={
+          product.linkImg[0] ||
+          "https://lh3.googleusercontent.com/ZQFbZeosDa1ODQnaaunB72fejXPcl_hg7rfEcgVlZSkgtOTAHQH1M4RxVrH2cLN6gjqJvOAq1b8CeE92gjqDN2W3b2HsMkxb=rw"
+        }
         alt=""
         className="w-full h-[250px] object-cover rounded-lg mb-2 transition-transform hover:scale-105"
       />

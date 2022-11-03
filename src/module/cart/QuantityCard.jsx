@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-const QuantityCard = () => {
-  const [quantity, setQuantity] = useState(1);
+const QuantityCard = ({ data }) => {
+  const [quantity, setQuantity] = useState(data.quantity);
+  console.log(quantity);
   const handleDecreaseQuantity = () => {
     const count = document.querySelector(".count");
     if (count.valueAsNumber <= 1) {
@@ -11,9 +12,8 @@ const QuantityCard = () => {
     setQuantity(qty);
   };
   const handleIncreaseQuantity = () => {
-    // 5 số lượng tồn kho
     const count = document.querySelector(".count");
-    if (count.valueAsNumber >= 5) {
+    if (count.valueAsNumber >= data.data.inventory) {
       return;
     }
     const qty = count.valueAsNumber + 1;
