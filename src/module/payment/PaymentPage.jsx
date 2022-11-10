@@ -15,6 +15,7 @@ const PaymentPage = () => {
   const [payPal, setPayPal] = useState();
   const navigate = useNavigate();
   const { cart } = useSelector((state) => state.cart);
+  const { current } = useSelector((state) => state.user);
 
   useEffect(() => {
     window.scrollTo({
@@ -48,6 +49,11 @@ const PaymentPage = () => {
   };
 
   const handleClick = () => {
+    if (current.address.length < 0) {
+      toast.dismiss();
+      toast.warning("Vui lòng thêm thông tin nhận hàng");
+      return;
+    }
     if (paymentMethod === "Cash") {
       navigate("/payment-cash");
     } else {
@@ -70,12 +76,11 @@ const PaymentPage = () => {
                   <UserAddress />
                 </div>
               </div>
-              <div className="flex flex-col px-5 mt-10 rounded-lg py-5 bg-white">
+              <div className="flex flex-col px-5 mt-10 rounded-lg py-5 bg-white h-[265px]">
                 <span className="text-2xl font-bold">
                   Phương thức thanh toán
                 </span>
-
-                <div className="flex items-center justify-between mt-5 px-16 ">
+                <div className="flex items-center justify-between mt-10 px-16 ">
                   <button
                     className={`px-16 py-10 border-2 border-solid text-xl font-bold ${
                       cash ? "border-blue-500" : ""
@@ -114,7 +119,7 @@ const PaymentPage = () => {
                     <InformationOrder key={item.id} data={item} />
                   ))}
               </div>
-              <div className="flex flex-col bg-white rounded-lg pb-10 mt-10">
+              <div className="flex flex-col bg-white rounded-lg pb-5 mt-10">
                 <div className="flex items-center justify-between p-5">
                   <span className="text-[#8b8f9b] text-lg font-normal">
                     Tổng tạm tính
@@ -150,7 +155,7 @@ const PaymentPage = () => {
                   </span>
                 </div>
                 <button
-                  className="bg-blue-700 text-white rounded-lg font-medium text-xl mx-5 py-4 mt-5"
+                  className="bg-blue-700 text-white rounded-lg font-medium text-lg mx-5 py-3 mt-5"
                   onClick={handleClick}
                 >
                   THANH TOÁN
