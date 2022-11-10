@@ -1,14 +1,25 @@
 import React from "react";
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { addBrand, removeBrand } from "../../redux/product/filterSlice";
 
-const Filter = ({ name, onChange, value }) => {
+const Filter = ({ name, value, filters = {}, onChange }) => {
+  // const { brands } = useSelector((state) => state.filter);
+  // const dispatch = useDispatch();
+  let brand = [];
   const handleChange = (e) => {
-    if (!onChange) return;
-    const { name, value, checked } = e.target;
+    const { value, checked, name } = e.target;
     if (checked) {
-      onChange({ [name]: value });
+      // dispatch(addBrand(value));
+      brand.push(value);
+      onChange({ [name]: brand });
+    } else {
+      // dispatch(removeBrand(value));
+      brand.filter((item) => item !== value);
+      onChange({ [name]: brand });
+      // onChange({ [name]: brands.join(" ") });
     }
   };
+
   return (
     <div className="mb-3">
       <input
@@ -18,6 +29,7 @@ const Filter = ({ name, onChange, value }) => {
         className="w-5 h-5 cursor-pointer"
         id={value}
         onChange={handleChange}
+        checked={filters?.[name]?.includes(value) || false}
       />
       <label
         htmlFor={value}

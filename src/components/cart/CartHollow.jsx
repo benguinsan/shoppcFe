@@ -28,19 +28,19 @@ const CartHollow = () => {
   const navigate = useNavigate();
   return (
     <CartStyles className="cart-child">
-      <div className="flex flex-col items-center p-5 h-[500px] rounded-lg justify-between">
+      <div className="flex flex-col items-center p-5 h-[500px] rounded-lg ">
         <div className="flex flex-col items-center justify-center gap-y-5">
           <img
             src="../../../public/images/logo-cart.png"
             alt=""
             className="w-[300px] h-[300px] object-cover"
           />
-          <span className="text-black text-xl">
+          <span className="text-[#969594] text-lg">
             Giỏ hàng chưa có sản phẩm nào
           </span>
         </div>
         <button
-          className="bg-blue-700 w-full py-3 mt-2 rounded-lg"
+          className="bg-blue-700 px-6 py-3 mt-5  rounded-lg"
           type="button"
           onClick={() => navigate("/")}
         >

@@ -195,8 +195,7 @@ const Navbar = () => {
             <span className="font-medium">Giỏ hàng của bạn</span>
             <span className="font-medium ">({cart?.length || 0}) sản phẩm</span>
           </div>
-          {cart?.length > 0 && <Cart />}
-          {!cart || (cart.length === 0 && <CartHollow />)}
+          {cart?.length > 0 ? <Cart /> : <CartHollow />}
         </div>
       </div>
     </nav>

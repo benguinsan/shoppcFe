@@ -25,24 +25,27 @@ const Brand = [
     name: "MSI",
   },
 ];
-const FilterBrand = ({ onChange }) => {
-  const handleChange = (values) => {
-    if (onChange) {
-      onChange(values);
-    }
+const FilterBrand = ({ filters, onChange }) => {
+  const handleChange = (value) => {
+    if (!onChange) return;
+    onChange(value);
+    console.log(value);
   };
   return (
     <div className="border-y-2 border-solid border-[#f5f5f9] w-full">
       <Accordion title="Thương hiệu">
         {Brand.length > 0 &&
-          Brand.map((item) => (
-            <Filter
-              name="brands"
-              value={item.name}
-              onChange={handleChange}
-              key={item.id}
-            />
-          ))}
+          Brand.map((item) => {
+            return (
+              <Filter
+                name="brands"
+                value={item.name}
+                key={item.id}
+                filters={filters}
+                onChange={handleChange}
+              />
+            );
+          })}
       </Accordion>
       {/* <Accordion title="Màu sắc">
         <Filter name="Bạc" />

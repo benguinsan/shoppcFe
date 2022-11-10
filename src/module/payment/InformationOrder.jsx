@@ -4,7 +4,6 @@ import slugify from "slugify";
 import queryString from "query-string";
 import { useNavigate } from "react-router-dom";
 const InformationOrder = ({ data }) => {
-  console.log(data);
   const navigate = useNavigate();
   const handleClick = () => {
     const path = slugify(data.data.title, { strict: true });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/navbar/Navbar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import FilterPrice from "../module/filter/FilterPrice";
@@ -9,9 +9,16 @@ import { useMemo } from "react";
 import queryString from "query-string";
 import FilterSort from "../module/filter/FilterSort";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { refresh } from "../redux/product/filterSlice";
+import FilterColor from "../module/filter/FilterColor";
+import FilterRam from "../module/filter/FilterRam";
+import FilterDemand from "../module/filter/FilterDemand";
 
 const ProductFilterPage = () => {
   const dataLapTopMacBook = ProductLapTopData;
+  const { brands } = useSelector((state) => state.filter);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = useMemo(() => {
@@ -20,7 +27,6 @@ const ProductFilterPage = () => {
       ...params,
       _page: Number.parseInt(params._page) || 1,
       _sort: params._sort,
-      isBrand: params._brand,
     };
   }, [location.search]);
 
@@ -29,13 +35,26 @@ const ProductFilterPage = () => {
       top: 0,
       behavior: "smooth",
     });
-  });
+  }, []);
 
-  const handleChange = (values) => {
+  // useEffect(() => {
+  //   let str = "";
+  //   if (brands.length > 0) {
+  //     str = "?brand=";
+  //   }
+
+  //   navigate({
+  //     pathname: "/product",
+  //     search: `${str}${brands.join(" ")}`,
+  //   });
+  // }, [brands]);
+
+  const handleChange = (newValue) => {
     const filters = {
       ...queryParams,
-      ...values,
+      ...newValue,
     };
+    console.log(newValue);
     navigate({ pathname: "/product", search: queryString.stringify(filters) });
   };
 
@@ -46,6 +65,7 @@ const ProductFilterPage = () => {
     };
     navigate({ pathname: "/product", search: queryString.stringify(filters) });
   };
+  console.log(queryParams);
   return (
     <>
       <Navbar />
@@ -75,7 +95,10 @@ const ProductFilterPage = () => {
           <div className="wrapper-product">
             <div className="product-filter w-full  bg-white rounded-lg flex flex-col items-start text-black">
               <FilterPrice onChange={handleChange} />
-              <FilterBrand onChange={handleChange} />
+              <FilterBrand filters={queryParams} onChange={handleChange} />
+              <FilterColor filters={queryParams} onChange={handleChange} />
+              <FilterRam filters={queryParams} onChange={handleChange} />
+              <FilterDemand filters={queryParams} onChange={handleChange} />
             </div>
             <div className="product-list">
               <div className="flex flex-col container rounded-lg bg-white ">

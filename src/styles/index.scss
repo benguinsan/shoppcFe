@@ -20,7 +20,7 @@
   width: 100%;
   max-width: 1550px;
   margin: 0 auto;
-  padding: 0 20px;
+  // padding: 0 20px;
 }
 a {
   text-decoration: none;
@@ -186,4 +186,10 @@ td {
   margin-top: 20px;
   align-items: flex-start;
   max-height: fit-content;
+}
+
+//feelback
+.feelback {
+  display: grid;
+  grid-template-columns: 350px minmax(0, 1fr);
 }

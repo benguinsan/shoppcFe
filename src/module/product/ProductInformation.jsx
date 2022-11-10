@@ -8,6 +8,7 @@ import ProductDescription from "./information/ProductDescription";
 import ProductParameters from "./information/ProductParameters";
 import BackToTopButton from "../../components/backtotop/BackToTopButton";
 import queryString from "query-string";
+import Feedback from "../feedback/Feedback";
 
 const ProductInformation = () => {
   const location = useLocation();
@@ -59,6 +60,7 @@ const ProductInformation = () => {
           <ProductDescription data={data} />
           <ProductParameters />
         </div>
+        <Feedback data={data} />
         <CategoryBrand />
         <BackToTopButton />
       </div>
