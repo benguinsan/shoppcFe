@@ -20,6 +20,7 @@ import PaymentPage from "./module/payment/PaymentPage";
 import ProductFilterPage from "./page/ProductFilterPage";
 import PaymentCash from "./module/payment/PaymentCash";
 import PaymentBank from "./module/payment/PaymentBank";
+import InformationDetailOrder from "./module/UserProfile/InformationDetailOrder";
 // const HomePage = React.lazy(() => import("./page/HomePage"));
 // const NotFoundPage = React.lazy(() => import("./page/NotFoundPage"));
 // const SignInPage = React.lazy(() => import("./page/SignInPage"));
@@ -61,6 +62,10 @@ function App() {
           <Route element={<DashboardLayout />}>
             <Route path="/account" element={<UserAccount />}></Route>
             <Route path="/account/orders" element={<UserOrder />}></Route>
+            <Route
+              path="/account/orders/:id"
+              element={<InformationDetailOrder />}
+            ></Route>
             <Route path="/account/address" element={<UserAddress />}></Route>
             <Route
               path="/account/reset-password"

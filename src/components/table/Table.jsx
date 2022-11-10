@@ -19,7 +19,7 @@ const TableStyles = styled.div`
     font-weight: 600;
     text-align: left;
     border-bottom: thin solid #f7f7f7;
-    text-align: center;
+    /* text-align: center; */
   }
   td {
     padding: 15px 20px;

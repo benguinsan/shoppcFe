@@ -1,22 +1,26 @@
 import React from "react";
+import { useRef } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addBrand, removeBrand } from "../../redux/product/filterSlice";
 
 const Filter = ({ name, value, filters = {}, onChange }) => {
   // const { brands } = useSelector((state) => state.filter);
   // const dispatch = useDispatch();
-  let brand = [];
+  const [brand, setBrand] = useState([]);
+  // let listBrand = [];
   const handleChange = (e) => {
     const { value, checked, name } = e.target;
     if (checked) {
       // dispatch(addBrand(value));
-      brand.push(value);
+      // listBrand.push(value);
+      // console.log(listBrand);
+      setBrand([...brand, value]);
       onChange({ [name]: brand });
     } else {
       // dispatch(removeBrand(value));
-      brand.filter((item) => item !== value);
-      onChange({ [name]: brand });
-      // onChange({ [name]: brands.join(" ") });
+      // listBrand.filter((item) => item !== value);
+      // setBrand(listBrand);
     }
   };
 
