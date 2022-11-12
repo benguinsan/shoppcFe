@@ -45,6 +45,9 @@ axiosClient.interceptors.response.use(
       "/api/v1/users/updateMyPassword",
       "/api/v1/users/setDefaultAddress",
       "/api/v1/products",
+      "/api/v1/reviews",
+      "/api/v1/products/:id/reviews",
+      "/api/v1/reviews/:id",
     ];
     if (
       (URLs.includes(config.url) && status === 500) ||

@@ -29,18 +29,14 @@ const DashboardLayout = ({ children }) => {
   const loggedInUser = useSelector((state) => state.user.current);
   useEffect(() => {}, [loggedInUser]);
   return (
-    <>
-      {" "}
-      <Navbar />
-      <DashboardStyles>
-        <div className="dashboard-main">
-          <Sidebar></Sidebar>
-          <div className="dashboard-children">
-            <Outlet></Outlet>
-          </div>
+    <DashboardStyles>
+      <div className="dashboard-main">
+        <Sidebar></Sidebar>
+        <div className="dashboard-children">
+          <Outlet></Outlet>
         </div>
-      </DashboardStyles>
-    </>
+      </div>
+    </DashboardStyles>
   );
 };
 

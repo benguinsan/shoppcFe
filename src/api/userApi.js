@@ -36,7 +36,6 @@ const userApi = {
   },
   resetPassword(data, token) {
     const url = `/api/v1/users/resetPassword/${token}`;
-    console.log(url);
     return axiosClient.patch(url, data);
   },
   updateUser(data) {

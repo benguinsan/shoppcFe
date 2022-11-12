@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { stringify } from "query-string";
 import { toast } from "react-toastify";
 import { create } from "yup/lib/boolean";
 
@@ -56,9 +57,15 @@ const cartSlice = createSlice({
       localStorage.setItem("cart", JSON.stringify(cart));
       state.cart = cart;
     },
+    resetCart(state) {
+      state.cart = [];
+      let cart = [];
+      localStorage.setItem("cart", JSON.stringify(cart));
+    },
   },
 });
 
 const { actions, reducer } = cartSlice;
-export const { addToCart, setQuantity, removeFromCart, getCart } = actions;
+export const { addToCart, setQuantity, removeFromCart, getCart, resetCart } =
+  actions;
 export default reducer; //default export

@@ -21,6 +21,7 @@ import ProductFilterPage from "./page/ProductFilterPage";
 import PaymentCash from "./module/payment/PaymentCash";
 import PaymentBank from "./module/payment/PaymentBank";
 import InformationDetailOrder from "./module/UserProfile/InformationDetailOrder";
+import Navbar from "./components/navbar/Navbar";
 // const HomePage = React.lazy(() => import("./page/HomePage"));
 // const NotFoundPage = React.lazy(() => import("./page/NotFoundPage"));
 // const SignInPage = React.lazy(() => import("./page/SignInPage"));
@@ -46,6 +47,7 @@ function App() {
     <>
       <Suspense>
         <Header />
+        <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/sign-in" element={<SignInPage />}></Route>

@@ -31,7 +31,7 @@ const FilterColor = ({ filters, onChange }) => {
   };
   return (
     <div className="border-y-2 border-solid border-[#f5f5f9] w-full">
-      <Accordion title="Màu sắc">
+      <Accordion title="Màu sắc" className="true">
         {Colors.length > 0 &&
           Colors.map((item) => {
             return (

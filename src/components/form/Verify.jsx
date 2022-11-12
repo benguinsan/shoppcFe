@@ -8,6 +8,9 @@ import Button from "../button/Button";
 import userApi from "../../api/userApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { verifyResetPassword } from "../../redux/auth/userSlice";
+import { useDispatch } from "react-redux";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const schema = yup.object({
   verify: yup
@@ -28,6 +31,7 @@ const Verify = () => {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleVerify = async (values) => {
     if (!isValid) return;
@@ -36,9 +40,13 @@ const Verify = () => {
       token: values.verify,
     };
     try {
-      const response = await userApi.verifyResetPassword(data);
+      const action = verifyResetPassword(data);
+      const resultAction = await dispatch(action);
+      const response = unwrapResult(resultAction);
+      console.log(response);
       navigate(`/reset-password/${response.hashedToken}`);
     } catch (error) {
+      toast.dismiss();
       toast.error(error.message, { pauseOnHover: false });
       console.log(error.message);
     }

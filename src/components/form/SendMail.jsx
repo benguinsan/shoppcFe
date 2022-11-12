@@ -7,7 +7,8 @@ import Label from "../label/Label";
 import Input from "../input/Input";
 import Button from "../button/Button";
 import { toast } from "react-toastify";
-import userApi from "../../api/userApi";
+import { useDispatch } from "react-redux";
+import { forgotPassword } from "../../redux/auth/userSlice";
 
 const schema = yup.object({
   email: yup
@@ -27,6 +28,8 @@ const SendMail = ({ onClick }) => {
     resolver: yupResolver(schema),
   });
 
+  const dispatch = useDispatch();
+
   const [hiddenClock, setHiddenClock] = useState(true);
   const [hiddenButton, setHiddenButton] = useState(false);
 
@@ -34,7 +37,8 @@ const SendMail = ({ onClick }) => {
     if (!isValid) return;
     try {
       const data = { email: values.email };
-      const result = await userApi.forgotPassword(data);
+      const action = forgotPassword(data);
+      const resultAction = await dispatch(action);
       setHiddenClock(false);
       setHiddenButton(true);
       if (time === 0) {
@@ -43,6 +47,7 @@ const SendMail = ({ onClick }) => {
       countdownTimer();
       onClick();
     } catch (error) {
+      toast.dismiss();
       toast.error(error.message, { pauseOnHover: false });
     }
   };

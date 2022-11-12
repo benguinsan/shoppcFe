@@ -8,17 +8,17 @@ const ProductItem = ({ product, onClick, className = "" }) => {
     >
       <img
         src={
-          product.linkImg[0] ||
+          product?.images[0] ||
           "https://lh3.googleusercontent.com/ZQFbZeosDa1ODQnaaunB72fejXPcl_hg7rfEcgVlZSkgtOTAHQH1M4RxVrH2cLN6gjqJvOAq1b8CeE92gjqDN2W3b2HsMkxb=rw"
         }
         alt=""
         className="w-full h-[250px] object-cover rounded-lg mb-2 transition-transform hover:scale-105"
       />
       <div className="flex flex-col flex-1">
-        <h3 className="mb-3 line-clamp-2">{product.title}</h3>
+        <h3 className="mb-3 line-clamp-2">{product?.title}</h3>
         <div className="flex items-center justify-between text-sm opacity-50 mb-2">
           <span className="text-lg text-blue-700 font-bold">
-            {formatPrice(product.promotion)}
+            {formatPrice(product?.promotion)}
           </span>
           <span>
             <svg
@@ -39,9 +39,9 @@ const ProductItem = ({ product, onClick, className = "" }) => {
         </div>
         <div className="flex items-center">
           <span className="text-base line-through text-slate-400">
-            {formatPrice(product.price)}
+            {formatPrice(product?.price)}
           </span>
-          <span className="text-blue"> - {product.percent}%</span>
+          <span className="text-blue"> - {product?.percent}%</span>
         </div>
       </div>
     </div>

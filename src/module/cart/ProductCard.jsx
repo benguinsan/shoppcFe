@@ -17,7 +17,7 @@ const ProductCard = ({ data }) => {
   return (
     <div className="flex items-center justify-start gap-x-3">
       <img
-        src={data.data.linkImg[0]}
+        src={data.data.images[0]}
         alt=""
         className="w-[100px] h-[100px] object-cover border-2 border-solid"
       />

@@ -13,7 +13,6 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/auth/userSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import Navbar from "../components/navbar/Navbar";
 
 const schema = yup.object({
   email: yup
@@ -69,6 +68,7 @@ const SignInPage = () => {
       if (user.active === "verify") {
         return navigate("/verify");
       }
+      toast.dismiss();
       toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
       reset({
         email: "",
@@ -76,82 +76,78 @@ const SignInPage = () => {
       });
       navigate("/");
     } catch (error) {
+      toast.dismiss();
       toast.error(error.message, { pauseOnHover: false });
     }
   };
   return (
-    <>
-      <Navbar />
-      <div>
-        <AuthenticationPage>
-          <form
-            className="pb-6"
-            autoComplete="off"
-            onSubmit={handleSubmit(handleSignIn)}
-          >
-            <Field>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                type="email"
-                name="email"
-                placeholder="Mời bạn nhập email"
-                control={control}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-lg font-medium">
-                  {errors.email?.message}
-                </p>
-              )}
-            </Field>
+    <AuthenticationPage>
+      <form
+        className="pb-6"
+        autoComplete="off"
+        onSubmit={handleSubmit(handleSignIn)}
+      >
+        <Field>
+          <Label htmlFor="email">Email</Label>
+          <Input
+            type="email"
+            name="email"
+            placeholder="Mời bạn nhập email"
+            control={control}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-lg font-medium">
+              {errors.email?.message}
+            </p>
+          )}
+        </Field>
 
-            <Field>
-              <Label htmlFor="password">Mật khẩu</Label>
-              <InputPasswordToggle control={control}></InputPasswordToggle>
-              {errors.password && (
-                <p className="text-red-500 text-lg font-medium">
-                  {errors.password?.message}
-                </p>
-              )}
-            </Field>
+        <Field>
+          <Label htmlFor="password">Mật khẩu</Label>
+          <InputPasswordToggle control={control}></InputPasswordToggle>
+          {errors.password && (
+            <p className="text-red-500 text-lg font-medium">
+              {errors.password?.message}
+            </p>
+          )}
+        </Field>
 
-            <div className="flex items-center justify-between px-44 mt-8">
-              <div className="flex items-center">
-                <span className="text-black text-xl">
-                  Bạn chưa có tài khoản? &nbsp;
-                </span>
+        <div className="flex items-center justify-between px-44 mt-8">
+          <div className="flex items-center">
+            <span className="text-black text-xl">
+              Bạn chưa có tài khoản? &nbsp;
+            </span>
 
-                <Link
-                  to="/sign-up"
-                  className="text-xl text-[#1DC071] font-semibold"
-                >
-                  Đăng ký
-                </Link>
-              </div>
-
-              <Link
-                to="/forgot-password"
-                className="text-xl text-[#1DC071] font-semibold"
-              >
-                Quên mật khẩu
-              </Link>
-            </div>
-
-            <Button
-              type="submit"
-              isLoading={isSubmitting}
-              disable={isSubmitting}
-              style={{
-                width: "100%",
-                maxWidth: 300,
-                margin: "30px auto",
-              }}
+            <Link
+              to="/sign-up"
+              className="text-xl text-[#1DC071] font-semibold"
             >
-              Đăng nhập
-            </Button>
-          </form>
-        </AuthenticationPage>
-      </div>
-    </>
+              Đăng ký
+            </Link>
+          </div>
+
+          <Link
+            to="/forgot-password"
+            className="text-xl text-[#1DC071] font-semibold"
+          >
+            Quên mật khẩu
+          </Link>
+        </div>
+
+        <Button
+          type="submit"
+          isLoading={isSubmitting}
+          disable={isSubmitting}
+          style={{
+            width: "100%",
+            maxWidth: 300,
+            margin: "30px auto",
+          }}
+        >
+          Đăng nhập
+        </Button>
+      </form>
+    </AuthenticationPage>
   );
 };
 

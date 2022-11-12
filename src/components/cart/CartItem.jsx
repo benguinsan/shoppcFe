@@ -5,7 +5,7 @@ const CartItem = ({ product }) => {
   return (
     <div className="flex items-center gap-x-3 mb-5">
       <img
-        src={product.data.linkImg[0]}
+        src={product.data.images[0]}
         alt=""
         className="w-[80px] h-[80px] border-2 border-solid"
       />

@@ -9,9 +9,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "../../components/button/Button";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import axios from "axios";
-import userApi from "../../api/userApi";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import {
+  deleteAddress,
+  editAddress,
+  setAddressDefault,
+} from "../../redux/auth/userSlice";
+import { useDispatch } from "react-redux";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const schema = yup.object({
   fullname: yup
@@ -54,6 +60,7 @@ const ItemAddress = ({ data, data_key }) => {
     resolver: yupResolver(schema),
   });
 
+  const dispatch = useDispatch();
   const [province, setProvince] = useState([]);
   const [provinceId, setProvinceId] = useState("");
   const [district, setDistrict] = useState([]);
@@ -123,10 +130,10 @@ const ItemAddress = ({ data, data_key }) => {
           const data = {
             id: data_key,
           };
-          const response = await userApi.deleteAddress(data);
-          console.log(response);
+          const action = deleteAddress(data);
+          const resultAction = await dispatch(action);
+          const result = unwrapResult(resultAction);
           Swal.fire("Xóa thành công");
-          location.reload();
         } catch (error) {
           console.log(error.message);
         }
@@ -143,13 +150,16 @@ const ItemAddress = ({ data, data_key }) => {
       district: getValues("district"),
       ward: getValues("ward"),
       detail: values.address,
+      setDefault: data.setDefault,
     };
+    console.log(dataEdit);
     try {
-      const response = await userApi.updateAddress(dataEdit);
-      console.log(response);
-      toast.success("Update địa chỉ thành công");
+      const action = editAddress(dataEdit);
+      const resultAction = await dispatch(action);
+      const data = unwrapResult(resultAction);
+      toast.dismiss();
+      toast.success("Cập nhật địa chỉ thành công", { pauseOnHover: false });
       setShowModal(false);
-      location.reload();
     } catch (error) {
       console.log(error.message);
     }
@@ -159,10 +169,10 @@ const ItemAddress = ({ data, data_key }) => {
     const dataKey = {
       id: data_key,
     };
-    console.log(dataKey);
     try {
-      await userApi.updateDefault(dataKey);
-      location.reload();
+      const action = setAddressDefault(dataKey);
+      const resultAction = await dispatch(action);
+      const data = unwrapResult(resultAction);
     } catch (error) {
       console.log(error.message);
     }

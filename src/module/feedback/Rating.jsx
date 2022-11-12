@@ -25,11 +25,12 @@ const note = [
   },
 ];
 
-const Rating = ({ onClose, onSubmit }) => {
+const Rating = ({ onClose, onSubmit, id, rating = 0, review = "" }) => {
+  console.log(review);
   const stars = Array(5).fill(0);
-  const [currentValue, setCurrentValue] = useState(0);
+  const [currentValue, setCurrentValue] = useState(rating);
   const [hoverValue, setHoverValue] = useState(undefined);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(review);
 
   const handleClick = (value) => {
     setCurrentValue(value);
@@ -63,6 +64,7 @@ const Rating = ({ onClose, onSubmit }) => {
     const data = {
       stars: currentValue,
       content: content,
+      id: id,
     };
     onSubmit(data);
     onClose();
@@ -98,6 +100,7 @@ const Rating = ({ onClose, onSubmit }) => {
         placeholder="Xin mời chia sẻ một số cảm nhận về sản phẩm ..."
         className="w-full h-[250px] bg-[#f8f8f8] mt-10 p-5 text-lg font-medium rounded-lg resize-none border-2 border-solid"
         onChange={(e) => setContent(e.target.value)}
+        value={content}
       />
       <div className="flex items-center justify-end gap-x-5 mt-8">
         <button

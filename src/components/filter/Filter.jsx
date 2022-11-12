@@ -1,48 +1,39 @@
 import React from "react";
 import { useRef } from "react";
-import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { addBrand, removeBrand } from "../../redux/product/filterSlice";
 
-const Filter = ({ name, value, filters = {}, onChange }) => {
-  // const { brands } = useSelector((state) => state.filter);
-  // const dispatch = useDispatch();
-  const [brand, setBrand] = useState([]);
-  // let listBrand = [];
-  const handleChange = (e) => {
-    const { value, checked, name } = e.target;
-    if (checked) {
-      // dispatch(addBrand(value));
-      // listBrand.push(value);
-      // console.log(listBrand);
-      setBrand([...brand, value]);
-      onChange({ [name]: brand });
-    } else {
-      // dispatch(removeBrand(value));
-      // listBrand.filter((item) => item !== value);
-      // setBrand(listBrand);
+const Filter = (props) => {
+  const inputRef = useRef(null);
+  const onChange = () => {
+    if (props.onChange) {
+      props.onChange(inputRef.current);
     }
   };
-
   return (
-    <div className="mb-3">
+    <label className="custom-checkbox">
       <input
         type="checkbox"
-        name={name}
-        value={value}
-        className="w-5 h-5 cursor-pointer"
-        id={value}
-        onChange={handleChange}
-        checked={filters?.[name]?.includes(value) || false}
+        ref={inputRef}
+        onChange={onChange}
+        checked={props.checked}
       />
-      <label
-        htmlFor={value}
-        className="px-2 font-medium text-xl cursor-pointer"
-      >
-        {value}
-      </label>
-    </div>
+      <span className="custom-checkbox__checkmark">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="w-5 h-5 "
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M4.5 12.75l6 6 9-13.5"
+          />
+        </svg>
+      </span>
+      <span className="text-lg font-medium"> {props.label}</span>
+    </label>
   );
 };
-
 export default Filter;

@@ -18,7 +18,7 @@ const InformationOrder = ({ data }) => {
   return (
     <div className="flex items-center justify-between px-5 gap-x-5 py-5">
       <img
-        src={data.data.linkImg[0]}
+        src={data.data.images[0]}
         alt=""
         className="w-[100px] h-[100px] border-2 border-solid"
       />

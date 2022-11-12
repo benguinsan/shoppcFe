@@ -51,6 +51,7 @@ const UpdatePassword = () => {
     if (!isValid) return;
     try {
       const response = await userApi.updatePassword(values);
+      toast.dismiss();
       toast.success("Đổi mật khẩu thành công");
       reset({
         passwordConfirm: "",
@@ -58,8 +59,8 @@ const UpdatePassword = () => {
         passwordCurrent: "",
       });
     } catch (error) {
+      toast.dismiss();
       toast.error(error.message);
-      console.log(error.message);
     }
   };
   return (

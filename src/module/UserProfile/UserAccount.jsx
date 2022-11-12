@@ -12,11 +12,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import moment from "moment";
 import ImageUpload from "../../components/images/ImageUpload";
 import axios from "axios";
-import useUserProfile from "../../hooks/useUserProfile";
 import { toast } from "react-toastify";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { updateInfoUser } from "../../redux/auth/userSlice";
+import { getUser, updateInfoUser } from "../../redux/auth/userSlice";
 
 const today = moment();
 const schema = yup.object({
@@ -64,18 +63,27 @@ const UserAccount = () => {
     },
   });
 
-  const { user } = useUserProfile();
-  console.log(user);
   const dispatch = useDispatch();
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const action = getUser();
+      const resultAction = await dispatch(action);
+      const user = unwrapResult(resultAction);
+      setUser(user);
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     reset({
-      fullname: user.name,
-      image: user.avatar,
-      email: user.email,
-      sdt: user.phone || "",
-      dateOfBirth: user.dateOfBirth,
-      gender: user.gender,
+      fullname: user?.name || "",
+      image: user?.avatar || "",
+      email: user?.email || "",
+      sdt: user?.phone || "",
+      dateOfBirth: user?.dateOfBirth,
+      gender: user?.gender || "",
     });
     setImage(getValues("image"));
   }, [user]);
@@ -120,7 +128,7 @@ const UserAccount = () => {
     if (!isValid) return;
     const cloneValues = { ...values };
     cloneValues.gender = getValues("gender");
-    cloneValues.dateOfBirth = getValues("birthday");
+    cloneValues.dateOfBirth = getValues("dateOfBirth");
     cloneValues.avatar = image;
     cloneValues.name = values.fullname;
     cloneValues.phone = values.sdt;
@@ -129,8 +137,10 @@ const UserAccount = () => {
       const action = updateInfoUser(cloneValues);
       const resultAction = await dispatch(action);
       const user = unwrapResult(resultAction);
+      toast.dismiss();
       toast.success("Cập nhật thông tin thành công", { pauseOnHover: false });
     } catch (error) {
+      toast.dismiss();
       toast.error(error.message);
     }
   };

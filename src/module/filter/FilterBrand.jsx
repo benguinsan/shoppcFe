@@ -1,4 +1,5 @@
 import React from "react";
+import { useRef } from "react";
 import { useState } from "react";
 import Accordion from "../../components/accordion/Accordion";
 import Filter from "../../components/filter/Filter";
@@ -25,41 +26,34 @@ const Brand = [
     name: "MSI",
   },
 ];
-const FilterBrand = ({ filters, onChange }) => {
-  const handleChange = (value) => {
-    if (!onChange) return;
-    onChange(value);
-    console.log(value);
+const FilterBrand = ({ Change, params, filter, setFilter }) => {
+  const filterSelect = (checked, item) => {
+    if (checked) {
+      setFilter({ brands: [...filter.brands, item.name] });
+    } else {
+      const newBrand = filter.brands.filter((e) => e !== item.name);
+      setFilter({ brands: newBrand });
+    }
+    // Change({ brands: filter });
   };
+
   return (
     <div className="border-y-2 border-solid border-[#f5f5f9] w-full">
-      <Accordion title="Thương hiệu">
+      <Accordion title="Thương hiệu" className="true">
         {Brand.length > 0 &&
           Brand.map((item) => {
             return (
               <Filter
-                name="brands"
-                value={item.name}
+                label={item.name}
                 key={item.id}
-                filters={filters}
-                onChange={handleChange}
+                onChange={(input) => {
+                  filterSelect(input.checked, item);
+                }}
+                checked={params?.brands?.includes(item.name)}
               />
             );
           })}
       </Accordion>
-      {/* <Accordion title="Màu sắc">
-        <Filter name="Bạc" />
-        <Filter name="Vàng" />
-        <Filter name="Xám" />
-        <Filter name="Đen" />
-      </Accordion>
-      <Accordion title="Nhu cầu">
-        <Filter name="Doanh nhân" />
-        <Filter name="Gaming" />
-        <Filter name="Học sinh - Sinh viên" />
-        <Filter name="Văn phòng" />
-        <Filter name="Đồ họa - Kỹ thuật" />
-      </Accordion> */}
     </div>
   );
 };

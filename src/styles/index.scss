@@ -2,6 +2,7 @@
 @import "product-images-slider";
 @import "accordion";
 @import "_content";
+@import "_custom-filter";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -145,6 +146,7 @@ td {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 400px;
   gap: 0 10px;
+  align-items: flex-start;
 }
 
 // payment

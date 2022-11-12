@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
 import UserAddress from "../UserProfile/UserAddress";
 import { formatPrice } from "../../utils/formatPrice";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import InformationOrder from "./InformationOrder";
 import CartHidden from "../cart/CartHidden";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import { resetCart } from "../../redux/cart/cartSlice";
 
 const PaymentPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("Cash");
@@ -16,6 +18,7 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const { cart } = useSelector((state) => state.cart);
   const { current } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     window.scrollTo({
@@ -54,29 +57,54 @@ const PaymentPage = () => {
       toast.warning("Vui lòng thêm thông tin nhận hàng");
       return;
     }
-    if (paymentMethod === "Cash") {
-      navigate("/payment-cash");
-    } else {
-      navigate("/payment-bank");
-    }
+    Swal.fire({
+      title: "Thanh toán ",
+      text: "Bạn có muốn chuyển sang trang thanh toán ?",
+      showCancelButton: true,
+      icon: "question",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Có",
+      cancelButtonText: "Không",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const data = {
+          address: current.address.filter(
+            (item) => item.setDefault === true
+          )[0],
+          cart: cart,
+          total: cart?.reduce(
+            (count, item) => count + item.quantity * item.data.promotion,
+            0
+          ),
+          paymentMethod: paymentMethod,
+        };
+        console.log(data);
+        dispatch(resetCart());
+        if (paymentMethod === "Cash") {
+          navigate("/payment-cash");
+        } else {
+          navigate("/payment-bank");
+        }
+      }
+    });
   };
 
   return (
     <>
-      <Navbar />
       {cart?.length > 0 ? (
         <>
           <div className="payment container">
             <div className="information-payment">
-              <div className="bg-white w-full rounded-lg">
+              <div className="bg-white w-full rounded-lg ">
                 <span className="text-2xl font-bold p-5 inline-block">
                   Thông tin nhận hàng
                 </span>
-                <div className="flex flex-col px-5 pb-10">
+                <div className="flex flex-col px-5 pb-10 h-[490px] overflow-hidden overflow-y-auto">
                   <UserAddress />
                 </div>
               </div>
-              <div className="flex flex-col px-5 mt-10 rounded-lg py-5 bg-white h-[265px]">
+              <div className="flex flex-col px-5 mt-10 rounded-lg py-5 bg-white h-[260px]">
                 <span className="text-2xl font-bold">
                   Phương thức thanh toán
                 </span>
@@ -102,7 +130,7 @@ const PaymentPage = () => {
             </div>
 
             <div className="information-order">
-              <div className="flex flex-col bg-white rounded-lg pb-10">
+              <div className="flex flex-col bg-white rounded-lg pb-10 h-[560px] overflow-hidden overflow-y-auto">
                 <div className="flex items-center justify-between p-5 ">
                   <span className="text-2xl font-bold inline-block">
                     Thông tin đơn hàng

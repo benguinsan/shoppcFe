@@ -1,12 +1,12 @@
 import React from "react";
 import { useState } from "react";
 
-const Accordion = ({ title, children }) => {
-  const [active, setActive] = useState(false);
+const Accordion = ({ title, children, className = false }) => {
+  const [active, setActive] = useState(className);
   return (
     <div className={`accordion ${active ? "active" : ""}`}>
       <div className="accordion__title" onClick={() => setActive(!active)}>
-        <span>{title} </span>
+        <span className="text-lg font-medium">{title} </span>
         <div className="accordion__icon">
           <svg
             xmlns="http://www.w3.org/2000/svg"

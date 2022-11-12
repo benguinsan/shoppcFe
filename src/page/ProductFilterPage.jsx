@@ -1,26 +1,23 @@
 import React, { useState } from "react";
-import Navbar from "../components/navbar/Navbar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import FilterPrice from "../module/filter/FilterPrice";
-import FilterBrand from "../module/filter/FilterBrand";
-import { ProductLapTopData } from "../api/ProductLaptopData";
 import FilterProduct from "../module/filter/FilterProduct";
 import { useMemo } from "react";
 import queryString from "query-string";
 import FilterSort from "../module/filter/FilterSort";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { refresh } from "../redux/product/filterSlice";
-import FilterColor from "../module/filter/FilterColor";
-import FilterRam from "../module/filter/FilterRam";
-import FilterDemand from "../module/filter/FilterDemand";
+import productApi from "../api/productApi";
+import LoadingSpinner from "../components/loading/LoadingSpinner";
+import Filter from "../components/filter/Filter";
+import { brandData } from "../api/brandData";
+import Accordion from "../components/accordion/Accordion";
 
 const ProductFilterPage = () => {
-  const dataLapTopMacBook = ProductLapTopData;
-  const { brands } = useSelector((state) => state.filter);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [product, setProduct] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const Brand = brandData;
   const queryParams = useMemo(() => {
     const params = queryString.parse(location.search);
     return {
@@ -30,6 +27,29 @@ const ProductFilterPage = () => {
     };
   }, [location.search]);
 
+  const initFilter = {
+    brands: [],
+    colors: [],
+  };
+
+  const [filter, setFilter] = useState(initFilter);
+
+  const filterSelect = (type, checked, item) => {
+    if (checked) {
+      switch (type) {
+        case "Brands":
+          setFilter({ ...filter, brands: [...filter.brands, item.name] });
+          break;
+      }
+    } else {
+      switch (type) {
+        case "Brands":
+          const newBrands = filter.brands.filter((e) => e !== item.name);
+          setFilter({ ...filter, brands: newBrands });
+      }
+    }
+  };
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -37,26 +57,18 @@ const ProductFilterPage = () => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   let str = "";
-  //   if (brands.length > 0) {
-  //     str = "?brand=";
-  //   }
-
-  //   navigate({
-  //     pathname: "/product",
-  //     search: `${str}${brands.join(" ")}`,
-  //   });
-  // }, [brands]);
-
-  const handleChange = (newValue) => {
-    const filters = {
-      ...queryParams,
-      ...newValue,
-    };
-    console.log(newValue);
-    navigate({ pathname: "/product", search: queryString.stringify(filters) });
-  };
+  useEffect(() => {
+    async function fetchDataProduct() {
+      try {
+        const response = await productApi.getAllProduct();
+        setProduct(response.data.data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+    fetchDataProduct();
+  }, []);
 
   const handleClickSort = (newSortValue) => {
     const filters = {
@@ -65,11 +77,21 @@ const ProductFilterPage = () => {
     };
     navigate({ pathname: "/product", search: queryString.stringify(filters) });
   };
+
+  useEffect(() => {
+    const filters = {
+      ...queryParams,
+      _brands: filter.brands.join(" "),
+    };
+    navigate({ pathname: "/product", search: queryString.stringify(filters) });
+  }, [filter]);
+
   console.log(queryParams);
   return (
-    <>
-      <Navbar />
-      <div className="mt-10">
+    <div className="mt-10">
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
         <div className="container">
           {" "}
           <div className="flex items-center">
@@ -94,11 +116,24 @@ const ProductFilterPage = () => {
           </div>
           <div className="wrapper-product">
             <div className="product-filter w-full  bg-white rounded-lg flex flex-col items-start text-black">
-              <FilterPrice onChange={handleChange} />
-              <FilterBrand filters={queryParams} onChange={handleChange} />
-              <FilterColor filters={queryParams} onChange={handleChange} />
-              <FilterRam filters={queryParams} onChange={handleChange} />
-              <FilterDemand filters={queryParams} onChange={handleChange} />
+              {/* <FilterPrice onChange={handleChange} /> */}
+              <div className="border-y-2 border-solid border-[#f5f5f9] w-full">
+                <Accordion title="Thương hiệu" className="true">
+                  {Brand.length > 0 &&
+                    Brand.map((item) => {
+                      return (
+                        <Filter
+                          label={item.name}
+                          key={item.id}
+                          onChange={(input) => {
+                            filterSelect("Brands", input.checked, item);
+                          }}
+                          checked={queryParams._brands?.includes(item.name)}
+                        />
+                      );
+                    })}
+                </Accordion>
+              </div>
             </div>
             <div className="product-list">
               <div className="flex flex-col container rounded-lg bg-white ">
@@ -106,13 +141,13 @@ const ProductFilterPage = () => {
                   <span className="font-medium text-lg ">Sắp xếp theo</span>
                   <FilterSort onClick={handleClickSort} />
                 </div>
-                <FilterProduct data={dataLapTopMacBook} />
+                <FilterProduct data={product} />
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 };
 

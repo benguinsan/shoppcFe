@@ -1,6 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import ProductOrder from "./ProductOrder";
+import { formatPrice } from "../../utils/formatPrice";
+
 const InformationDetailOrder = () => {
   const navigate = useNavigate();
   return (
@@ -62,6 +65,19 @@ const InformationDetailOrder = () => {
               <span> {format(new Date(), "MM/dd/yyyy")}</span>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="flex flex-col items-start p-5 bg-white rounded-lg mt-10">
+        <span className="text-xl font-medium">Sản phẩm</span>
+        <ProductOrder />
+      </div>
+      <div className="flex flex-col items-start p-5 bg-white rounded-lg mt-10">
+        <span className="text-xl font-medium border-b-2 border-solid w-full pb-5">
+          Phương thức thanh toán
+        </span>
+        <div className="flex items-center mt-5 w-full justify-between">
+          <span className="text-lg  ">Thanh toán khi nhận hàng</span>
+          <span className="text-lg font-medium">{formatPrice(67560000)}</span>
         </div>
       </div>
     </div>

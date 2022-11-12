@@ -11,9 +11,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "../../components/button/Button";
 import ListAddress from "./ListAddress";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
-import userApi from "../../api/userApi";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { addAddress } from "../../redux/auth/userSlice";
+import { useDispatch } from "react-redux";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const schema = yup.object({
   fullname: yup
@@ -58,7 +59,7 @@ const UserAddress = () => {
   const [district, setDistrict] = useState([]);
   const [districtId, setDistrictId] = useState("");
   const [ward, setWard] = useState([]);
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const bodyStyle = document.body.style;
   let isLocked = false;
@@ -120,16 +121,18 @@ const UserAddress = () => {
       district: getValues("dictrict"),
       ward: getValues("ward"),
     };
-    console.log(getValues("dictrict"));
 
     try {
-      await userApi.addAddress(dataAddress);
-      toast.success("Cập nhật thành công địa chỉ");
+      const action = addAddress(dataAddress);
+      const resultAction = await dispatch(action);
+      const data = unwrapResult(resultAction);
+      console.log(data);
+      toast.dismiss();
+      toast.success("Thêm thành công địa chỉ");
       setShowModal(false);
-      location.reload();
     } catch (error) {
+      toast.dismiss();
       toast.error(error.message);
-      console.log(error.message);
     }
     reset({
       fullname: "",
