@@ -55,7 +55,7 @@ const FeedbackItem = ({ data }) => {
           </div>
           <div className="flex items-center justify-end gap-x-5">
             <div className="text-[#8f8f8f] font-semibold text-base">
-              {format(new Date(data?.createdAt), "MM/dd/yyyy")}
+              {format(new Date(data?.createdAt), "dd/MM/yyyy")}
             </div>
             <div className="text-[#8f8f8f] font-semibold text-base">
               {new Date(data?.createdAt).toLocaleTimeString("vi-VI")}
@@ -80,7 +80,7 @@ const FeedbackItem = ({ data }) => {
             <span className="text-base font-medium">Nhận xét:</span>
             <span>{data?.review}</span>
           </div>
-          {current._id === data.user._id && (
+          {current?._id === data?.user?._id && (
             <div className="flex items-center justify-end gap-x-2 cursor-pointer text-red-500 hover:text-red-700">
               <span>
                 <svg

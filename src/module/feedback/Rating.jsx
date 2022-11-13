@@ -26,7 +26,6 @@ const note = [
 ];
 
 const Rating = ({ onClose, onSubmit, id, rating = 0, review = "" }) => {
-  console.log(review);
   const stars = Array(5).fill(0);
   const [currentValue, setCurrentValue] = useState(rating);
   const [hoverValue, setHoverValue] = useState(undefined);

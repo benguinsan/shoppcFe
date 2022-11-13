@@ -7,6 +7,7 @@ const LoadingStyles = styled.div`
   padding: 0;
   background: #f8f8fc;
   font-family: "Parisienne", cursive;
+  position: relative;
   h1 {
     color: black;
     font-size: 50px;

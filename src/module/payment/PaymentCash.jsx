@@ -1,12 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/navbar/Navbar";
 import { formatPrice } from "../../utils/formatPrice";
-import { useSelector } from "react-redux";
+
 const PaymentCash = () => {
+  const data = JSON.parse(localStorage.getItem("order"));
   const navigate = useNavigate();
-  const { cart } = useSelector((state) => state.cart);
-  console.log(cart);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    if (
+      localStorage.getItem("jwt") &&
+      JSON.parse(localStorage.getItem("user")).active === "verify"
+    ) {
+      return navigate("/verify");
+    }
+    if (
+      localStorage.getItem("jwt") === null &&
+      JSON.parse(localStorage.getItem("user")) === null
+    ) {
+      return navigate("/sign-in");
+    }
+  }, []);
   return (
     <div className="mt-10">
       <div className="container bg-white rounded-lg flex flex-col items-center p-10">
@@ -28,33 +45,18 @@ const PaymentCash = () => {
         <span className="mt-5 text-xl">
           Vui lòng chờ trong giây lát hoặc liên hệ bộ phận quản trị viên
         </span>
-        <div className="mt-10 p-5">
-          <div className="flex items-center text-xl gap-x-32">
+        <div className="mt-10 p-5 flex flex-col w-[550px]">
+          <div className="flex items-center text-xl justify-between">
             <span>Mã đơn hàng:</span>
-            <span>22111038489650</span>
+            <span>{data?.id}</span>
           </div>
-          <div className="flex items-center text-xl gap-x-36">
+          <div className="flex items-center text-xl justify-between">
             <span>Giá trị đơn hàng:</span>
-            <span>
-              {formatPrice(
-                cart?.reduce(
-                  (count, item) => count + item.quantity * item.data.promotion,
-                  0
-                )
-              )}
-            </span>
+            <span>{formatPrice(data?.total)}</span>
           </div>
-          <div className="flex items-center text-xl gap-x-28">
+          <div className="flex items-center text-xl justify-between">
             <span>Còn phải thanh toán:</span>
-            <span>
-              {" "}
-              {formatPrice(
-                cart?.reduce(
-                  (count, item) => count + item.quantity * item.data.promotion,
-                  0
-                )
-              )}
-            </span>
+            <span>{formatPrice(data?.total)}</span>
           </div>
         </div>
         <button

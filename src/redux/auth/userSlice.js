@@ -128,6 +128,7 @@ const userSlice = createSlice({
       localStorage.removeItem(StorageKeys.USER);
       localStorage.removeItem("feedback");
       localStorage.removeItem("cart");
+      localStorage.removeItem("order");
       state.current = null;
     },
   },

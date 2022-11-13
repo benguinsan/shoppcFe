@@ -32,7 +32,6 @@ const Navbar = () => {
 
   const isLoggedIn =
     loggedInUser === null ? null : loggedInUser.active === "active";
-  console.log(isLoggedIn);
 
   useEffect(() => {
     if (localStorage.getItem("jwt") && loggedInUser.active === "verify") {

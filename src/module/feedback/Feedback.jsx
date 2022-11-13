@@ -57,20 +57,19 @@ const Feelback = ({ id, data }) => {
   };
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchData(id) {
       try {
         setLoading(true);
         const action = getFeedback(id);
         const resultAction = await dispatch(action);
         const data = unwrapResult(resultAction);
         setReview(data);
-        console.log(data);
         setLoading(false);
       } catch (error) {
         console.log(error.message);
       }
     }
-    fetchData();
+    fetchData(id);
   }, [feedback?.data]);
 
   return (

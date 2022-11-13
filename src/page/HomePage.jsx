@@ -7,6 +7,7 @@ import { ProductLapTopData } from "../api/ProductLaptopData";
 import BackToTopButton from "../components/backtotop/BackToTopButton";
 import productApi from "../api/productApi";
 import ProductList from "../module/product/ProductList";
+import LoadingPage from "../components/loading/LoadingPage";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const HomePage = () => {
   const bg1 = "'../../public/images/bg-laptop-1.png'";
 
   const [product, setProduct] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (
@@ -30,8 +32,10 @@ const HomePage = () => {
   useEffect(() => {
     async function fetchDataProduct() {
       try {
+        setLoading(true);
         const response = await productApi.getAllProduct();
         setProduct(response.data.data);
+        setLoading(false);
       } catch (error) {
         console.log(error.message);
       }
@@ -41,11 +45,17 @@ const HomePage = () => {
 
   return (
     <>
-      <Banner />
-      <ProductListHome data={product} bg="bg1" className="pt-20" />
-      <ProductListHome data={product} bg="bg2" className="pt-20" />
-      <ProductList data={product} />
-      <BackToTopButton />
+      {loading ? (
+        <LoadingPage />
+      ) : (
+        <>
+          <Banner />
+          <ProductListHome data={product} bg="bg1" className="pt-20" />
+          <ProductListHome data={product} bg="bg2" className="pt-20" />
+          <ProductList data={product} />
+          <BackToTopButton />
+        </>
+      )}
     </>
   );
 };

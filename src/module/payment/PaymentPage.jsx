@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/navbar/Navbar";
 import UserAddress from "../UserProfile/UserAddress";
 import { formatPrice } from "../../utils/formatPrice";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,16 +9,17 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { resetCart } from "../../redux/cart/cartSlice";
+import orderApi from "../../api/orderApi";
 
 const PaymentPage = () => {
-  const [paymentMethod, setPaymentMethod] = useState("Cash");
+  const [paymentMethod, setPaymentMethod] = useState("tiền mặt");
   const [cash, setCash] = useState(true);
   const [payPal, setPayPal] = useState();
   const navigate = useNavigate();
   const { cart } = useSelector((state) => state.cart);
   const { current } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-
+  const address = current.address.filter((item) => item.setDefault === true)[0];
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -40,19 +40,19 @@ const PaymentPage = () => {
   }, []);
 
   const payWithCash = () => {
-    setPaymentMethod("Cash");
+    setPaymentMethod("tiền mặt");
     setPayPal(false);
     setCash(true);
   };
 
   const payWithPayPal = () => {
-    setPaymentMethod("PayPal");
+    setPaymentMethod("ngân hàng");
     setPayPal(true);
     setCash(false);
   };
 
-  const handleClick = () => {
-    if (current.address.length < 0) {
+  const handleClick = async () => {
+    if (current.address.length <= 0) {
       toast.dismiss();
       toast.warning("Vui lòng thêm thông tin nhận hàng");
       return;
@@ -69,19 +69,29 @@ const PaymentPage = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const data = {
-          address: current.address.filter(
-            (item) => item.setDefault === true
-          )[0],
+          address: `${address?.detail}, ${address?.ward}, ${address?.district}, ${address?.province}`,
+          phone: address?.phone,
+          receiver: address?.name,
           cart: cart,
-          total: cart?.reduce(
+          totalPrice: cart?.reduce(
             (count, item) => count + item.quantity * item.data.promotion,
             0
           ),
-          paymentMethod: paymentMethod,
+          payments: paymentMethod,
         };
         console.log(data);
         dispatch(resetCart());
-        if (paymentMethod === "Cash") {
+        if (paymentMethod === "tiền mặt") {
+          try {
+            const response = await orderApi.createOrder(data);
+            const data1 = {
+              id: response.data.id,
+              total: response.data.totalPrice,
+            };
+            localStorage.setItem("order", JSON.stringify(data1));
+          } catch (error) {
+            console.log(error.message);
+          }
           navigate("/payment-cash");
         } else {
           navigate("/payment-bank");

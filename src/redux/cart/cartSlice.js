@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { stringify } from "query-string";
 import { toast } from "react-toastify";
-import { create } from "yup/lib/boolean";
 
 const cartSlice = createSlice({
   name: "cart",
@@ -17,16 +15,18 @@ const cartSlice = createSlice({
         cart = [];
       }
       const newItem = action.payload;
-      console.log(newItem);
       const index = cart.findIndex((x) => x.id === newItem.id);
       if (index >= 0) {
         if (cart[index].quantity < newItem.data.inventory) {
           cart[index].quantity += newItem.quantity;
+          toast.dismiss();
           toast.success("Đã thêm sản phẩm vào giỏ hàng");
         } else {
+          toast.dismiss();
           toast.warning("Chỉ còn 1 sản phẩm");
         }
       } else {
+        toast.dismiss();
         toast.success("Đã thêm sản phẩm vào giỏ hàng");
         cart.push(newItem);
       }
@@ -39,7 +39,6 @@ const cartSlice = createSlice({
         cart = [];
       }
       const { id, quantity } = action.payload;
-      console.log(id, quantity);
       const index = cart.findIndex((x) => x.id === id);
       if (index >= 0) {
         cart[index].quantity = quantity;

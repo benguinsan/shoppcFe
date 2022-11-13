@@ -48,6 +48,7 @@ axiosClient.interceptors.response.use(
       "/api/v1/reviews",
       "/api/v1/products/:id/reviews",
       "/api/v1/reviews/:id",
+      "/api/v1/orders",
     ];
     if (
       (URLs.includes(config.url) && status === 500) ||
