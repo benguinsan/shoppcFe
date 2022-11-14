@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import userApi from "../../api/userApi";
+import { action_status } from "../../utils/constants/status";
 import StorageKeys from "../../utils/constants/storage-keys";
 
 export const register = createAsyncThunk("user/register", async (payload) => {
@@ -74,53 +75,13 @@ export const getUser = createAsyncThunk("user/getUser", async () => {
   return response.data.data;
 });
 
-export const addAddress = createAsyncThunk(
-  "user/addAdress",
-  async (payload) => {
-    const response = await userApi.addAddress(payload);
-    localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data));
-    return response.data;
-  }
-);
-
-export const editAddress = createAsyncThunk(
-  "user/editAddress",
-  async (payload) => {
-    const response = await userApi.updateAddress(payload);
-    console.log(response.data);
-    localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data));
-    return response.data;
-  }
-);
-
-export const deleteAddress = createAsyncThunk(
-  "user/deleteAddress",
-  async (payload) => {
-    const response = await userApi.deleteAddress(payload);
-    localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data));
-    return response.data;
-  }
-);
-
-export const setAddressDefault = createAsyncThunk(
-  "user/setAddressDefault",
-  async (payload) => {
-    const response = await userApi.updateDefault(payload);
-    console.log(response.data);
-    localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data));
-    return response.data;
-  }
-);
-
-export const getAddress = createAsyncThunk("user/getAddress", async () => {
-  const response = await userApi.getAddress();
-  return response.data.address;
-});
-
 const userSlice = createSlice({
   name: "user",
   initialState: {
     current: JSON.parse(localStorage.getItem(StorageKeys.USER)) || null,
+    status: action_status.IDLE,
+    user: {},
+    update: false,
   },
   reducers: {
     logout(state) {
@@ -129,6 +90,9 @@ const userSlice = createSlice({
       localStorage.removeItem("cart");
       localStorage.removeItem("order");
       state.current = null;
+    },
+    refresh: (state, action) => {
+      state.update = false;
     },
   },
   extraReducers: {
@@ -147,24 +111,23 @@ const userSlice = createSlice({
     [resetPassword.fulfilled]: (state, action) => {
       state.current = action.payload;
     },
+    [getUser.pending]: (state, action) => {
+      state.status = action_status.LOADING;
+    },
+    [getUser.fulfilled]: (state, action) => {
+      state.status = action_status.SUCCEEDED;
+      state.user = action.payload;
+      state.current = action.payload;
+    },
+    [getUser.rejected]: (state, action) => {
+      state.status = action_status.FAILED;
+    },
     [updateInfoUser.fulfilled]: (state, action) => {
-      state.current = action.payload;
-    },
-    [addAddress.fulfilled]: (state, action) => {
-      state.current = action.payload;
-    },
-    [editAddress.fulfilled]: (state, action) => {
-      state.current = action.payload;
-    },
-    [setAddressDefault.fulfilled]: (state, action) => {
-      state.current = action.payload;
-    },
-    [deleteAddress.fulfilled]: (state, action) => {
-      state.current = action.payload;
+      state.update = true;
     },
   },
 });
 
 const { actions, reducer } = userSlice;
-export const { logout, update } = actions;
+export const { logout, refresh } = actions;
 export default reducer;

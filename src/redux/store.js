@@ -4,8 +4,10 @@ import cartReducer from "../redux/cart/cartSlice";
 import feedbackReducer from "../redux/feedback/feedbackSlice";
 import filterReducer from "./product/filterSlice";
 import productReducer from "./product/productSlice";
+import addressReducer from "../redux/auth/addressSlice";
 const rootReducer = {
   user: userReducer,
+  address: addressReducer,
   cart: cartReducer,
   filter: filterReducer,
   feedback: feedbackReducer,

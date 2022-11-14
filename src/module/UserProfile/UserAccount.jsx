@@ -13,9 +13,10 @@ import moment from "moment";
 import ImageUpload from "../../components/images/ImageUpload";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
-import { getUser, updateInfoUser } from "../../redux/auth/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser, refresh, updateInfoUser } from "../../redux/auth/userSlice";
+import { action_status } from "../../utils/constants/status";
+import LoadingPage from "../../components/loading/LoadingPage";
 
 const today = moment();
 const schema = yup.object({
@@ -64,29 +65,29 @@ const UserAccount = () => {
   });
 
   const dispatch = useDispatch();
-  const [user, setUser] = useState();
+  const { user, update, status } = useSelector((state) => state.user);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const action = getUser();
-      const resultAction = await dispatch(action);
-      const user = unwrapResult(resultAction);
-      setUser(user);
-    };
-    fetchData();
-  }, []);
+    if (status === action_status.IDLE) {
+      dispatch(getUser());
+    }
+    if (update) {
+      dispatch(getUser());
+      dispatch(refresh());
+    }
+  }, [update, status]);
 
   useEffect(() => {
     reset({
-      fullname: user?.name || "",
-      image: user?.avatar || "",
-      email: user?.email || "",
-      sdt: user?.phone || "",
+      fullname: user?.name,
+      image: user?.avatar,
+      email: user?.email,
+      sdt: user?.phone,
       dateOfBirth: user?.dateOfBirth,
-      gender: user?.gender || "",
+      gender: user?.gender,
     });
     setImage(getValues("image"));
-  }, [user]);
+  }, [update, status]);
 
   const watchGender = watch("gender");
   const [image, setImage] = useState("");
@@ -124,7 +125,7 @@ const UserAccount = () => {
     });
   }, []);
 
-  const handleUpdate = async (values) => {
+  const handleUpdate = (values) => {
     if (!isValid) return;
     const cloneValues = { ...values };
     cloneValues.gender = getValues("gender");
@@ -132,11 +133,8 @@ const UserAccount = () => {
     cloneValues.avatar = image;
     cloneValues.name = values.fullname;
     cloneValues.phone = values.sdt;
-    console.log(cloneValues);
     try {
-      const action = updateInfoUser(cloneValues);
-      const resultAction = await dispatch(action);
-      const user = unwrapResult(resultAction);
+      dispatch(updateInfoUser(cloneValues));
       toast.dismiss();
       toast.success("Cập nhật thông tin thành công", { pauseOnHover: false });
     } catch (error) {
@@ -157,96 +155,99 @@ const UserAccount = () => {
           title="Thông tin tài khoản"
           className="px-5 py-5"
         ></DashboardHeading>
-        <form className="pb-16" onSubmit={handleSubmit(handleUpdate)}>
-          <Field>
-            <Label>Image</Label>
-            <ImageUpload
-              onChange={handleSelectImage}
-              className="mx-auto"
-              progress={progress}
-              image={image}
-              handleDeleteImage={handleDeleteImage}
-            ></ImageUpload>
-          </Field>
+        {status === action_status.LOADING && <LoadingPage />}
+        {status === action_status.SUCCEEDED && (
+          <form className="pb-16" onSubmit={handleSubmit(handleUpdate)}>
+            <Field>
+              <Label>Image</Label>
+              <ImageUpload
+                onChange={handleSelectImage}
+                className="mx-auto"
+                progress={progress}
+                image={image}
+                handleDeleteImage={handleDeleteImage}
+              ></ImageUpload>
+            </Field>
 
-          <Field>
-            <Label htmlFor="fullname">Họ tên</Label>
-            <Input name="fullname" control={control} type="text"></Input>
-            {errors.fullname && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.fullname?.message}
-              </p>
-            )}
-          </Field>
+            <Field>
+              <Label htmlFor="fullname">Họ tên</Label>
+              <Input name="fullname" control={control} type="text"></Input>
+              {errors.fullname && (
+                <p className="text-red-500 text-lg font-medium">
+                  {errors.fullname?.message}
+                </p>
+              )}
+            </Field>
 
-          <Field>
-            <Label htmlFor="fullname">Email</Label>
-            <Input name="email" control={control} disabled></Input>
-          </Field>
+            <Field>
+              <Label htmlFor="fullname">Email</Label>
+              <Input name="email" control={control} disabled></Input>
+            </Field>
 
-          <Field>
-            <Label htmlFor="sdt">Số điện thoại</Label>
-            <Input name="sdt" type="number" control={control}></Input>
-            {errors.sdt && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.sdt?.message}
-              </p>
-            )}
-          </Field>
+            <Field>
+              <Label htmlFor="sdt">Số điện thoại</Label>
+              <Input name="sdt" type="number" control={control}></Input>
+              {errors.sdt && (
+                <p className="text-red-500 text-lg font-medium">
+                  {errors.sdt?.message}
+                </p>
+              )}
+            </Field>
 
-          <Field>
-            <Label htmlFor="dateOfBirth">Ngày sinh</Label>
-            <Input name="dateOfBirth" type="date" control={control}></Input>
-            {errors.dateOfBirth && (
-              <p className="text-red-500 text-lg font-medium">
-                {errors.dateOfBirth?.message}
-              </p>
-            )}
-          </Field>
+            <Field>
+              <Label htmlFor="dateOfBirth">Ngày sinh</Label>
+              <Input name="dateOfBirth" type="date" control={control}></Input>
+              {errors.dateOfBirth && (
+                <p className="text-red-500 text-lg font-medium">
+                  {errors.dateOfBirth?.message}
+                </p>
+              )}
+            </Field>
 
-          <Field>
-            <FieldCheckboxes>
-              <Label htmlFor="gender">Giới tính</Label>
-              <Radio
-                name="gender"
-                control={control}
-                checked={watchGender === Gender.NAM}
-                value={Gender.NAM}
-                onClick={() => setValue("gender", "nam")}
-              >
-                Nam
-              </Radio>
-              <Radio
-                name="gender"
-                control={control}
-                checked={watchGender === Gender.NU}
-                value={Gender.NU}
-                onClick={() => setValue("gender", "nu")}
-              >
-                Nữ
-              </Radio>
-              <Radio
-                name="gender"
-                control={control}
-                checked={watchGender === Gender.Diff}
-                value={Gender.Diff}
-                onClick={() => setValue("gender", "khac")}
-              >
-                Khác
-              </Radio>
-            </FieldCheckboxes>
-          </Field>
+            <Field>
+              <FieldCheckboxes>
+                <Label htmlFor="gender">Giới tính</Label>
+                <Radio
+                  name="gender"
+                  control={control}
+                  checked={watchGender === Gender.NAM}
+                  value={Gender.NAM}
+                  onClick={() => setValue("gender", "nam")}
+                >
+                  Nam
+                </Radio>
+                <Radio
+                  name="gender"
+                  control={control}
+                  checked={watchGender === Gender.NU}
+                  value={Gender.NU}
+                  onClick={() => setValue("gender", "nu")}
+                >
+                  Nữ
+                </Radio>
+                <Radio
+                  name="gender"
+                  control={control}
+                  checked={watchGender === Gender.Diff}
+                  value={Gender.Diff}
+                  onClick={() => setValue("gender", "khac")}
+                >
+                  Khác
+                </Radio>
+              </FieldCheckboxes>
+            </Field>
 
-          <Button
-            kind="primary"
-            className="mx-auto w-[200px] mt-10"
-            type="submit"
-            disabled={isSubmitting}
-            isLoading={isSubmitting}
-          >
-            Cập nhật thông tin
-          </Button>
-        </form>
+            <Button
+              kind="primary"
+              className="mx-auto w-[200px] mt-10"
+              type="submit"
+              disabled={isSubmitting}
+              isLoading={isSubmitting}
+            >
+              Cập nhật thông tin
+            </Button>
+          </form>
+        )}
       </div>
     </>
   );

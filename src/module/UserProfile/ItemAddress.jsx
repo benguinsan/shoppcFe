@@ -11,13 +11,12 @@ import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 import {
   deleteAddress,
   editAddress,
   setAddressDefault,
-} from "../../redux/auth/userSlice";
-import { useDispatch } from "react-redux";
-import { unwrapResult } from "@reduxjs/toolkit";
+} from "../../redux/auth/addressSlice";
 
 const schema = yup.object({
   fullname: yup
@@ -113,7 +112,7 @@ const ItemAddress = ({ data, data_key }) => {
     }
   }, [showModal]);
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     Swal.fire({
       title: "Xóa ",
       text: "Bạn có chắc chắn muốn xóa không ?",
@@ -125,14 +124,11 @@ const ItemAddress = ({ data, data_key }) => {
       cancelButtonText: "Không",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log(data_key);
         try {
           const data = {
             id: data_key,
           };
-          const action = deleteAddress(data);
-          const resultAction = await dispatch(action);
-          const result = unwrapResult(resultAction);
+          dispatch(deleteAddress(data));
           Swal.fire("Xóa thành công");
         } catch (error) {
           console.log(error.message);
@@ -141,7 +137,7 @@ const ItemAddress = ({ data, data_key }) => {
     });
   };
 
-  const handleEdit = async (values) => {
+  const handleEdit = (values) => {
     const dataEdit = {
       id: data_key,
       name: values.fullname,
@@ -152,11 +148,8 @@ const ItemAddress = ({ data, data_key }) => {
       detail: values.address,
       setDefault: data.setDefault,
     };
-    console.log(dataEdit);
     try {
-      const action = editAddress(dataEdit);
-      const resultAction = await dispatch(action);
-      const data = unwrapResult(resultAction);
+      dispatch(editAddress(dataEdit));
       toast.dismiss();
       toast.success("Cập nhật địa chỉ thành công", { pauseOnHover: false });
       setShowModal(false);
@@ -165,14 +158,12 @@ const ItemAddress = ({ data, data_key }) => {
     }
   };
 
-  const handleDefault = async (data_key) => {
+  const handleDefault = (data_key) => {
     const dataKey = {
       id: data_key,
     };
     try {
-      const action = setAddressDefault(dataKey);
-      const resultAction = await dispatch(action);
-      const data = unwrapResult(resultAction);
+      dispatch(setAddressDefault(dataKey));
     } catch (error) {
       console.log(error.message);
     }

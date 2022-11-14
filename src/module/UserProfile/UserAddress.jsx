@@ -12,9 +12,8 @@ import Button from "../../components/button/Button";
 import ListAddress from "./ListAddress";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { toast } from "react-toastify";
-import { addAddress } from "../../redux/auth/userSlice";
-import { useDispatch } from "react-redux";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { useDispatch, useSelector } from "react-redux";
+import { addAddress } from "../../redux/auth/addressSlice";
 
 const schema = yup.object({
   fullname: yup
@@ -60,6 +59,7 @@ const UserAddress = () => {
   const [districtId, setDistrictId] = useState("");
   const [ward, setWard] = useState([]);
   const dispatch = useDispatch();
+  const { add } = useSelector((state) => state.address);
 
   const bodyStyle = document.body.style;
   let isLocked = false;
@@ -111,7 +111,7 @@ const UserAddress = () => {
     }
   }, [showModal]);
 
-  const handleSend = async (values) => {
+  const handleSend = (values) => {
     if (!isValid) return null;
     const dataAddress = {
       name: values.fullname,
@@ -123,10 +123,7 @@ const UserAddress = () => {
     };
 
     try {
-      const action = addAddress(dataAddress);
-      const resultAction = await dispatch(action);
-      const data = unwrapResult(resultAction);
-      console.log(data);
+      dispatch(addAddress(dataAddress));
       toast.dismiss();
       toast.success("Thêm thành công địa chỉ");
       setShowModal(false);

@@ -17,9 +17,10 @@ const PaymentPage = () => {
   const [payPal, setPayPal] = useState();
   const navigate = useNavigate();
   const { cart } = useSelector((state) => state.cart);
-  const { current } = useSelector((state) => state.user);
+  const { address } = useSelector((state) => state.address);
   const dispatch = useDispatch();
-  const address = current.address.filter((item) => item.setDefault === true)[0];
+  const data = address.filter((item) => item.setDefault === true)[0];
+  console.log(data);
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -52,7 +53,7 @@ const PaymentPage = () => {
   };
 
   const handleClick = async () => {
-    if (current.address.length <= 0) {
+    if (data === undefined) {
       toast.dismiss();
       toast.warning("Vui lòng thêm thông tin nhận hàng");
       return;
@@ -68,10 +69,10 @@ const PaymentPage = () => {
       cancelButtonText: "Không",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const data = {
-          address: `${address?.detail}, ${address?.ward}, ${address?.district}, ${address?.province}`,
-          phone: address?.phone,
-          receiver: address?.name,
+        const dataAdress = {
+          address: `${data?.detail}, ${data?.ward}, ${data?.district}, ${data?.province}`,
+          phone: data?.phone,
+          receiver: data?.name,
           cart: cart,
           totalPrice: cart?.reduce(
             (count, item) => count + item.quantity * item.product.promotion,
@@ -82,7 +83,7 @@ const PaymentPage = () => {
         dispatch(resetCart());
         if (paymentMethod === "tiền mặt") {
           try {
-            const response = await orderApi.createOrder(data);
+            const response = await orderApi.createOrder(dataAdress);
             const data1 = {
               id: response.data.id,
               total: response.data.totalPrice,
