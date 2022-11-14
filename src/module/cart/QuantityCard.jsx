@@ -71,7 +71,11 @@ const QuantityCard = ({ data }) => {
         <span
           className="inline-block p-2 bg-[#f8f8fc] cursor-pointer"
           onClick={() =>
-            handleIncreaseQuantity(data.id, data.quantity, data.data.inventory)
+            handleIncreaseQuantity(
+              data.id,
+              data.quantity,
+              data.product.inventory
+            )
           }
         >
           <svg

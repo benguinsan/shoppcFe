@@ -126,7 +126,6 @@ const userSlice = createSlice({
     logout(state) {
       localStorage.removeItem(StorageKeys.TOKEN);
       localStorage.removeItem(StorageKeys.USER);
-      localStorage.removeItem("feedback");
       localStorage.removeItem("cart");
       localStorage.removeItem("order");
       state.current = null;

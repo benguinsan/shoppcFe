@@ -5,10 +5,10 @@ const PriceCard = ({ data }) => {
   return (
     <div className="flex flex-col items-end justify-center">
       <span className="text-xl font-semibold">
-        {formatPrice(data.data.promotion)}
+        {formatPrice(data.product.promotion)}
       </span>
       <span className="text-base line-through">
-        {formatPrice(data.data.price)}
+        {formatPrice(data.product.price)}
       </span>
     </div>
   );

@@ -33,7 +33,7 @@ const Cart = () => {
   let total = 0;
   if (length > 0) {
     total = product.reduce(
-      (count, item) => count + item.quantity * item.data.promotion,
+      (count, item) => count + item.quantity * item.product.promotion,
       0
     );
   }

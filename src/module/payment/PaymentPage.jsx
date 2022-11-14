@@ -74,12 +74,11 @@ const PaymentPage = () => {
           receiver: address?.name,
           cart: cart,
           totalPrice: cart?.reduce(
-            (count, item) => count + item.quantity * item.data.promotion,
+            (count, item) => count + item.quantity * item.product.promotion,
             0
           ),
           payments: paymentMethod,
         };
-        console.log(data);
         dispatch(resetCart());
         if (paymentMethod === "tiền mặt") {
           try {
@@ -166,7 +165,7 @@ const PaymentPage = () => {
                     {formatPrice(
                       cart?.reduce(
                         (count, item) =>
-                          count + item.quantity * item.data.promotion,
+                          count + item.quantity * item.product.promotion,
                         0
                       )
                     )}
@@ -186,7 +185,7 @@ const PaymentPage = () => {
                     {formatPrice(
                       cart?.reduce(
                         (count, item) =>
-                          count + item.quantity * item.data.promotion,
+                          count + item.quantity * item.product.promotion,
                         0
                       )
                     )}

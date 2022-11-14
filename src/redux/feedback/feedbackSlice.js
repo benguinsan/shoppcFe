@@ -1,11 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import reviewApi from "../../api/reviewApi";
-
+import { action_status } from "../../utils/constants/status";
 export const createFeedback = createAsyncThunk(
   "user/createFeedback",
   async (payload) => {
     const response = await reviewApi.postReview(payload);
-    localStorage.setItem("feedback", JSON.stringify(response.data));
     return response.data;
   }
 );
@@ -25,10 +24,15 @@ export const updateFeedback = createAsyncThunk(
       rating: payload.rating,
       review: payload.review,
     };
-    console.log(payload.product);
-    console.log(data);
     const response = await reviewApi.updateReview(data, payload.product);
-    localStorage.setItem("feedback", JSON.stringify(response.data));
+    return response.data;
+  }
+);
+
+export const deleteReview = createAsyncThunk(
+  "user/deleteReview",
+  async (payload) => {
+    const response = await reviewApi.deleteReview(payload.id);
     return response.data;
   }
 );
@@ -36,17 +40,41 @@ export const updateFeedback = createAsyncThunk(
 const feedbackSlice = createSlice({
   name: "feedback",
   initialState: {
-    feedback: JSON.parse(localStorage.getItem("feedback")) || null,
+    feedbackAdd: false,
+    feedbackUpdate: false,
+    feedbackDelete: false,
+    feedback: {},
+  },
+  reducers: {
+    refresh: (state, action) => {
+      state.feedbackAdd = false;
+      state.feedbackUpdate = false;
+      state.feedbackDelete = false;
+    },
   },
   extraReducers: {
-    [createFeedback.fulfilled]: (state, action) => {
+    [getFeedback.pending]: (state, action) => {
+      state.status = action_status.LOADING;
+    },
+    [getFeedback.fulfilled]: (state, action) => {
+      state.status = action_status.SUCCEEDED;
       state.feedback = action.payload;
     },
+    [getFeedback.rejected]: (state, action) => {
+      state.status = action_status.FAILED;
+    },
+    [createFeedback.fulfilled]: (state, action) => {
+      state.feedbackAdd = true;
+    },
     [updateFeedback.fulfilled]: (state, action) => {
-      state.feedback = action.payload;
+      state.feedbackUpdate = true;
+    },
+    [deleteReview.fulfilled]: (state, action) => {
+      state.feedbackDelete = true;
     },
   },
 });
 
 const { actions, reducer } = feedbackSlice;
+export const { refresh } = actions;
 export default reducer;

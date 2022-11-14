@@ -17,7 +17,7 @@ const cartSlice = createSlice({
       const newItem = action.payload;
       const index = cart.findIndex((x) => x.id === newItem.id);
       if (index >= 0) {
-        if (cart[index].quantity < newItem.data.inventory) {
+        if (cart[index].quantity < newItem.product.inventory) {
           cart[index].quantity += newItem.quantity;
           toast.dismiss();
           toast.success("Đã thêm sản phẩm vào giỏ hàng");

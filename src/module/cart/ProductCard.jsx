@@ -17,7 +17,7 @@ const ProductCard = ({ data }) => {
   return (
     <div className="flex items-center justify-start gap-x-3">
       <img
-        src={data.data.images[0]}
+        src={data.product.images[0]}
         alt=""
         className="w-[100px] h-[100px] object-cover border-2 border-solid"
       />
@@ -26,11 +26,11 @@ const ProductCard = ({ data }) => {
           className="text-base hover:text-blue-600 leading-7 cursor-pointer"
           onClick={handleClick}
         >
-          {data.data.title}
+          {data.product.title}
         </span>
-        <span className="text-base text-[#8e8db7]">SKU: {data.data.id}</span>
+        <span className="text-base text-[#8e8db7]">SKU: {data.product.id}</span>
         <span className="text-orange-500 text-base">
-          Chỉ còn {data.data.inventory} sản phẩm{" "}
+          Chỉ còn {data.product.inventory} sản phẩm{" "}
         </span>
       </div>
     </div>

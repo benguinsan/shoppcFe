@@ -13,5 +13,9 @@ const reviewApi = {
     const url = `/api/v1/reviews/${id}`;
     return axiosClient.patch(url, data);
   },
+  deleteReview(id) {
+    const url = `/api/v1/reviews/${id}`;
+    return axiosClient.delete(url);
+  },
 };
 export default reviewApi;

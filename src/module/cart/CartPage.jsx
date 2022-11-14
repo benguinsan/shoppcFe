@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../../components/navbar/Navbar";
 import Table from "../../components/table/Table";
 import PriceCard from "./PriceCard";
 import ProductCard from "./ProductCard";
@@ -90,7 +89,9 @@ const CartPage = () => {
                             <QuantityCard data={item} />
                           </td>
                           <td className="text-xl font-semibold">
-                            {formatPrice(item.data.promotion * item.quantity)}
+                            {formatPrice(
+                              item.product.promotion * item.quantity
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -107,7 +108,7 @@ const CartPage = () => {
                     {formatPrice(
                       cart?.reduce(
                         (count, item) =>
-                          count + item.quantity * item.data.promotion,
+                          count + item.quantity * item.product.promotion,
                         0
                       )
                     )}
@@ -121,7 +122,7 @@ const CartPage = () => {
                     {formatPrice(
                       cart?.reduce(
                         (count, item) =>
-                          count + item.quantity * item.data.promotion,
+                          count + item.quantity * item.product.promotion,
                         0
                       )
                     )}

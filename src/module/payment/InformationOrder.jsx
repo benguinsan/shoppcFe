@@ -18,7 +18,7 @@ const InformationOrder = ({ data }) => {
   return (
     <div className="flex items-center justify-between px-5 gap-x-5 py-5">
       <img
-        src={data.data.images[0]}
+        src={data.product.images[0]}
         alt=""
         className="w-[100px] h-[100px] border-2 border-solid"
       />
@@ -27,16 +27,16 @@ const InformationOrder = ({ data }) => {
           className="text-base line-clamp-2 hover:text-blue-700 cursor-pointer"
           onClick={handleClick}
         >
-          {data.data.title}
+          {data.product.title}
         </span>
         <span className="text-base text-[#a28faa]">
           Số lượng: {data.quantity}
         </span>
         <span className="text-lg font-medium">
-          {formatPrice(data.data.promotion)}
+          {formatPrice(data.product.promotion)}
         </span>
         <span className="text-base text-[#a28faa] line-through">
-          {formatPrice(data.data.price)}
+          {formatPrice(data.product.price)}
         </span>
       </div>
     </div>

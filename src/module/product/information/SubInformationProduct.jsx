@@ -9,7 +9,7 @@ const SubInformationProduct = ({ data }) => {
   const handleAddCart = () => {
     const action = addToCart({
       id: data._id,
-      data,
+      product: data,
       quantity: 1,
     });
     dispatch(action);
@@ -17,7 +17,7 @@ const SubInformationProduct = ({ data }) => {
   const handleBuy = () => {
     const action = addToCart({
       id: data._id,
-      data,
+      product: data,
       quantity: 1,
     });
     dispatch(action);

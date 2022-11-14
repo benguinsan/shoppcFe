@@ -5,23 +5,23 @@ import StatisticFeedback from "./StatisticFeedback";
 import ModalAdvanced from "../../components/Modal/ModalAdvanced";
 import { useState } from "react";
 import Rating from "./Rating";
-import FeedbackList from "./FeedbackList";
 import {
   createFeedback,
   getFeedback,
+  refresh,
 } from "../../redux/feedback/feedbackSlice";
 import { useDispatch } from "react-redux";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { useEffect } from "react";
 import LoadingPage from "../../components/loading/LoadingPage";
+import { action_status } from "../../utils/constants/status";
+import FeedbackList from "../feedback/FeedbackList";
 
 const Feelback = ({ id, data }) => {
   const { current } = useSelector((state) => state.user);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
-  const [review, setReview] = useState();
-  const { feedback } = useSelector((state) => state.feedback);
-  const [loading, setLoading] = useState(true);
+  const { feedbackAdd, feedbackUpdate, feedbackDelete, status, feedback } =
+    useSelector((state) => state.feedback);
 
   const handleClick = () => {
     if (current === null) {
@@ -37,16 +37,14 @@ const Feelback = ({ id, data }) => {
     setShowModal(false);
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = (values) => {
     const data = {
       rating: values.stars,
       review: values.content,
       product: id,
     };
     try {
-      const action = createFeedback(data);
-      const resultAction = await dispatch(action);
-      const result = unwrapResult(resultAction);
+      dispatch(createFeedback(data));
       toast.dismiss();
       toast.success("Cảm ơn bạn đã đánh giá sản phẩm", { pauseOnHover: false });
     } catch (error) {
@@ -57,33 +55,47 @@ const Feelback = ({ id, data }) => {
   };
 
   useEffect(() => {
-    async function fetchData(id) {
-      try {
-        setLoading(true);
-        const action = getFeedback(id);
-        const resultAction = await dispatch(action);
-        const data = unwrapResult(resultAction);
-        setReview(data);
-        setLoading(false);
-      } catch (error) {
-        console.log(error.message);
-      }
+    dispatch(getFeedback(id));
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (feedbackAdd) {
+      dispatch(getFeedback(id));
+      dispatch(refresh());
+      window.scrollTo({
+        top: 4900,
+        behavior: "smooth",
+      });
     }
-    fetchData(id);
-  }, [feedback?.data]);
+    if (feedbackUpdate) {
+      dispatch(getFeedback(id));
+      dispatch(refresh());
+      window.scrollTo({
+        top: 4900,
+        behavior: "smooth",
+      });
+    }
+    if (feedbackDelete) {
+      dispatch(getFeedback(id));
+      dispatch(refresh());
+      window.scrollTo({
+        top: 4900,
+        behavior: "smooth",
+      });
+    }
+  }, [feedbackAdd, feedbackUpdate, feedbackDelete, dispatch]);
 
   return (
     <div className="mt-10">
-      {loading ? (
-        <LoadingPage />
-      ) : (
+      {status === action_status.LOADING && <LoadingPage />}
+      {status === action_status.SUCCEEDED && (
         <>
           {" "}
           <div className="container bg-white rounded-lg p-5">
             <span className="text-xl font-bold">
               Đánh giá & nhận xét {data?.title}
             </span>
-            <StatisticFeedback data={review} />
+            <StatisticFeedback data={feedback} />
             <div className="flex flex-col items-center gap-y-5 py-5">
               <span className="text-2xl ">Bạn đánh giá sao sản phẩm này</span>
               <button
@@ -93,7 +105,7 @@ const Feelback = ({ id, data }) => {
                 Đánh giá ngay
               </button>
             </div>
-            <FeedbackList data={review.data} />
+            <FeedbackList data={feedback.data} />
           </div>
           <ModalAdvanced
             visible={showModal}

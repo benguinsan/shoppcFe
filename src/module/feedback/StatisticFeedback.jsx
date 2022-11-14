@@ -1,6 +1,7 @@
 import React from "react";
 import ProgressBar from "../../components/progressbar/ProgressBar";
 import { FaStar } from "react-icons/fa";
+
 const StatisticFeedback = ({ data }) => {
   const stars = Array(5).fill(0);
   return (
@@ -22,7 +23,7 @@ const StatisticFeedback = ({ data }) => {
             5 <FaStar color="#ffba5a" size={20} />
           </span>
           <ProgressBar
-            value={(data.eachRating[4] / data.ratingsQuantity) * 500}
+            value={(data.eachRating[4] / data.ratingsQuantity) * 500 || 0}
           />
           <span>{data.eachRating[4]} đánh giá</span>
         </div>
@@ -31,7 +32,7 @@ const StatisticFeedback = ({ data }) => {
             4 <FaStar color="#ffba5a" size={20} />
           </span>
           <ProgressBar
-            value={(data.eachRating[3] / data.ratingsQuantity) * 500}
+            value={(data.eachRating[3] / data.ratingsQuantity) * 500 || 0}
           />
           <span>{data.eachRating[3]} đánh giá</span>
         </div>
@@ -40,7 +41,7 @@ const StatisticFeedback = ({ data }) => {
             3 <FaStar color="#ffba5a" size={20} />
           </span>
           <ProgressBar
-            value={(data.eachRating[2] / data.ratingsQuantity) * 500}
+            value={(data.eachRating[2] / data.ratingsQuantity) * 500 || 0}
           />
           <span>{data.eachRating[2]} đánh giá</span>
         </div>
@@ -49,7 +50,7 @@ const StatisticFeedback = ({ data }) => {
             2 <FaStar color="#ffba5a" size={20} />
           </span>
           <ProgressBar
-            value={(data.eachRating[1] / data.ratingsQuantity) * 500}
+            value={(data.eachRating[1] / data.ratingsQuantity) * 500 || 0}
           />
           <span>{data.eachRating[1]} đánh giá</span>
         </div>
@@ -58,7 +59,7 @@ const StatisticFeedback = ({ data }) => {
             1 <FaStar color="#ffba5a" size={20} />
           </span>
           <ProgressBar
-            value={(data.eachRating[0] / data.ratingsQuantity) * 500}
+            value={(data.eachRating[0] / data.ratingsQuantity) * 500 || 0}
           />
           <span>{data.eachRating[0]} đánh giá</span>
         </div>

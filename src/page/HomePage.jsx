@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Banner from "../components/banner/Banner";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import ProductListHome from "../module/product/ProductListHome";
-import { ProductLapTopData } from "../api/ProductLaptopData";
 import BackToTopButton from "../components/backtotop/BackToTopButton";
-import productApi from "../api/productApi";
 import ProductList from "../module/product/ProductList";
 import LoadingPage from "../components/loading/LoadingPage";
-
+import { useDispatch, useSelector } from "react-redux";
+import { getProduct, selectAllProduct } from "../redux/product/productSlice";
+import { action_status } from "../utils/constants/status";
 const HomePage = () => {
   const navigate = useNavigate();
 
   const bg = "'../../public/images/bg-laptop.png'";
   const bg1 = "'../../public/images/bg-laptop-1.png'";
 
-  const [product, setProduct] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const product = useSelector(selectAllProduct);
+  const { status } = useSelector((state) => state.product);
 
   useEffect(() => {
     if (
@@ -30,12 +31,11 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    async function fetchDataProduct() {
+    function fetchDataProduct() {
       try {
-        setLoading(true);
-        const response = await productApi.getAllProduct();
-        setProduct(response.data.data);
-        setLoading(false);
+        if (status === action_status.IDLE) {
+          dispatch(getProduct());
+        }
       } catch (error) {
         console.log(error.message);
       }
@@ -45,9 +45,8 @@ const HomePage = () => {
 
   return (
     <>
-      {loading ? (
-        <LoadingPage />
-      ) : (
+      {status === action_status.LOADING && <LoadingPage />}
+      {status === action_status.SUCCEEDED && (
         <>
           <Banner />
           <ProductListHome data={product} bg="bg1" className="pt-20" />
