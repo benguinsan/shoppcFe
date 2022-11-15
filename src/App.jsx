@@ -74,7 +74,7 @@ function App() {
               element={<UpdatePassword />}
             ></Route>
           </Route>
-          <Route element={<ProductDetail />} path="/:slug"></Route>
+          <Route element={<ProductDetail />} path="/:slug/:id"></Route>
           <Route path="/cart" element={<CartPage />}></Route>
           <Route path="/checkout" element={<PaymentPage />}></Route>
           <Route path="/product" element={<ProductFilterPage />}></Route>

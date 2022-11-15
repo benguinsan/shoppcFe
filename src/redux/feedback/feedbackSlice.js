@@ -1,11 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import reviewApi from "../../api/reviewApi";
 import { action_status } from "../../utils/constants/status";
+import { toast } from "react-toastify";
 export const createFeedback = createAsyncThunk(
   "user/createFeedback",
-  async (payload) => {
-    const response = await reviewApi.postReview(payload);
-    return response.data;
+  async (payload, thunkApi) => {
+    try {
+      const response = await reviewApi.postReview(payload);
+      toast.dismiss();
+      toast.success("Cảm ơn bạn đã đánh giá sản phẩm", { pauseOnHover: false });
+      return response.data;
+    } catch (error) {
+      toast.dismiss();
+      toast.warning("Bạn đã đánh giá sản phẩm rồi", { pauseOnHover: false });
+    }
   }
 );
 

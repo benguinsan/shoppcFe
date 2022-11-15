@@ -3,7 +3,7 @@ import { formatPrice } from "../../utils/formatPrice";
 const ProductItem = ({ product, onClick, className = "" }) => {
   return (
     <div
-      className={`flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer ${className}`}
+      className={`flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer  ${className}`}
       onClick={onClick}
     >
       <img
@@ -12,10 +12,21 @@ const ProductItem = ({ product, onClick, className = "" }) => {
           "https://lh3.googleusercontent.com/ZQFbZeosDa1ODQnaaunB72fejXPcl_hg7rfEcgVlZSkgtOTAHQH1M4RxVrH2cLN6gjqJvOAq1b8CeE92gjqDN2W3b2HsMkxb=rw"
         }
         alt=""
-        className="w-full h-[250px] object-cover rounded-lg mb-2 transition-transform hover:scale-105"
+        className="w-full h-[220px] object-cover rounded-lg mb-2 transition-transform hover:scale-105"
       />
       <div className="flex flex-col flex-1">
-        <h3 className="mb-3 line-clamp-2">{product?.title}</h3>
+        <h3 className="line-clamp-2 mb-2">{product?.title}</h3>
+        {product?.inventory < 5 && product?.inventory > 0 && (
+          <span className="text-orange-500 font-medium mb-2">
+            Chỉ còn {product?.inventory} sản phẩm
+          </span>
+        )}
+        {product?.inventory === 0 && (
+          <span className="text-orange-500 font-medium mb-2">
+            Sản phẩm hiện tại hết hàng
+          </span>
+        )}
+        {product?.inventory > 5 && <span className="mb-8"></span>}
         <div className="flex items-center justify-between text-sm opacity-50 mb-2">
           <span className="text-lg text-blue-700 font-bold">
             {formatPrice(product?.promotion)}
@@ -37,6 +48,7 @@ const ProductItem = ({ product, onClick, className = "" }) => {
             </svg>
           </span>
         </div>
+        <div></div>
         <div className="flex items-center">
           <span className="text-base line-through text-slate-400">
             {formatPrice(product?.price)}

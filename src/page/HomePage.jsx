@@ -9,15 +9,18 @@ import LoadingPage from "../components/loading/LoadingPage";
 import { useDispatch, useSelector } from "react-redux";
 import { getProduct, selectAllProduct } from "../redux/product/productSlice";
 import { action_status } from "../utils/constants/status";
+import { useState } from "react";
 const HomePage = () => {
   const navigate = useNavigate();
 
   const bg = "'../../public/images/bg-laptop.png'";
   const bg1 = "'../../public/images/bg-laptop-1.png'";
 
+  // quantity product in page
   const dispatch = useDispatch();
   const product = useSelector(selectAllProduct);
-  const { status } = useSelector((state) => state.product);
+  const { status, totalPage } = useSelector((state) => state.product);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (
@@ -31,17 +34,24 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    function fetchDataProduct() {
+    function fetchDataProduct(page) {
+      const limit = 3;
+      const data = {
+        page: page,
+        limit: limit,
+      };
       try {
-        if (status === action_status.IDLE) {
-          dispatch(getProduct());
-        }
+        dispatch(getProduct(data));
       } catch (error) {
         console.log(error.message);
       }
     }
-    fetchDataProduct();
-  }, []);
+    fetchDataProduct(page);
+  }, [page]);
+
+  const handlePageClick = (values) => {
+    setPage(values);
+  };
 
   return (
     <>
@@ -51,7 +61,12 @@ const HomePage = () => {
           <Banner />
           <ProductListHome data={product} bg="bg1" className="pt-20" />
           <ProductListHome data={product} bg="bg2" className="pt-20" />
-          <ProductList data={product} />
+          <ProductList
+            data={product}
+            handlePageClick={handlePageClick}
+            page={page}
+            totalPage={totalPage}
+          />
           <BackToTopButton />
         </>
       )}

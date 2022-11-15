@@ -1,8 +1,8 @@
 import axiosClient from "./axiosClient";
 
 const productApi = {
-  getAllProduct() {
-    const url = "/api/v1/products";
+  getAllProduct(query) {
+    const url = `/api/v1/products?${query}`;
     return axiosClient.get(url);
   },
   getProductId(id) {

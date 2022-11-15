@@ -1,19 +1,12 @@
 import React from "react";
 import { formatPrice } from "../../utils/formatPrice";
 import slugify from "slugify";
-import queryString from "query-string";
 import { useNavigate } from "react-router-dom";
 const InformationOrder = ({ data }) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    const path = slugify(data.data.title, { strict: true });
-    const filters = {
-      sku: data.data.id,
-    };
-    navigate({
-      pathname: `/${path}`,
-      search: queryString.stringify(filters),
-    });
+    const path = slugify(data?.product?.title, { strict: true });
+    navigate(`/${path}/${data.id}`);
   };
   return (
     <div className="flex items-center justify-between px-5 gap-x-5 py-5">

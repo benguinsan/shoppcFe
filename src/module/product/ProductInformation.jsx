@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import CategoryBrand from "./information/CategoryBrand";
 import InformationProduct from "./information/InformationProduct";
 import InformationService from "./information/InformationService";
 import ProductDescription from "./information/ProductDescription";
 import ProductParameters from "./information/ProductParameters";
 import BackToTopButton from "../../components/backtotop/BackToTopButton";
-import queryString from "query-string";
 import Feedback from "../feedback/Feedback";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingPage from "../../components/loading/LoadingPage";
@@ -17,11 +16,10 @@ import {
 } from "../../redux/product/productSlice";
 
 const ProductInformation = () => {
-  const location = useLocation();
-  const params = queryString.parse(location.search).sku;
+  const params = useParams();
   const { status } = useSelector((state) => state.product);
   const dispatch = useDispatch();
-  const productId = useSelector((state) => selectProductById(state, params));
+  const productId = useSelector((state) => selectProductById(state, params.id));
 
   useEffect(() => {
     if (status === action_status.IDLE) {
@@ -83,7 +81,7 @@ const ProductInformation = () => {
             </div>
             <div className="ProductDescription">
               <ProductDescription data={productId} />
-              <ProductParameters />
+              <ProductParameters data={productId} />
             </div>
 
             <Feedback id={productId?._id} data={productId} />

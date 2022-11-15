@@ -8,20 +8,14 @@ import "swiper/css/pagination";
 import "swiper/css/effect-cards";
 import { useNavigate } from "react-router-dom";
 import slugify from "slugify";
-import queryString from "query-string";
 
 const ProductListHome = ({ data, bg = "", className = "" }) => {
   const navigate = useNavigate();
 
   const handleClick = (item) => {
+    console.log(item);
     const path = slugify(item.title, { strict: true });
-    const filters = {
-      sku: item.id,
-    };
-    navigate({
-      pathname: `/${path}`,
-      search: queryString.stringify(filters),
-    });
+    navigate(`/${path}/${item._id}`);
   };
   return (
     <div className={`${className}`}>

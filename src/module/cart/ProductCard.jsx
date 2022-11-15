@@ -1,18 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import slugify from "slugify";
-import queryString from "query-string";
 const ProductCard = ({ data }) => {
+  console.log(data);
   const navigate = useNavigate();
   const handleClick = () => {
-    const path = slugify(data.data.title, { strict: true });
-    const filters = {
-      sku: data.data.id,
-    };
-    navigate({
-      pathname: `/${path}`,
-      search: queryString.stringify(filters),
-    });
+    const path = slugify(data?.product?.title, { strict: true });
+    navigate(`/${path}/${data?.id}`);
   };
   return (
     <div className="flex items-center justify-start gap-x-3">

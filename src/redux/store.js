@@ -5,6 +5,7 @@ import feedbackReducer from "../redux/feedback/feedbackSlice";
 import filterReducer from "./product/filterSlice";
 import productReducer from "./product/productSlice";
 import addressReducer from "../redux/auth/addressSlice";
+import orderReducer from "../redux/order/orderSlice";
 const rootReducer = {
   user: userReducer,
   address: addressReducer,
@@ -12,6 +13,7 @@ const rootReducer = {
   filter: filterReducer,
   feedback: feedbackReducer,
   product: productReducer,
+  order: orderReducer,
 };
 
 const store = configureStore({

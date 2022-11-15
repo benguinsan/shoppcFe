@@ -20,8 +20,14 @@ const Feelback = ({ id, data }) => {
   const { current } = useSelector((state) => state.user);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
-  const { feedbackAdd, feedbackUpdate, feedbackDelete, status, feedback } =
-    useSelector((state) => state.feedback);
+  const {
+    feedbackAdd,
+    feedbackUpdate,
+    feedbackDelete,
+    status,
+    feedback,
+    error,
+  } = useSelector((state) => state.feedback);
 
   const handleClick = () => {
     if (current === null) {
@@ -45,10 +51,7 @@ const Feelback = ({ id, data }) => {
     };
     try {
       dispatch(createFeedback(data));
-      toast.dismiss();
-      toast.success("Cảm ơn bạn đã đánh giá sản phẩm", { pauseOnHover: false });
     } catch (error) {
-      console.log(error.message);
       toast.dismiss();
       toast.warning("Bạn đã đánh giá sản phẩm rồi", { pauseOnHover: false });
     }
