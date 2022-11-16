@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import slugify from "slugify";
 import queryString from "query-string";
-import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import ProductItem from "../product/ProductItem";
 import FilterSort from "./FilterSort";
@@ -55,22 +54,7 @@ const FilterProduct = ({ data }) => {
             />
           ))}
       </div>
-      <div className="flex justify-center items-center">
-        <ReactPaginate
-          className="flex items-center gap-x-4 py-5 text-xl"
-          breakLabel="..."
-          nextLabel=">"
-          onPageChange={handlePageClick}
-          pageRangeDisplayed={5}
-          pageCount={pageCount}
-          previousLabel="<"
-          renderOnZeroPageCount={null}
-          pageLinkClassName="page-num"
-          previousClassName="page-num"
-          nextLinkClassName="page-num"
-          activeClassName="active"
-        />
-      </div>
+      <div className="flex justify-center items-center"></div>
     </div>
   );
 };

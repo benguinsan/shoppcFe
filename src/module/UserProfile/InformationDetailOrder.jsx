@@ -63,7 +63,21 @@ const InformationDetailOrder = () => {
           <div className="flex flex-col items-start">
             <div className="flex items-center gap-x-2">
               <span className=" font-medium">Trạng thái đơn hàng:</span>
-              <span>{orderId?.status}</span>
+              {orderId?.status === "Processed" && (
+                <span className="px-2 rounded-lg text-white bg-orange-400">
+                  Đang xử lý
+                </span>
+              )}
+              {orderId?.status === "Cancelled" && (
+                <span className="px-2 rounded-lg text-white bg-red-400">
+                  Đã hủy đơn
+                </span>
+              )}
+              {orderId?.status === "Success" && (
+                <span className="px-2 rounded-lg text-white bg-green-400">
+                  Đã duyệt
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-x-2">
               <span className=" font-medium">Thời gian tạo:</span>

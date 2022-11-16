@@ -65,26 +65,14 @@ const Feelback = ({ id, data }) => {
     if (feedbackAdd) {
       dispatch(getFeedback(id));
       dispatch(refresh());
-      window.scrollTo({
-        top: 4900,
-        behavior: "smooth",
-      });
     }
     if (feedbackUpdate) {
       dispatch(getFeedback(id));
       dispatch(refresh());
-      window.scrollTo({
-        top: 4900,
-        behavior: "smooth",
-      });
     }
     if (feedbackDelete) {
       dispatch(getFeedback(id));
       dispatch(refresh());
-      window.scrollTo({
-        top: 4900,
-        behavior: "smooth",
-      });
     }
   }, [feedbackAdd, feedbackUpdate, feedbackDelete, dispatch]);
 
