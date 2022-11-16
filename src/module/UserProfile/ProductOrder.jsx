@@ -1,7 +1,6 @@
 import React from "react";
 import { formatPrice } from "../../utils/formatPrice";
 const ProductOrder = ({ data }) => {
-  console.log(data);
   return (
     <div className="flex flex-col items-start mt-5 w-full">
       {data?.length > 0 &&

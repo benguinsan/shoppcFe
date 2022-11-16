@@ -49,12 +49,7 @@ const Feelback = ({ id, data }) => {
       review: values.content,
       product: id,
     };
-    try {
-      dispatch(createFeedback(data));
-    } catch (error) {
-      toast.dismiss();
-      toast.warning("Bạn đã đánh giá sản phẩm rồi", { pauseOnHover: false });
-    }
+    dispatch(createFeedback(data));
   };
 
   useEffect(() => {

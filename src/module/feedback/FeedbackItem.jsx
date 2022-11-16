@@ -105,7 +105,7 @@ const FeedbackItem = ({ data }) => {
           </div>
           <div className="flex items-center justify-start gap-x-2 flex-wrap">
             <span className="text-base font-medium">Nhận xét:</span>
-            <span>{data?.review}</span>
+            <span className="break-all">{data?.review}</span>
           </div>
           {current?._id === data?.user?._id && (
             <div className="flex items-center justify-end gap-x-4">

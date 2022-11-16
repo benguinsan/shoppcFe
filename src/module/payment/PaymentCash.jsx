@@ -63,7 +63,7 @@ const PaymentCash = () => {
           className="mt-5 py-3 px-4 text-white bg-[#1435c3] rounded-lg "
           onClick={() => navigate("/account/orders")}
         >
-          Xem chi tiết giỏ hàng
+          Xem chi tiết đơn hàng
         </button>
       </div>
     </div>

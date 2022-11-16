@@ -7,7 +7,7 @@ import BackToTopButton from "../components/backtotop/BackToTopButton";
 import ProductList from "../module/product/ProductList";
 import LoadingPage from "../components/loading/LoadingPage";
 import { useDispatch, useSelector } from "react-redux";
-import { getProduct, selectAllProduct } from "../redux/product/productSlice";
+import { getProduct } from "../redux/product/productSlice";
 import { action_status } from "../utils/constants/status";
 import { useState } from "react";
 const HomePage = () => {
@@ -18,8 +18,7 @@ const HomePage = () => {
 
   // quantity product in page
   const dispatch = useDispatch();
-  const product = useSelector(selectAllProduct);
-  const { status, totalPage } = useSelector((state) => state.product);
+  const { status, totalPage, product } = useSelector((state) => state.product);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -48,12 +47,10 @@ const HomePage = () => {
     }
     fetchDataProduct(page);
   }, [page]);
-
   const handlePageClick = (values) => {
     setPage(values);
   };
 
-  console.log(product);
   return (
     <>
       {status === action_status.LOADING && <LoadingPage />}

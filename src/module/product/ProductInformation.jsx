@@ -10,22 +10,23 @@ import Feedback from "../feedback/Feedback";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingPage from "../../components/loading/LoadingPage";
 import { action_status } from "../../utils/constants/status";
-import {
-  getProduct,
-  selectProductById,
-} from "../../redux/product/productSlice";
+import { getProductId } from "../../redux/product/productSlice";
+import PageNotFound from "../../page/NotFoundPage";
 
 const ProductInformation = () => {
   const params = useParams();
-  const { status } = useSelector((state) => state.product);
+  const { statusId, productId } = useSelector((state) => state.product);
   const dispatch = useDispatch();
-  const productId = useSelector((state) => selectProductById(state, params.id));
+
+  console.log(productId);
 
   useEffect(() => {
-    if (status === action_status.IDLE) {
-      dispatch(getProduct());
+    try {
+      dispatch(getProductId(params.id));
+    } catch (error) {
+      console.log(error.message);
     }
-  }, [status, dispatch]);
+  }, []);
 
   useEffect(() => {
     window.scrollTo({
@@ -42,14 +43,14 @@ const ProductInformation = () => {
 
   return (
     <>
-      {status === action_status.LOADING && (
+      {statusId === action_status.LOADING && (
         <div className="mt-10 rounded-lg">
           <div className="container">
             <LoadingPage />
           </div>
         </div>
       )}
-      {status === action_status.SUCCEEDED && (
+      {statusId === action_status.SUCCEEDED && (
         <div className="mt-10">
           <div className="container">
             <div className="flex items-center">
@@ -90,6 +91,7 @@ const ProductInformation = () => {
           </div>
         </div>
       )}
+      {statusId === action_status.FAILED && <PageNotFound />}
     </>
   );
 };

@@ -54,7 +54,8 @@ axiosClient.interceptors.response.use(
       (URLs.includes(config.url) && status === 500) ||
       status == 400 ||
       status == 401 ||
-      status == 404
+      status == 404 ||
+      status == 403
     ) {
       throw new Error(data.message);
     }
