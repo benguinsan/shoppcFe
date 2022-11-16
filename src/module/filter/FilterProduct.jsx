@@ -2,13 +2,13 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import slugify from "slugify";
-import queryString from "query-string";
 import { useNavigate } from "react-router-dom";
 import ProductItem from "../product/ProductItem";
 import FilterSort from "./FilterSort";
 
 const itemsPerPage = 20;
 const FilterProduct = ({ data }) => {
+  console.log(data);
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
@@ -32,13 +32,7 @@ const FilterProduct = ({ data }) => {
 
   const handleClick = (item) => {
     const path = slugify(item.title, { strict: true });
-    const filters = {
-      sku: item.id,
-    };
-    navigate({
-      pathname: `/${path}`,
-      search: queryString.stringify(filters),
-    });
+    navigate(`/${path}/${item._id}`);
   };
 
   return (

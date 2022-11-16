@@ -35,7 +35,7 @@ const HomePage = () => {
 
   useEffect(() => {
     function fetchDataProduct(page) {
-      const limit = 3;
+      const limit = 10;
       const data = {
         page: page,
         limit: limit,
@@ -53,6 +53,7 @@ const HomePage = () => {
     setPage(values);
   };
 
+  console.log(product);
   return (
     <>
       {status === action_status.LOADING && <LoadingPage />}
