@@ -1,53 +1,31 @@
 import React from "react";
-import { useState } from "react";
-
+import { useLocation } from "react-router-dom";
+import RangeSlider from "../../components/RangeSlider";
+import queryString from "query-string";
+import { debounce } from "lodash";
 const FilterPrice = ({ onChange }) => {
-  const [values, setValues] = useState({
-    salePrice_gte: 0,
-    salePrice_lte: 0,
-  });
+  const location = useLocation();
+  const params = queryString.parse(location.search);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setValues((prevValue) => ({
-      ...prevValue,
-      [name]: value,
-    }));
+  const handleChange = (values) => {
+    if (!onChange) return;
+    onChange(values);
   };
 
-  const handleSubmit = () => {
-    if (onChange) {
-      onChange(values);
-    }
-  };
+  const debounce1 = debounce(handleChange, 500);
+
   return (
-    <div className="flex flex-col items-start p-5">
+    <div className="flex flex-col p-5">
       <span className=" font-semibold mb-4 text-base">Chọn khoảng giá</span>
-      <div className="flex items-center justify-between gap-x-5 ">
-        <input
-          className="p-2 border-b-2 border-solid  border-black"
-          type="number"
-          style={{ width: "115px" }}
-          name="salePrice_gte"
-          value={values.salePrice_gte}
-          onChange={handleChange}
-        ></input>
-        <span>-</span>
-        <input
-          className="p-2 border-b-2 border-solid  border-black"
-          type="number"
-          style={{ width: "115px" }}
-          name="salePrice_lte"
-          value={values.salePrice_lte}
-          onChange={handleChange}
-        ></input>
-      </div>
-      <button
-        className="px-3 py-2 mt-5 mx-auto rounded-lg border-2 border-solid border-blue-400"
-        onClick={handleSubmit}
-      >
-        Áp dụng{" "}
-      </button>
+      <RangeSlider
+        initialMin={params.promotion_gte || 0}
+        initialMax={params.promotion_lte || 100000000}
+        step={500000}
+        min={0}
+        max={100000000}
+        priceCap={10000000}
+        onChange={debounce1}
+      />
     </div>
   );
 };

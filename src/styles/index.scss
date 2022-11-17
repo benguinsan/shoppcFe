@@ -202,3 +202,12 @@ td {
   display: grid;
   grid-template-columns: 350px minmax(0, 1fr);
 }
+
+input[type="range"]::-webkit-slider-thumb {
+  pointer-events: auto;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  -webkit-appearance: none;
+  @apply bg-green-500;
+}

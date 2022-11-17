@@ -27,7 +27,7 @@ const ProductItem = ({ product, onClick, className = "" }) => {
           </span>
         )}
         {product?.inventory > 4 && <span className="mb-8"></span>}
-        <div className="flex items-center justify-between text-sm opacity-50 mb-2">
+        <div className="flex items-center justify-between text-sm  mb-2">
           <span className="text-lg text-blue-700 font-bold">
             {formatPrice(product?.promotion)}
           </span>

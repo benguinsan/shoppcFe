@@ -61,7 +61,7 @@ const UserOrder = () => {
         ></DashboardHeading>
         <div className="flex items-center gap-x-3">
           <button
-            className={`flex items-center gap-x-3 cursor-pointer py-3 px-6 text-base font-medium rounded-lg border border-gray-700 ${
+            className={`flex items-center gap-x-3 cursor-pointer py-3 px-6 text-base font-medium rounded-lg border border-gray-300 ${
               state === "All" || state === undefined
                 ? "bg-blue-500 text-white"
                 : ""
@@ -72,7 +72,7 @@ const UserOrder = () => {
             Tất cả đơn hàng
           </button>
           <button
-            className={`flex items-center gap-x-3 cursor-pointer py-3 px-6 text-base font-medium rounded-lg border border-gray-700 ${
+            className={`flex items-center gap-x-3 cursor-pointer py-3 px-6 text-base font-medium rounded-lg border border-gray-300 ${
               state === "Processed" ? "bg-blue-500 text-white" : ""
             }`}
             value="Processed"
@@ -81,7 +81,7 @@ const UserOrder = () => {
             Đang xử lý
           </button>
           <button
-            className={`flex items-center gap-x-3 cursor-pointer py-3 px-6 border-gray-700  border text-base font-medium rounded-lg ${
+            className={`flex items-center gap-x-3 cursor-pointer py-3 px-6  text-base font-medium rounded-lg border border-gray-300 ${
               state === "Success" ? "bg-blue-500 text-white" : ""
             }`}
             value="Success"
@@ -90,7 +90,7 @@ const UserOrder = () => {
             Thành công
           </button>
           <button
-            className={`flex items-center gap-x-3 cursor-pointer py-3 px-6 text-base font-medium rounded-lg border border-gray-700 ${
+            className={`flex items-center gap-x-3 cursor-pointer py-3 px-6 text-base font-medium rounded-lg border border-gray-300  ${
               state === "Cancelled" ? "bg-blue-500 text-white" : ""
             }`}
             value="Cancelled"

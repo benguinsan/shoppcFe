@@ -9,14 +9,10 @@ export const brandData = [
   },
   {
     id: 3,
-    name: "Lenevo",
+    name: "Dell",
   },
   {
     id: 4,
-    name: "HP",
-  },
-  {
-    id: 5,
-    name: "MSI",
+    name: "Apple",
   },
 ];

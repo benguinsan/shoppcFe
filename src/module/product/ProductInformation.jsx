@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
-import CategoryBrand from "./information/CategoryBrand";
+import { Link, useParams } from "react-router-dom";
 import InformationProduct from "./information/InformationProduct";
 import InformationService from "./information/InformationService";
 import ProductDescription from "./information/ProductDescription";
@@ -86,7 +85,7 @@ const ProductInformation = () => {
             </div>
 
             <Feedback id={productId?._id} data={productId} />
-            {/* <CategoryBrand data/> */}
+
             <BackToTopButton />
           </div>
         </div>

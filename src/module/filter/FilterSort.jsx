@@ -1,52 +1,55 @@
 import React from "react";
 import { useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import queryString from "query-string";
-const FilterSort = ({ onClick }) => {
+const FilterSort = ({ onChange }) => {
   const params = useLocation(location.search);
-  const searchSort = queryString.parse(params.search)._sort;
+  const navigate = useNavigate();
+  let searchSort = queryString.parse(params.search).sort;
+
+  if (searchSort === undefined) {
+    searchSort = "promotion";
+  }
   const [active, setActive] = useState(searchSort);
 
-  const handleClickASC = (e) => {
-    setActive("salePrice:ASC");
-    if (onClick) {
-      onClick(e.target.value);
-    }
-    console.log(e.target.value);
+  const handleClick = (e) => {
+    setActive(e.target.value);
+    onChange(e.target.value);
+    const values = queryString.parse(location.search);
+    const filters = {
+      ...values,
+      sort: e.target.value,
+      page: 1,
+    };
+    console.log(filters);
+    navigate({
+      pathname: params.pathname,
+      search: queryString.stringify(filters),
+    });
   };
-  const handleClickDSC = (e) => {
-    setActive("salePrice:DESC");
-    if (onClick) {
-      onClick(e.target.value);
-    }
-    console.log(e.target.value);
-  };
+
   return (
     <>
-      <button
-        className={`border-2 border-solid border-[#f6f6f6] px-3 py-2  cursor-pointer ${
-          active === "salePrice:ASC"
-            ? "border-blue-600 pointer-events-none"
-            : ""
-        }`}
-        name="sort"
-        value="salePrice:ASC"
-        onClick={handleClickASC}
-      >
-        Giá tăng dần
-      </button>
-      <button
-        className={`border-2 border-solid border-[#f6f6f6] px-3 py-2 cursor-pointer ${
-          active === "salePrice:DESC"
-            ? "border-blue-600 pointer-events-none"
-            : ""
-        }`}
-        name="sort"
-        value="salePrice:DESC"
-        onClick={handleClickDSC}
-      >
-        Giá giảm dần
-      </button>
+      <div className="flex items-center rounded-full  gap-x-5">
+        <button
+          className={`flex items-center gap-x-3 cursor-pointer py-3 px-6 text-sm font-medium rounded-lg border border-gray-300  ${
+            active === "promotion" ? "bg-blue-500 text-white" : ""
+          }`}
+          value="promotion"
+          onClick={handleClick}
+        >
+          Giá tăng dần
+        </button>
+        <button
+          className={`flex items-center gap-x-3 cursor-pointer py-3 px-6 text-sm font-medium rounded-lg border border-gray-300 ${
+            active === "-promotion" ? "bg-blue-500 text-white" : ""
+          }`}
+          value="-promotion"
+          onClick={handleClick}
+        >
+          Giá giảm dần
+        </button>
+      </div>
     </>
   );
 };

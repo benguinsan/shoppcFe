@@ -1,34 +1,10 @@
 import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
 import slugify from "slugify";
 import { useNavigate } from "react-router-dom";
 import ProductItem from "../product/ProductItem";
-import FilterSort from "./FilterSort";
 
-const itemsPerPage = 20;
 const FilterProduct = ({ data }) => {
-  console.log(data);
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
-  const [pageCount, setPageCount] = useState(0);
-  const [itemOffset, setItemOffset] = useState(0);
-
-  useEffect(() => {
-    // if(!data || !data.total_pages) return;
-    // Tính pageCount
-    // setPageCount(Math.ceil(data.total_pages / itemsPerPage));
-    setPageCount(5);
-  }, [data, itemOffset]);
-
-  // Invoke when user click to request another page.
-  const handlePageClick = (event) => {
-    // Offset khoảng bn để hiển thị dấu ...
-    // event.selected cái số mình click
-    // const newOffSet = (event.selected * itemsPerPage) % data.total_pages;
-    // setItemOffset(newOffset);
-    setPage(event.selected + 1);
-  };
 
   const handleClick = (item) => {
     const path = slugify(item.title, { strict: true });
@@ -48,7 +24,6 @@ const FilterProduct = ({ data }) => {
             />
           ))}
       </div>
-      <div className="flex justify-center items-center"></div>
     </div>
   );
 };
