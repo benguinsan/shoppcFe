@@ -22,6 +22,10 @@ const HomePage = () => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
     if (
       localStorage.getItem("jwt") &&
       JSON.parse(localStorage.getItem("user")).active === "verify"
@@ -47,8 +51,13 @@ const HomePage = () => {
     }
     fetchDataProduct(page);
   }, [page]);
+
   const handlePageClick = (values) => {
     setPage(values);
+    window.scrollTo({
+      top: 1750,
+      behavior: "smooth",
+    });
   };
 
   return (

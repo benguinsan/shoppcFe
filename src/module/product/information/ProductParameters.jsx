@@ -1,7 +1,6 @@
 import React from "react";
 
 const ProductParameters = ({ data }) => {
-  console.log(data);
   return (
     <div className="product-parameters px-5 pb-10">
       <div className="text-2xl font-semibold mb-8">Thông tin chi tiết</div>

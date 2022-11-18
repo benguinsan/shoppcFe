@@ -15,6 +15,7 @@ import { colorData } from "../api/colorData";
 import Accordion from "../components/accordion/Accordion";
 import Filter from "../components/filter/Filter";
 import { ramData } from "../api/ramData";
+import { demandData } from "../api/demandData";
 
 const ProductFilterPage = () => {
   const params = queryString.parse(location.search);
@@ -35,6 +36,10 @@ const ProductFilterPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
     try {
       dispatch(getProductFilter(queryParams));
       setSort(queryParams.sort);
@@ -54,9 +59,10 @@ const ProductFilterPage = () => {
   }, []);
 
   const initFilter = {
-    brand: params.brand || [],
-    color: params.color || [],
-    ram: params.ram || [],
+    brand: [params.brand] || [],
+    color: [params.color] || [],
+    ram: [params.ram] || [],
+    demand: [params.demand] || [],
   };
 
   const [filter, setFilter] = useState(initFilter);
@@ -82,6 +88,13 @@ const ProductFilterPage = () => {
             ram: [...filter.ram, item.name],
           });
           break;
+        case "Demands":
+          setFilter({
+            ...filter,
+            demand: [...filter.demand, item.name],
+          });
+          break;
+        default:
       }
     } else {
       switch (type) {
@@ -96,6 +109,10 @@ const ProductFilterPage = () => {
         case "Rams":
           const newRams = filter.ram.filter((e) => e !== item.name);
           setFilter({ ...filter, ram: newRams });
+          break;
+        case "Demands":
+          const newDemands = filter.demand.filter((e) => e !== item.name);
+          setFilter({ ...filter, demand: newDemands });
           break;
         default:
       }
@@ -136,11 +153,15 @@ const ProductFilterPage = () => {
     ) {
       const filters = {
         ...queryParams,
+        page: 1,
         ...filter,
       };
+      setPage(1);
       navigate({
         pathname: "/product",
-        search: queryString.stringify(filters),
+        search: queryString.stringify(filters, {
+          arrayFormat: "comma",
+        }),
       });
     } else {
       const filters = {
@@ -152,10 +173,9 @@ const ProductFilterPage = () => {
         search: queryString.stringify(filters),
       });
     }
-  }, [filter, queryParams]);
+  }, [filter, queryParams, location.search]);
 
   console.log(filter);
-  console.log(brand);
 
   return (
     <>
@@ -230,6 +250,21 @@ const ProductFilterPage = () => {
                               filterSelect("Rams", input.checked, item);
                             }}
                             checked={filter.ram.includes(item.name)}
+                          />
+                        );
+                      })}
+                  </Accordion>
+                  <Accordion title="Nhu cầu">
+                    {demandData.length > 0 &&
+                      demandData.map((item) => {
+                        return (
+                          <Filter
+                            label={item.name}
+                            key={item.id}
+                            onChange={(input) => {
+                              filterSelect("Demands", input.checked, item);
+                            }}
+                            checked={filter.demand.includes(item.name)}
                           />
                         );
                       })}

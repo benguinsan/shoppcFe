@@ -17,8 +17,6 @@ const ProductInformation = () => {
   const { statusId, productId } = useSelector((state) => state.product);
   const dispatch = useDispatch();
 
-  console.log(productId);
-
   useEffect(() => {
     try {
       dispatch(getProductId(params.id));
