@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import slugify from "slugify";
 const ProductCard = ({ data }) => {
-  console.log(data);
   const navigate = useNavigate();
   const handleClick = () => {
     const path = slugify(data?.product?.title, { strict: true });

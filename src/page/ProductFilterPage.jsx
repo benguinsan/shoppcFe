@@ -59,10 +59,10 @@ const ProductFilterPage = () => {
   }, []);
 
   const initFilter = {
-    brand: [params.brand] || [],
-    color: [params.color] || [],
-    ram: [params.ram] || [],
-    demand: [params.demand] || [],
+    brand: params?.brand?.split(",") || [],
+    color: params?.color?.split(",") || [],
+    ram: params?.ram?.split(",") || [],
+    demand: params?.demand?.split(",") || [],
   };
 
   const [filter, setFilter] = useState(initFilter);
@@ -138,7 +138,7 @@ const ProductFilterPage = () => {
 
   const handleChangePrice = (values) => {
     const filters = { ...queryParams, ...values };
-    console.log(values);
+    console.log("Price", values);
     navigate({
       pathname: "/product",
       search: queryString.stringify(filters),
@@ -173,7 +173,7 @@ const ProductFilterPage = () => {
         search: queryString.stringify(filters),
       });
     }
-  }, [filter, queryParams, location.search]);
+  }, [filter]);
 
   console.log(filter);
 

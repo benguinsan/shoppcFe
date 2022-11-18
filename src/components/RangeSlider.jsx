@@ -13,10 +13,10 @@ const RangeSlider = ({
   const [minValue, setMinValue] = useState(initialMin);
   const [maxValue, setMaxValue] = useState(initialMax);
   const [values, setValues] = useState({
-    promotion_gte: min,
-    promotion_lte: max,
-    price_gte: min,
-    price_lte: max,
+    promotion_gte: initialMin,
+    promotion_lte: initialMax,
+    price_gte: initialMin,
+    price_lte: initialMax,
   });
 
   const handleMin = (e) => {

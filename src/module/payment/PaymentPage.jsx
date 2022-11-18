@@ -80,9 +80,9 @@ const PaymentPage = () => {
           ),
           payments: paymentMethod,
         };
-        dispatch(resetCart());
         if (paymentMethod === "tiền mặt") {
           try {
+            dispatch(resetCart());
             const response = await orderApi.createOrder(dataAdress);
             const data1 = {
               id: response.data.id,
@@ -94,6 +94,7 @@ const PaymentPage = () => {
           }
           navigate("/payment-cash");
         } else {
+          localStorage.setItem("order", JSON.stringify(dataAdress));
           navigate("/payment-bank");
         }
       }
