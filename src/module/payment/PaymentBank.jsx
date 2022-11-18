@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetCart } from "../../redux/cart/cartSlice";
+import orderApi from "../../api/orderApi";
 
 const PaymentBank = () => {
   const dataOrder = JSON.parse(localStorage.getItem("order"));
@@ -32,12 +33,37 @@ const PaymentBank = () => {
   }, []);
   return (
     <div className="mt-10">
-      <div className="w-[1000px] mx-auto h-[200px] bg-[#fff4de] rounded-lg flex flex-col p-12 justify-between">
-        <div className="flex items-center justify-between">
-          <span className="text-2xl font-medium">Số tiền thanh toán</span>
-          <span className="text-5xl font-medium text-[#009245]">
-            {formatPrice(dataOrder?.totalPrice)}
-          </span>
+      <div className="container mx-auto  bg-white rounded-lg flex flex-col p-12 justify-between">
+        <span className="text-5xl font-semibold mx-auto">
+          Thông tin đơn hàng
+        </span>
+        <div className="flex flex-col w-[1000px] mx-auto mt-16 gap-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-medium">Nguời nhận:</span>
+            <span className="text-2xl font-medium">{dataOrder?.receiver}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-medium">Số điện thoại:</span>
+            <span className="text-2xl font-medium">{dataOrder?.phone}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-medium">Địa chỉ nhận hàng:</span>
+            <span className="text-2xl font-medium">{dataOrder?.address}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-medium">
+              Phương thức thanh toán:
+            </span>
+            <span className="text-2xl font-medium">{dataOrder?.payments}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-medium">
+              Tổng số tiền cần thanh toán
+            </span>
+            <span className="text-3xl font-medium text-[#009245]">
+              {formatPrice(dataOrder?.totalPrice)}
+            </span>
+          </div>
         </div>
       </div>
       <div className="mx-auto w-[800px] mt-10">
@@ -47,9 +73,8 @@ const PaymentBank = () => {
             return actions.order.create({
               purchase_units: [
                 {
-                  description: dataOrder?.id,
                   amount: {
-                    value: dataOrder?.totalPrice / 24000,
+                    value: Number(dataOrder?.totalPrice / 24000),
                   },
                 },
               ],
@@ -60,7 +85,7 @@ const PaymentBank = () => {
             console.log("order:", order);
             Swal.fire(
               "Thanh toán thành công!",
-              "Cảm ơn bạn đã ủng hộ cửa hàng. Bạn có thể vào quản lý đơn hàng để kiểm tra lại đơn hàng",
+              "Cảm ơn bạn đã ủng hộ cửa hàng !!!",
               "success"
             );
             console.log(dataOrder);
@@ -74,6 +99,12 @@ const PaymentBank = () => {
               invoicePayment: order,
             };
             console.log(data1);
+
+            try {
+              const response = await orderApi.createOrder(data1);
+            } catch (error) {
+              console.log(error.message);
+            }
             dispatch(resetCart());
             navigate("/");
           }}

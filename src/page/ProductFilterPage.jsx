@@ -91,7 +91,7 @@ const ProductFilterPage = () => {
         case "Demands":
           setFilter({
             ...filter,
-            demand: [...filter.demand, item.name],
+            demand: [...filter.demand, item.value],
           });
           break;
         default:
@@ -111,7 +111,7 @@ const ProductFilterPage = () => {
           setFilter({ ...filter, ram: newRams });
           break;
         case "Demands":
-          const newDemands = filter.demand.filter((e) => e !== item.name);
+          const newDemands = filter.demand.filter((e) => e !== item.value);
           setFilter({ ...filter, demand: newDemands });
           break;
         default:
@@ -138,7 +138,6 @@ const ProductFilterPage = () => {
 
   const handleChangePrice = (values) => {
     const filters = { ...queryParams, ...values };
-    console.log("Price", values);
     navigate({
       pathname: "/product",
       search: queryString.stringify(filters),
@@ -149,7 +148,8 @@ const ProductFilterPage = () => {
     if (
       filter.brand.length !== 0 ||
       filter.color.length !== 0 ||
-      filter.ram.length !== 0
+      filter.ram.length !== 0 ||
+      filter.demand.length !== 0
     ) {
       const filters = {
         ...queryParams,
@@ -264,7 +264,7 @@ const ProductFilterPage = () => {
                             onChange={(input) => {
                               filterSelect("Demands", input.checked, item);
                             }}
-                            checked={filter.demand.includes(item.name)}
+                            checked={filter.demand.includes(item.value)}
                           />
                         );
                       })}

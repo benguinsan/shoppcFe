@@ -20,7 +20,6 @@ const PaymentPage = () => {
   const { address } = useSelector((state) => state.address);
   const dispatch = useDispatch();
   const data = address.filter((item) => item.setDefault === true)[0];
-  console.log(data);
   useEffect(() => {
     window.scrollTo({
       top: 0,
