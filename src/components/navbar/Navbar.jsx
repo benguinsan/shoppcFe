@@ -9,6 +9,8 @@ import Cart from "../cart/Cart";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { getCart } from "../../redux/cart/cartSlice";
 import CartHollow from "../cart/CartHollow";
+import Search from "../search/Search";
+import useClickOutSide from "../../hooks/useClickOutSide";
 
 const Navbar = () => {
   const loggedInUser = useSelector((state) => state.user.current);
@@ -69,6 +71,20 @@ const Navbar = () => {
     }
   }, [cart]);
 
+  //search
+  const [keyword, setKeyWord] = useState("");
+  const { show, setShow, nodeRef } = useClickOutSide();
+  const handleClick = () => {
+    setShow(true);
+  };
+  const handleClose = () => {
+    setShow(false);
+  };
+
+  const handleClickSearch = () => {
+    navigate("/product");
+  };
+
   return (
     <nav className="w-full bg-primary h-[100px] sticky z-50 shadow-md transition-all top-0 text-white">
       <div className="container flex items-center h-full justify-between">
@@ -99,13 +115,18 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <div className="w-[700px] flex items-center">
+        <div className="w-[700px] flex items-center relative " ref={nodeRef}>
           <input
             type="text"
-            className="py-3 px-4 rounded-l-lg text-lg w-[650px] flex-shrink-0 text-black"
-            placeholder="Nhập từ khóa tìm kiếm..."
+            className="py-3 px-4 rounded-l-lg text-lg w-[650px] flex-shrink-0 text-black search"
+            placeholder="Nhập tên laptop cần tìm ..."
+            onClick={handleClick}
+            onChange={(e) => setKeyWord(e.target.value)}
           />
-          <div className="w-[50px] bg-yellow-400 h-[52px] rounded-r-lg flex items-center justify-center cursor-pointer">
+          <div
+            className="w-[50px] bg-yellow-400 h-[52px] rounded-r-lg flex items-center justify-center cursor-pointer "
+            onClick={handleClickSearch}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -121,6 +142,9 @@ const Navbar = () => {
               />
             </svg>
           </div>
+          {show === true && (
+            <Search onClickItem={handleClose} keyword={keyword} />
+          )}
         </div>
 
         {!isLoggedIn && !islogout && (

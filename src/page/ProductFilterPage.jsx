@@ -16,6 +16,7 @@ import Accordion from "../components/accordion/Accordion";
 import Filter from "../components/filter/Filter";
 import { ramData } from "../api/ramData";
 import { demandData } from "../api/demandData";
+import BackToTopButton from "../components/backtotop/BackToTopButton";
 
 const ProductFilterPage = () => {
   const params = queryString.parse(location.search);
@@ -175,8 +176,6 @@ const ProductFilterPage = () => {
     }
   }, [filter]);
 
-  console.log(filter);
-
   return (
     <>
       <div className="mt-10">
@@ -274,10 +273,9 @@ const ProductFilterPage = () => {
             )}
 
             <div className="product-list">
-              {statusFilter === action_status.LOADING && <LoadingPage />}
+              {statusFilter === action_status.LOADING && <LoadingPage />}{" "}
               {statusFilter === action_status.SUCCEEDED && (
                 <>
-                  {" "}
                   <div className="flex flex-col container rounded-lg bg-white ">
                     <div className="flex items-center p-5 gap-x-5 ">
                       <span className="font-medium text-lg ">Sắp xếp theo</span>
@@ -300,10 +298,23 @@ const ProductFilterPage = () => {
                   </div>
                 </>
               )}
+              {statusFilter === action_status.FAILED && (
+                <div className="h-[700px] bg-white flex items-center justify-center flex-col gap-y-6">
+                  <img
+                    src="../../public/images/search.png"
+                    alt=""
+                    className="w-[250px]"
+                  />
+                  <span className="text-2xl font-medium">
+                    Không tìm thấy sản phẩm nào
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+      <BackToTopButton />
     </>
   );
 };

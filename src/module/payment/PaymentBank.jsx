@@ -74,7 +74,7 @@ const PaymentBank = () => {
               purchase_units: [
                 {
                   amount: {
-                    value: Number(dataOrder?.totalPrice / 24000),
+                    value: Number((dataOrder?.totalPrice / 24000).toFixed(2)),
                   },
                 },
               ],

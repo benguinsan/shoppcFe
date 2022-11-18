@@ -23,13 +23,16 @@ const ProductInformation = () => {
     } catch (error) {
       console.log(error.message);
     }
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
+  }, [params.id]);
+
+  useEffect(() => {
     if (
       localStorage.getItem("jwt") &&
       JSON.parse(localStorage.getItem("user")).active === "verify"
