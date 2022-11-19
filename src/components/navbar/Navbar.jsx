@@ -11,6 +11,7 @@ import { getCart } from "../../redux/cart/cartSlice";
 import CartHollow from "../cart/CartHollow";
 import Search from "../search/Search";
 import useClickOutSide from "../../hooks/useClickOutSide";
+import useDebounce from "../../hooks/useDebounce";
 
 const Navbar = () => {
   const loggedInUser = useSelector((state) => state.user.current);
@@ -88,11 +89,16 @@ const Navbar = () => {
   }, [location.search]);
 
   const handleClickSearch = () => {
-    console.log("Keyword:", keyword);
-    localStorage.setItem("keyword", keyword);
-    navigate("/product");
+    navigate(`/product/?keyword=${keyword}`);
     setShow(false);
   };
+
+  const handleChange = (e) => {
+    setKeyWord(e.target.value);
+    localStorage.setItem("keyword", e.target.value);
+  };
+
+  const search = useDebounce(keyword, 500);
 
   return (
     <nav className="w-full bg-primary h-[100px] sticky z-50 shadow-md transition-all top-0 text-white">
@@ -130,7 +136,7 @@ const Navbar = () => {
             className="py-3 px-4 rounded-l-lg text-lg w-[650px] flex-shrink-0 text-black search"
             placeholder="Nhập tên laptop cần tìm ..."
             onClick={handleClick}
-            onChange={(e) => setKeyWord(e.target.value)}
+            onChange={handleChange}
             value={keyword}
           />
           <div
@@ -152,8 +158,8 @@ const Navbar = () => {
               />
             </svg>
           </div>
-          {show === true && (
-            <Search onClickItem={handleClose} keyword={keyword} />
+          {keyword && show === true && (
+            <Search onClickItem={handleClose} keyword={search} />
           )}
         </div>
 
