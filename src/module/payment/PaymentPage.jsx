@@ -46,7 +46,7 @@ const PaymentPage = () => {
   };
 
   const payWithPayPal = () => {
-    setPaymentMethod("ngân hàng");
+    setPaymentMethod("paypal");
     setPayPal(true);
     setCash(false);
   };
@@ -133,7 +133,7 @@ const PaymentPage = () => {
                     }`}
                     onClick={payWithPayPal}
                   >
-                    Thanh toán qua ngân hàng
+                    Thanh toán qua paypal
                   </button>
                 </div>
               </div>

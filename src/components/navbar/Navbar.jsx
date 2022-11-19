@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Profile from "../profile/Profile";
 import Swal from "sweetalert2";
 import userApi from "../../api/userApi";
@@ -73,6 +73,7 @@ const Navbar = () => {
 
   //search
   const [keyword, setKeyWord] = useState("");
+  const location = useLocation();
   const { show, setShow, nodeRef } = useClickOutSide();
   const handleClick = () => {
     setShow(true);
@@ -81,8 +82,16 @@ const Navbar = () => {
     setShow(false);
   };
 
+  useEffect(() => {
+    setKeyWord("");
+    localStorage.setItem("keyword", keyword);
+  }, [location.search]);
+
   const handleClickSearch = () => {
+    console.log("Keyword:", keyword);
+    localStorage.setItem("keyword", keyword);
     navigate("/product");
+    setShow(false);
   };
 
   return (
@@ -122,6 +131,7 @@ const Navbar = () => {
             placeholder="Nhập tên laptop cần tìm ..."
             onClick={handleClick}
             onChange={(e) => setKeyWord(e.target.value)}
+            value={keyword}
           />
           <div
             className="w-[50px] bg-yellow-400 h-[52px] rounded-r-lg flex items-center justify-center cursor-pointer "

@@ -22,12 +22,19 @@ const ProductFilterPage = () => {
   const params = queryString.parse(location.search);
   const { productFilter, statusFilter, totalPageFilter, statusBrand, brand } =
     useSelector((state) => state.product);
+  const keyword = localStorage.getItem("keyword");
+  console.log(keyword);
+
   const queryParams = useMemo(() => {
     return {
       ...params,
       page: Number.parseInt(params.page) || 1,
       limit: 20,
       sort: params.sort || "promotion",
+      price_gte: params.price_gte || 0,
+      price_lte: params.price_lte || 100000000,
+      promotion_gte: params.promotion_gte || 0,
+      promotion_lte: params.promotion_lte || 100000000,
     };
   }, [location.search]);
 
@@ -42,7 +49,14 @@ const ProductFilterPage = () => {
       behavior: "smooth",
     });
     try {
-      dispatch(getProductFilter(queryParams));
+      let filters = queryParams;
+      if (keyword) {
+        filters = {
+          ...queryParams,
+          keyword: keyword,
+        };
+      }
+      dispatch(getProductFilter(filters));
       setSort(queryParams.sort);
     } catch (error) {
       console.log(error.message);

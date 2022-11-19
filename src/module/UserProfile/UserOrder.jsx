@@ -26,6 +26,8 @@ const UserOrder = () => {
   const [state, setState] = useState(params.status);
   const [page, setPage] = useState(1);
 
+  console.log(order);
+
   useEffect(() => {
     try {
       const data = {
