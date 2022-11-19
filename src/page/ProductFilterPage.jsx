@@ -152,7 +152,8 @@ const ProductFilterPage = () => {
   };
 
   const handleChangePrice = (values) => {
-    const filters = { ...queryParams, ...values };
+    const filters = { ...queryParams, ...values, page: 1 };
+    setPage(1);
     navigate({
       pathname: "/product",
       search: queryString.stringify(filters),
