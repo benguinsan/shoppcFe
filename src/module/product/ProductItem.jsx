@@ -1,10 +1,33 @@
 import React from "react";
+import { useState } from "react";
+import { toast } from "react-toastify";
 import { formatPrice } from "../../utils/formatPrice";
-const ProductItem = ({ product, onClick, className = "" }) => {
+const ProductItem = ({
+  product,
+  onClickItem,
+  className = "",
+  addToCompare,
+  removeFromCompare,
+  selected,
+}) => {
+  const handleRemove = (e, product) => {
+    e.stopPropagation();
+    removeFromCompare(product);
+  };
+
+  const handleAdd = (e, product) => {
+    e.stopPropagation();
+    if (selected.length === 2) {
+      toast.dismiss();
+      toast.warning("Chỉ so sánh 2 sản phẩm với nhau");
+      return;
+    }
+    addToCompare(product);
+  };
   return (
     <div
       className={`flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer  ${className}`}
-      onClick={onClick}
+      onClick={onClickItem}
     >
       <img
         src={
@@ -12,7 +35,7 @@ const ProductItem = ({ product, onClick, className = "" }) => {
           "https://lh3.googleusercontent.com/ZQFbZeosDa1ODQnaaunB72fejXPcl_hg7rfEcgVlZSkgtOTAHQH1M4RxVrH2cLN6gjqJvOAq1b8CeE92gjqDN2W3b2HsMkxb=rw"
         }
         alt=""
-        className="w-full h-[220px] object-cover rounded-lg mb-2 transition-transform hover:scale-105"
+        className="w-full h-[200px] object-cover rounded-lg mb-2 transition-transform hover:scale-105"
       />
       <div className="flex flex-col flex-1">
         <h3 className="line-clamp-2 mb-2">{product?.title}</h3>
@@ -49,11 +72,28 @@ const ProductItem = ({ product, onClick, className = "" }) => {
           </span>
         </div>
         <div></div>
-        <div className="flex items-center">
-          <span className="text-base line-through text-slate-400">
-            {formatPrice(product?.price)}
-          </span>
-          <span className="text-blue"> - {product?.percent}%</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <span className="text-base line-through text-slate-400">
+              {formatPrice(product?.price)}
+            </span>
+            <span className="text-blue"> - {product?.percent}%</span>
+          </div>
+          {selected && selected.includes(product) ? (
+            <button
+              className="p-2 text-red-600 border-2 border-solid border-red-600 rounded-lg text-base font-medium "
+              onClick={(e) => handleRemove(e, product)}
+            >
+              Hủy
+            </button>
+          ) : (
+            <button
+              className="p-2 text-green-600 border-2 border-solid border-green-600 rounded-lg text-base font-medium  "
+              onClick={(e) => handleAdd(e, product)}
+            >
+              So sánh
+            </button>
+          )}
         </div>
       </div>
     </div>

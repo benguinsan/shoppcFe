@@ -89,13 +89,14 @@ const Navbar = () => {
   }, [location.search]);
 
   const handleClickSearch = () => {
+    if (keyword === "") return;
+    localStorage.setItem("keyword", keyword);
     navigate(`/product/?keyword=${keyword}`);
     setShow(false);
   };
 
   const handleChange = (e) => {
     setKeyWord(e.target.value);
-    localStorage.setItem("keyword", e.target.value);
   };
 
   const search = useDebounce(keyword, 500);
@@ -133,7 +134,8 @@ const Navbar = () => {
         <div className="w-[700px] flex items-center relative " ref={nodeRef}>
           <input
             type="text"
-            className="py-3 px-4 rounded-l-lg text-lg w-[650px] flex-shrink-0 text-black search"
+            className="py-3 px-4 rounded-l-lg text-lg w-[650px] flex-shrink-0 text-black"
+            id="search"
             placeholder="Nhập tên laptop cần tìm ..."
             onClick={handleClick}
             onChange={handleChange}

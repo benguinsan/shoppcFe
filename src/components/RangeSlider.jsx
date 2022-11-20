@@ -15,8 +15,6 @@ const RangeSlider = ({
   const [values, setValues] = useState({
     promotion_gte: initialMin,
     promotion_lte: initialMax,
-    price_gte: initialMin,
-    price_lte: initialMax,
   });
 
   const handleMin = (e) => {
@@ -27,7 +25,6 @@ const RangeSlider = ({
         setValues((prevValues) => ({
           ...prevValues,
           promotion_gte: parseInt(e.target.value),
-          price_gte: parseInt(e.target.value),
         }));
       }
     } else {
@@ -36,7 +33,6 @@ const RangeSlider = ({
         setValues((prevValues) => ({
           ...prevValues,
           priomotion_gte: parseInt(e.target.value),
-          price_gte: parseInt(e.target.value),
         }));
       }
     }
@@ -50,7 +46,6 @@ const RangeSlider = ({
         setValues((prevValues) => ({
           ...prevValues,
           promotion_lte: parseInt(e.target.value),
-          price_lte: parseInt(e.target.value),
         }));
       }
     } else {
@@ -59,7 +54,6 @@ const RangeSlider = ({
         setValues((prevValues) => ({
           ...prevValues,
           promotion_lte: parseInt(e.target.value),
-          price_lte: parseInt(e.target.value),
         }));
       }
     }

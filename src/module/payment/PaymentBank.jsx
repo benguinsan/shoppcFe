@@ -106,6 +106,7 @@ const PaymentBank = () => {
               console.log(error.message);
             }
             dispatch(resetCart());
+            localStorage.removeItem("order");
             navigate("/");
           }}
           onError={(err) => {
