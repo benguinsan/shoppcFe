@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ProductItem from "./ProductItem";
 import slugify from "slugify";
 import Pagination from "react-js-pagination";
 import ModalAdvanced from "../../components/Modal/ModalAdvanced";
 import { useEffect } from "react";
-import Table from "../../components/table/Table";
+import { formatPrice } from "../../utils/formatPrice";
 
 const ProductList = ({ data, handlePageClick, page, totalPage }) => {
   const navigate = useNavigate();
+
   const [showModal, setShowModal] = useState(false);
 
   const handleClick = (item) => {
@@ -33,6 +34,7 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
     );
     setSelectedItems((selectedItems) => filteredItems);
   };
+
   return (
     <>
       <div className="mt-20">
@@ -97,6 +99,7 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
             visible={showModal}
             onClose={() => {
               setShowModal(false);
+              setSelectedItems([]);
             }}
             bodyClassName="w-[1200px] bg-white p-10 rounded-lg relative z-10 content h-[850px] overflow-y-auto overflow-x-hidden"
           >
@@ -369,7 +372,7 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
                   </td>
                   <td>
                     <span className="text-lg font-normal flex items-center gap-x-2">
-                      {selectedItems[1]?.promotion}
+                      {formatPrice(selectedItems[1]?.promotion)}
                       {selectedItems[1]?.promotion -
                         selectedItems[0]?.promotion <=
                         0 && (

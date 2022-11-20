@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import slugify from "slugify";
 import ModalAdvanced from "../../components/Modal/ModalAdvanced";
 import { useState } from "react";
+import { formatPrice } from "../../utils/formatPrice";
 
 const ProductListHome = ({ data, bg = "", className = "" }) => {
   const navigate = useNavigate();
@@ -35,7 +36,6 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
   };
 
   const handleClick = (item) => {
-    console.log(item);
     const path = slugify(item.title, { strict: true });
     navigate(`/${path}/${item._id}`);
   };
@@ -80,6 +80,7 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
             visible={showModal}
             onClose={() => {
               setShowModal(false);
+              setSelectedItems([]);
             }}
             bodyClassName="w-[1200px] bg-white p-10 rounded-lg relative z-10 content h-[850px] overflow-y-auto overflow-x-hidden"
           >
@@ -352,7 +353,7 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
                   </td>
                   <td>
                     <span className="text-lg font-normal flex items-center gap-x-2">
-                      {selectedItems[1]?.promotion}
+                      {formatPrice(selectedItems[1]?.promotion)}
                       {selectedItems[1]?.promotion -
                         selectedItems[0]?.promotion <=
                         0 && (

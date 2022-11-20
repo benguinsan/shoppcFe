@@ -1,6 +1,4 @@
 import React from "react";
-import { useState } from "react";
-import { toast } from "react-toastify";
 import { formatPrice } from "../../utils/formatPrice";
 const ProductItem = ({
   product,
@@ -17,13 +15,9 @@ const ProductItem = ({
 
   const handleAdd = (e, product) => {
     e.stopPropagation();
-    if (selected.length === 2) {
-      toast.dismiss();
-      toast.warning("Chỉ so sánh 2 sản phẩm với nhau");
-      return;
-    }
     addToCompare(product);
   };
+
   return (
     <div
       className={`flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer  ${className}`}
@@ -81,14 +75,14 @@ const ProductItem = ({
           </div>
           {selected && selected.includes(product) ? (
             <button
-              className="p-2 text-red-600 border-2 border-solid border-red-600 rounded-lg text-base font-medium "
+              className="p-2 text-red-600 border-2 border-solid border-red-600 rounded-lg text-base font-medium transition-all "
               onClick={(e) => handleRemove(e, product)}
             >
               Hủy
             </button>
           ) : (
             <button
-              className="p-2 text-green-600 border-2 border-solid border-green-600 rounded-lg text-base font-medium  "
+              className="p-2 text-green-600 border-2 border-solid border-green-600 rounded-lg text-base font-medium transition-all"
               onClick={(e) => handleAdd(e, product)}
             >
               So sánh

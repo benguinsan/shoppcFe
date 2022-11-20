@@ -54,6 +54,7 @@ const FilterProduct = ({ data }) => {
             visible={showModal}
             onClose={() => {
               setShowModal(false);
+              setSelectedItems([]);
             }}
             bodyClassName="w-[1200px] bg-white p-10 rounded-lg relative z-10 content h-[850px] overflow-y-auto overflow-x-hidden"
           >

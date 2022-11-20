@@ -189,8 +189,6 @@ const ProductFilterPage = () => {
     }
   }, [filter, queryParams]);
 
-  console.log(filter);
-
   return (
     <>
       <div className="mt-10">
@@ -256,7 +254,6 @@ const ProductFilterPage = () => {
                   <Accordion title="Ram">
                     {ramData.length > 0 &&
                       ramData.map((item) => {
-                        console.log("ram:", filter.ram.includes(item.name));
                         return (
                           <Filter
                             label={`${item.name}GB`}
