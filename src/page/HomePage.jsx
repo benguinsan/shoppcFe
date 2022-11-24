@@ -13,8 +13,8 @@ import { useState } from "react";
 const HomePage = () => {
   const navigate = useNavigate();
 
-  const bg = "'../../public/images/bg-laptop.png'";
-  const bg1 = "'../../public/images/bg-laptop-1.png'";
+  const bg = "'./../../public/images/bg-laptop.png'";
+  const bg1 = "'./../../public/images/bg-laptop-1.png'";
 
   // quantity product in page
   const dispatch = useDispatch();
