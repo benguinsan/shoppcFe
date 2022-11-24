@@ -284,7 +284,7 @@ const UserOrder = () => {
           {(state === "All" || state === undefined) && (
             <div className="bg-white container rounded-lg h-[500px] flex flex-col items-center justify-center gap-y-3 ">
               <img
-                src="../../../public/images/logo-cart.png"
+                src="../images/logo-cart.png"
                 alt=""
                 className="w-[300px] h-[300px]"
               />
@@ -296,7 +296,7 @@ const UserOrder = () => {
           {state === "Success" && (
             <div className="bg-white container rounded-lg h-[500px] flex flex-col items-center justify-center gap-y-3 ">
               <img
-                src="../../../public/images/logo-cart.png"
+                src="../images/logo-cart.png"
                 alt=""
                 className="w-[300px] h-[300px]"
               />
@@ -308,7 +308,7 @@ const UserOrder = () => {
           {state === "Processed" && (
             <div className="bg-white container rounded-lg h-[500px] flex flex-col items-center justify-center gap-y-3 ">
               <img
-                src="../../../public/images/logo-cart.png"
+                src="../images/logo-cart.png"
                 alt=""
                 className="w-[300px] h-[300px]"
               />
@@ -320,7 +320,7 @@ const UserOrder = () => {
           {state === "Cancelled" && (
             <div className="bg-white container rounded-lg h-[500px] flex flex-col items-center justify-center gap-y-3 ">
               <img
-                src="../../../public/images/logo-cart.png"
+                src="../images/logo-cart.png"
                 alt=""
                 className="w-[300px] h-[300px]"
               />

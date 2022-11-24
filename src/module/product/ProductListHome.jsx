@@ -43,13 +43,9 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
     <div className={`${className}`}>
       <div
         className={`container ${
-          bg === "bg1" ? 'bg-[url("../../../public/images/bg-laptop.png")]' : ""
+          bg === "bg1" ? 'bg-[url("../images/bg-laptop.png")]' : ""
         }
-        ${
-          bg === "bg2"
-            ? 'bg-[url("../../../public/images/bg-laptop-1.png")]'
-            : ""
-        }
+        ${bg === "bg2" ? 'bg-[url("../images/bg-laptop-1.png")]' : ""}
           h-[500px] bg-no-repeat w-full bg-cover rounded-lg`}
       >
         <Swiper

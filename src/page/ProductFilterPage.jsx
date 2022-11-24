@@ -314,7 +314,7 @@ const ProductFilterPage = () => {
               {statusFilter === action_status.FAILED && (
                 <div className="h-[700px] bg-white flex items-center justify-center flex-col gap-y-6">
                   <img
-                    src="../../public/images/search.png"
+                    src="../images/search.png"
                     alt=""
                     className="w-[250px]"
                   />

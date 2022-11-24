@@ -46,7 +46,7 @@ const PageNotFound = () => {
   return (
     <PageNotFoundStyles>
       <div className="page-content">
-        <img src="/images/404.png" alt="notfound" className="image" />
+        <img src="../images/404.png" alt="notfound" className="image" />
         <h1 className="heading">404 - Looks like you're lost.</h1>
         <p className="description">
           Có thể trang này đã từng tồn tại hoặc bạn vừa viết sai chính tả. Rất
