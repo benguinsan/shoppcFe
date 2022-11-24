@@ -10,7 +10,7 @@ const CartHidden = () => {
     <div className="mt-5">
       <div className="container bg-white h-[600px] rounded-lg flex flex-col items-center justify-center">
         <img
-          src="../../../../public/images/logo-cart.png"
+          src="../../../public/images/logo-cart.png"
           alt=""
           className="w-[300px]h-[300px] object-cover pb-5"
         />
