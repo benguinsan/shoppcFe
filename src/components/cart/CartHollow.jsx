@@ -31,7 +31,7 @@ const CartHollow = () => {
       <div className="flex flex-col items-center p-5 h-[500px] rounded-lg ">
         <div className="flex flex-col items-center justify-center gap-y-5">
           <img
-            src="../../../../public/images/logo-cart.png"
+            src="../images/logo-cart.png"
             alt=""
             className="w-[300px] h-[300px] object-cover"
           />
