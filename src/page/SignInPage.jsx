@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/button/Button";
@@ -11,8 +11,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/auth/userSlice";
+import { login, loginWithGoogle } from "../redux/auth/userSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import GoogleButton from "react-google-button";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../config/firebase";
 
 const schema = yup.object({
   email: yup
@@ -80,10 +83,35 @@ const SignInPage = () => {
       toast.error(error.message, { pauseOnHover: false });
     }
   };
+
+  const provider = new GoogleAuthProvider();
+
+  const handleLogInWithGoogle = async () => {
+    try {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const data = {
+            user: result._tokenResponse,
+          };
+          dispatch(loginWithGoogle(data));
+          toast.dismiss();
+          toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log("Error", error);
+        });
+    } catch (error) {
+      toast.dismiss();
+      console.log(error.message);
+      toast.error(error.message, { pauseOnHover: false });
+    }
+  };
+
   return (
     <AuthenticationPage>
       <form
-        className="pb-6"
+        className="pb-10"
         autoComplete="off"
         onSubmit={handleSubmit(handleSignIn)}
       >
@@ -146,6 +174,20 @@ const SignInPage = () => {
         >
           Đăng nhập
         </Button>
+        <div className="w-[300px] mx-auto">
+          <GoogleButton
+            type="light"
+            style={{
+              width: "100%",
+              borderRadius: "8px",
+              height: "60px",
+              padding: "7px",
+              fontSize: "18px",
+              fontWeight: "bold",
+            }}
+            onClick={handleLogInWithGoogle}
+          />
+        </div>
       </form>
     </AuthenticationPage>
   );

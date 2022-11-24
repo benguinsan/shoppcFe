@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ProductItem from "../product/ProductItem";
 import ModalAdvanced from "../../components/Modal/ModalAdvanced";
 import { useState } from "react";
+import { formatPrice } from "../../utils/formatPrice";
 
 const FilterProduct = ({ data }) => {
   const navigate = useNavigate();
@@ -304,7 +305,7 @@ const FilterProduct = ({ data }) => {
                   <td className="text-lg font-semibold">Giá tiền</td>
                   <td>
                     <span className="text-lg font-normal flex items-center gap-x-2">
-                      {selectedItems[0]?.promotion}
+                      {formatPrice(selectedItems[0]?.promotion)}
                       {selectedItems[0]?.promotion -
                         selectedItems[1]?.promotion <=
                         0 && (
@@ -327,7 +328,7 @@ const FilterProduct = ({ data }) => {
                   </td>
                   <td>
                     <span className="text-lg font-normal flex items-center gap-x-2">
-                      {selectedItems[1]?.promotion}
+                      {formatPrice(selectedItems[1]?.promotion)}
                       {selectedItems[1]?.promotion -
                         selectedItems[0]?.promotion <=
                         0 && (

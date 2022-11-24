@@ -14,9 +14,7 @@ const ListAddress = () => {
 
   useEffect(() => {
     try {
-      if (status === action_status.IDLE) {
-        dispatch(getAddress());
-      }
+      dispatch(getAddress());
     } catch (error) {
       console.log(error.message);
     }

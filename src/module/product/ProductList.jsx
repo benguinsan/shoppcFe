@@ -349,7 +349,7 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
                   <td className="text-lg font-semibold">Giá tiền</td>
                   <td>
                     <span className="text-lg font-normal flex items-center gap-x-2">
-                      {selectedItems[0]?.promotion}
+                      {formatPrice(selectedItems[0]?.promotion)}
                       {selectedItems[0]?.promotion -
                         selectedItems[1]?.promotion <=
                         0 && (

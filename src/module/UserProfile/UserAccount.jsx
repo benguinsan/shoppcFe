@@ -69,14 +69,12 @@ const UserAccount = () => {
   const { user, update, status } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (status === action_status.IDLE) {
-      dispatch(getUser());
-    }
+    dispatch(getUser());
     if (update) {
       dispatch(getUser());
       dispatch(refresh());
     }
-  }, [update, status]);
+  }, [update]);
 
   useEffect(() => {
     reset({
@@ -88,7 +86,7 @@ const UserAccount = () => {
       gender: user?.gender,
     });
     setImage(getValues("image"));
-  }, [update, status]);
+  }, [update]);
 
   const watchGender = watch("gender");
   const [image, setImage] = useState("");

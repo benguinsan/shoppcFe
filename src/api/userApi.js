@@ -10,6 +10,10 @@ const userApi = {
     const url = "/api/v1/users/login";
     return axiosClient.post(url, data);
   },
+  loginWithGoogle(data) {
+    const url = "/api/v1/users/userLoginWith";
+    return axiosClient.post(url, data);
+  },
   verify(data) {
     const url = "/api/v1/users/verify";
     return axiosClient.post(url, data);

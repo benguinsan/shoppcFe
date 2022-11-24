@@ -1,3 +1,4 @@
+import { async } from "@firebase/util";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import userApi from "../../api/userApi";
 import { action_status } from "../../utils/constants/status";
@@ -60,6 +61,16 @@ export const login = createAsyncThunk("user/login", async (payload) => {
   return response.data.user;
 });
 
+export const loginWithGoogle = createAsyncThunk(
+  "user/loginWithGoogle",
+  async (payload) => {
+    const response = await userApi.loginWithGoogle(payload);
+    localStorage.setItem(StorageKeys.TOKEN, response.token);
+    localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data.user));
+    return response.data.user;
+  }
+);
+
 export const updateInfoUser = createAsyncThunk(
   "user/updateInfoUser",
   async (payload) => {
@@ -89,6 +100,7 @@ const userSlice = createSlice({
       localStorage.removeItem(StorageKeys.USER);
       localStorage.removeItem("cart");
       localStorage.removeItem("order");
+      localStorage.removeItem("keyword");
       state.current = null;
     },
     refresh: (state, action) => {
@@ -101,6 +113,10 @@ const userSlice = createSlice({
     },
     [login.fulfilled]: (state, action) => {
       state.current = action.payload;
+    },
+    [loginWithGoogle.fulfilled]: (state, action) => {
+      state.current = action.payload;
+      state.user = action.payload;
     },
     [verify.fulfilled]: (state, action) => {
       state.current = action.payload;
