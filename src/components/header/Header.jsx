@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    <header className="w-full h-[50px] bg-primary border-b-2 border-b-[#3b62c8] text-white">
+    <header className="h-[50px] bg-primary border-b-2 border-b-white text-white mx-auto">
       <div className="flex items-center container justify-between h-full">
         <div className=" text-base">
           Giảm giá lên đến 35% cho đơn hàng đầu tiên

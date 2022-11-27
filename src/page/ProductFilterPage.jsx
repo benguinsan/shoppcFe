@@ -23,7 +23,6 @@ const ProductFilterPage = () => {
   const { productFilter, statusFilter, totalPageFilter, statusBrand, brand } =
     useSelector((state) => state.product);
   const keyword = localStorage.getItem("keyword");
-  console.log(keyword);
 
   const queryParams = useMemo(() => {
     return {

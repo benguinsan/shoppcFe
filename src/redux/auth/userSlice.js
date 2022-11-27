@@ -1,4 +1,3 @@
-import { async } from "@firebase/util";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import userApi from "../../api/userApi";
 import { action_status } from "../../utils/constants/status";

@@ -19,7 +19,7 @@
 }
 .container {
   width: 100%;
-  max-width: 1550px;
+  max-width: 1350px;
   margin: 0 auto;
   // padding: 0 20px;
 }
@@ -210,4 +210,22 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   -webkit-appearance: none;
   @apply bg-green-500;
+}
+
+header {
+  max-width: 1600px;
+  padding: 20px;
+  font-size: 16px;
+}
+nav {
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  font-size: 16px;
+}
+footer {
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
 }

@@ -56,25 +56,26 @@ const UserAccount = () => {
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
-    defaultValues: {
-      fullname: "",
-      email: "",
-      sdt: "",
-      gender: "",
-    },
   });
 
   const dispatch = useDispatch();
 
   const { user, update, status } = useSelector((state) => state.user);
 
+  const watchGender = watch("gender");
+  const [image, setImage] = useState("");
+  const [progress, setProgress] = useState();
+
   useEffect(() => {
-    dispatch(getUser());
     if (update) {
       dispatch(getUser());
       dispatch(refresh());
     }
   }, [update]);
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, []);
 
   useEffect(() => {
     reset({
@@ -86,11 +87,7 @@ const UserAccount = () => {
       gender: user?.gender,
     });
     setImage(getValues("image"));
-  }, [update]);
-
-  const watchGender = watch("gender");
-  const [image, setImage] = useState("");
-  const [progress, setProgress] = useState();
+  }, [status]);
 
   const handleSelectImage = async (e) => {
     const file = e.target.files[0];

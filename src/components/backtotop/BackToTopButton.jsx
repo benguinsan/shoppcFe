@@ -22,7 +22,7 @@ const BackToTopButton = () => {
     <div>
       {backToTopButton && (
         <button
-          className="fixed bottom-[50px] right-[50px] p-3  bg-black rounded-full z-1000"
+          className="fixed bottom-[40px] right-[25px] p-2  bg-black rounded-full z-1000"
           onClick={scrollUp}
         >
           <span className="text-white font-bold">
@@ -32,7 +32,7 @@ const BackToTopButton = () => {
               viewBox="0 0 24 24"
               strokeWidth="1.5"
               stroke="currentColor"
-              className="w-6 h-6"
+              className="w-5 h-5"
             >
               <path
                 strokeLinecap="round"
