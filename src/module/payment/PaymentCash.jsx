@@ -33,7 +33,7 @@ const PaymentCash = () => {
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
-          className="w-[220px] h-[220px] text-orange-400"
+          className="w-[200px] h-[200px] text-orange-400"
         >
           <path
             strokeLinecap="round"
@@ -41,12 +41,12 @@ const PaymentCash = () => {
             d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <span className="text-4xl font-bold">Đơn hàng chờ xử lý</span>
+        <span className="text-2xl font-bold">Đơn hàng chờ xử lý</span>
         <span className="mt-5 text-xl">
           Vui lòng chờ trong giây lát hoặc liên hệ bộ phận quản trị viên
         </span>
         <div className="mt-10 p-5 flex flex-col w-[550px]">
-          <div className="flex items-center text-xl justify-between">
+          <div className="flex items-center text-xl justify-between ">
             <span>Mã đơn hàng:</span>
             <span>{data?.id}</span>
           </div>

@@ -175,13 +175,13 @@ const UserAddress = () => {
         onClose={() => {
           setShowModal(false);
         }}
-        bodyClassName="w-[750px] bg-white p-10 rounded-lg relative z-10 content h-[850px] overflow-y-auto overflow-x-hidden"
+        bodyClassName="w-[750px] bg-white px-10 py-5 rounded-lg relative z-10 content h-[650px] overflow-y-auto overflow-x-hidden"
       >
-        <h3 className="text-2xl font-semibold text-black text-left mb-5">
+        <h3 className="text-lg font-semibold text-black text-left mb-3">
           Thông tin người nhận hàng
         </h3>
         <form onSubmit={handleSubmit(handleSend)} autoComplete="off">
-          <div className="flex flex-col items-start gap-4 mb-10">
+          <div className="flex flex-col items-start gap-4 mb-5">
             <Label htmlFor="fullname">* Họ tên</Label>
             <Input
               type="text"
@@ -190,13 +190,13 @@ const UserAddress = () => {
               control={control}
             ></Input>
             {errors.fullname && (
-              <p className="text-red-500 text-lg font-medium">
+              <p className="text-red-500 text-base font-medium">
                 {errors.fullname?.message}
               </p>
             )}
           </div>
 
-          <div className="flex flex-col items-start gap-4 mb-10">
+          <div className="flex flex-col items-start gap-4 mb-5">
             <Label htmlFor="sdt">* Số điện thoại</Label>
             <Input
               type="number"
@@ -205,18 +205,18 @@ const UserAddress = () => {
               control={control}
             ></Input>
             {errors.sdt && (
-              <p className="text-red-500 text-lg font-medium">
+              <p className="text-red-500 text-base font-medium">
                 {errors.sdt?.message}
               </p>
             )}
           </div>
 
-          <h3 className="text-2xl font-semibold text-black text-left mb-5">
+          <h3 className="text-lg font-semibold text-black text-left mb-3">
             Địa chỉ nhận hàng
           </h3>
 
           <div className="flex items-center justify-between">
-            <div className="flex flex-col items-start gap-4 mb-10">
+            <div className="flex flex-col items-start gap-4 mb-5">
               <Label htmlFor="province">* Tỉnh/Thành phố</Label>
               <DropdownSelect
                 control={control}
@@ -227,13 +227,13 @@ const UserAddress = () => {
                 onClick={(id) => setProvinceId(id)}
               ></DropdownSelect>
               {errors.province && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.province?.message}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col items-start gap-4 mb-10">
+            <div className="flex flex-col items-start gap-4 mb-5">
               <Label htmlFor="district">* Quận/Huyện</Label>
               <DropdownSelect
                 control={control}
@@ -244,7 +244,7 @@ const UserAddress = () => {
                 onClick={(id) => setDistrictId(id)}
               ></DropdownSelect>
               {errors.dictrict && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.dictrict?.message}
                 </p>
               )}
@@ -252,7 +252,7 @@ const UserAddress = () => {
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="flex flex-col items-start gap-4 mb-10">
+            <div className="flex flex-col items-start gap-4 mb-5">
               <Label htmlFor="ward">* Phường/Xã</Label>
               <DropdownSelect
                 control={control}
@@ -262,12 +262,12 @@ const UserAddress = () => {
                 data={ward}
               ></DropdownSelect>
               {errors.ward && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.ward?.message}
                 </p>
               )}
             </div>
-            <div className="flex flex-col items-start gap-4 mb-10">
+            <div className="flex flex-col items-start gap-4 mb-5">
               <Label htmlFor="address">* Địa chỉ cụ thể</Label>
               <Input
                 type="text"
@@ -277,29 +277,27 @@ const UserAddress = () => {
                 control={control}
               ></Input>
               {errors.address && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.address?.message}
                 </p>
               )}
             </div>
           </div>
-          <div className="flex items-center justify-end gap-x-4">
+          <div className="flex items-center justify-end gap-x-4 mt-5">
             <button
-              className="p-5 text-base font-semibold bg-white text-[#316BFF] rounded-lg border border-solid border-[blue]"
+              className="p-3 text-base font-medium bg-white text-[#316BFF] rounded-lg border border-solid border-[blue]"
               type="button"
               onClick={() => setShowModal(false)}
             >
               Hủy bỏ
             </button>
             <Button
-              style={{
-                fontSize: "16px",
-              }}
+              height="50px"
               type="submit"
               isLoding={isSubmitting}
               disable={isSubmitting}
             >
-              Lưu địa chỉ
+              <span className="text-base font-medium">Lưu địa chỉ</span>
             </Button>
           </div>
         </form>

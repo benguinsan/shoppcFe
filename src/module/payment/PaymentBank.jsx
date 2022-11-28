@@ -34,33 +34,31 @@ const PaymentBank = () => {
   return (
     <div className="mt-10">
       <div className="container mx-auto  bg-white rounded-lg flex flex-col p-12 justify-between">
-        <span className="text-5xl font-semibold mx-auto">
+        <span className="text-2xl font-semibold mx-auto">
           Thông tin đơn hàng
         </span>
         <div className="flex flex-col w-[1000px] mx-auto mt-16 gap-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-medium">Nguời nhận:</span>
-            <span className="text-2xl font-medium">{dataOrder?.receiver}</span>
+            <span className="text-xl font-medium">Nguời nhận:</span>
+            <span className="text-xl font-medium">{dataOrder?.receiver}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-medium">Số điện thoại:</span>
-            <span className="text-2xl font-medium">{dataOrder?.phone}</span>
+            <span className="text-xl font-medium">Số điện thoại:</span>
+            <span className="text-xl font-medium">{dataOrder?.phone}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-medium">Địa chỉ nhận hàng:</span>
-            <span className="text-2xl font-medium">{dataOrder?.address}</span>
+            <span className="text-xl font-medium">Địa chỉ nhận hàng:</span>
+            <span className="text-xl font-medium">{dataOrder?.address}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-medium">
-              Phương thức thanh toán:
-            </span>
-            <span className="text-2xl font-medium">{dataOrder?.payments}</span>
+            <span className="text-xl font-medium">Phương thức thanh toán:</span>
+            <span className="text-xl font-medium">{dataOrder?.payments}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-medium">
+            <span className="text-xl font-medium">
               Tổng số tiền cần thanh toán
             </span>
-            <span className="text-3xl font-medium text-[#009245]">
+            <span className="text-2xl font-medium text-[#009245]">
               {formatPrice(dataOrder?.totalPrice)}
             </span>
           </div>

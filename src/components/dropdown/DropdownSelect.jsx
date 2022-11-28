@@ -32,13 +32,13 @@ const DropdownSelect = ({
   return (
     <div className="relative w-[300px]" ref={nodeRef}>
       <div
-        className="p-5 rounded-lg border border-black bg-white flex items-center justify-between cursor-pointer border-solid"
+        className="p-3 rounded-lg border border-black bg-white flex items-center justify-between cursor-pointer border-solid"
         onClick={() => setShow(!show)}
       >
         <span>{label}</span>
       </div>
       <div
-        className={`absolute top-full left-0 w-full rounded-lg bg-white overflow-y-auto h-[200px] z-40   ${
+        className={`absolute top-full left-0 w-full rounded-lg bg-white overflow-y-auto h-[180px] z-40   ${
           show ? "shadow" : "opacity-0 invisible"
         }`}
       >

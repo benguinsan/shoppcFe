@@ -174,7 +174,7 @@ const ItemAddress = ({ data, data_key }) => {
       <div className="w-full bg-white  border-2 border-dotted text-black px-5 py-5 rounded-lg flex items-center justify-between my-7 focus:border-solid">
         <div className="flex flex-col justify-between ">
           <div className="flex items-center gap-x-5 mb-2">
-            <h3 className="font-semibold text-lg ">{data.name}</h3>
+            <h3 className="font-medium text-lg ">{data.name}</h3>
             {data.setDefault && (
               <div className="px-1 py-1 bg-blue-100 rounded-md font-medium">
                 Mặc định
@@ -193,10 +193,10 @@ const ItemAddress = ({ data, data_key }) => {
           </div>
         </div>
 
-        <div className="flex items-center justify-start gap-x-8">
+        <div className="flex items-center justify-start gap-x-4">
           {!data.setDefault && (
             <button
-              className="border-2 border-solid px-4 py-3 text-green-400 font-medium border-green-400"
+              className="border-2 border-solid px-2 py-2 text-green-400 font-medium border-green-400 rounded-lg"
               type="button"
               onClick={() => handleDefault(data_key)}
             >
@@ -205,14 +205,14 @@ const ItemAddress = ({ data, data_key }) => {
           )}
 
           <button
-            className="border-2 border-solid px-4 py-3 text-blue-400 font-medium border-blue-400"
+            className="border-2 border-solid px-2 py-2 text-blue-400 font-medium border-blue-400 rounded-lg"
             type="button"
             onClick={() => setShowModal(true)}
           >
             Chỉnh sửa
           </button>
           <button
-            className="border-2 border-solid px-4 py-3 text-red-600 font-medium border-[red]"
+            className="border-2 border-solid px-2 py-2 text-red-600 font-medium border-[red] rounded-lg"
             type="button"
             onClick={handleDelete}
           >
@@ -226,13 +226,13 @@ const ItemAddress = ({ data, data_key }) => {
         onClose={() => {
           setShowModal(false);
         }}
-        bodyClassName="w-[750px] bg-white p-10 rounded-lg relative z-10 content h-[850px] overflow-y-auto overflow-x-hidden"
+        bodyClassName="w-[750px] bg-white px-10 py-5 rounded-lg relative z-10 content h-[650px] overflow-y-auto overflow-x-hidden"
       >
-        <h3 className="text-2xl font-semibold text-black text-left mb-5">
+        <h3 className="text-lg font-semibold text-black text-left mb-3">
           Thông tin người nhận hàng
         </h3>
         <form autoComplete="off" onSubmit={handleSubmit(handleEdit)}>
-          <div className="flex flex-col items-start gap-4 mb-10">
+          <div className="flex flex-col items-start gap-4 mb-5">
             <Label htmlFor="fullname">* Họ tên</Label>
             <Input
               type="text"
@@ -241,13 +241,13 @@ const ItemAddress = ({ data, data_key }) => {
               control={control}
             ></Input>
             {errors.fullname && (
-              <p className="text-red-500 text-lg font-medium">
+              <p className="text-red-500 text-base font-medium">
                 {errors.fullname?.message}
               </p>
             )}
           </div>
 
-          <div className="flex flex-col items-start gap-4 mb-10">
+          <div className="flex flex-col items-start gap-4 mb-5">
             <Label htmlFor="sdt">* Số điện thoại</Label>
             <Input
               type="number"
@@ -256,18 +256,18 @@ const ItemAddress = ({ data, data_key }) => {
               control={control}
             ></Input>
             {errors.sdt && (
-              <p className="text-red-500 text-lg font-medium">
+              <p className="text-red-500 text-base font-medium">
                 {errors.sdt?.message}
               </p>
             )}
           </div>
 
-          <h3 className="text-2xl font-semibold text-black text-left mb-5">
+          <h3 className="text-lg font-semibold text-black text-left mb-3">
             Địa chỉ nhận hàng
           </h3>
 
           <div className="flex items-center justify-between">
-            <div className="flex flex-col items-start gap-4 mb-10">
+            <div className="flex flex-col items-start gap-4 mb-5">
               <Label htmlFor="province">* Tỉnh/Thành phố</Label>
               <DropdownSelect
                 control={control}
@@ -278,13 +278,13 @@ const ItemAddress = ({ data, data_key }) => {
                 onClick={(id) => setProvinceId(id)}
               ></DropdownSelect>
               {errors.province && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.province?.message}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col items-start gap-4 mb-10">
+            <div className="flex flex-col items-start gap-4 mb-5">
               <Label htmlFor="district">* Quận/Huyện</Label>
               <DropdownSelect
                 control={control}
@@ -295,7 +295,7 @@ const ItemAddress = ({ data, data_key }) => {
                 onClick={(id) => setDistrictId(id)}
               ></DropdownSelect>
               {errors.dictrict && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.dictrict?.message}
                 </p>
               )}
@@ -303,7 +303,7 @@ const ItemAddress = ({ data, data_key }) => {
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="flex flex-col items-start gap-4 mb-10">
+            <div className="flex flex-col items-start gap-4 mb-5">
               <Label htmlFor="ward">* Phường/Xã</Label>
               <DropdownSelect
                 control={control}
@@ -313,12 +313,12 @@ const ItemAddress = ({ data, data_key }) => {
                 data={ward}
               ></DropdownSelect>
               {errors.ward && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.ward?.message}
                 </p>
               )}
             </div>
-            <div className="flex flex-col items-start gap-4 mb-10">
+            <div className="flex flex-col items-start gap-4 mb-5">
               <Label htmlFor="address">* Địa chỉ cụ thể</Label>
               <Input
                 type="text"
@@ -328,29 +328,27 @@ const ItemAddress = ({ data, data_key }) => {
                 control={control}
               ></Input>
               {errors.address && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.address?.message}
                 </p>
               )}
             </div>
           </div>
-          <div className="flex items-center justify-end gap-x-4">
+          <div className="flex items-center justify-end gap-x-4 mt-5">
             <button
-              className="p-5 text-base font-semibold bg-white text-[#316BFF] rounded-lg border border-solid border-[blue]"
+              className="p-3 text-base font-medium bg-white text-[#316BFF] rounded-lg border border-solid border-[blue]"
               type="button"
               onClick={() => setShowModal(false)}
             >
               Hủy bỏ
             </button>
             <Button
-              style={{
-                fontSize: "16px",
-              }}
               type="submit"
+              height="50px"
               isLoding={isSubmitting}
               disable={isSubmitting}
             >
-              Lưu địa chỉ
+              <span className="text-base font-medium">Lưu địa chỉ</span>
             </Button>
           </div>
         </form>

@@ -57,7 +57,7 @@ const QuantityCard = ({ data }) => {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="w-8 h-8"
+            className="w-6 h-6"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H6" />
           </svg>
@@ -84,7 +84,7 @@ const QuantityCard = ({ data }) => {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="w-8 h-8"
+            className="w-6 h-6"
           >
             <path
               strokeLinecap="round"
@@ -95,7 +95,7 @@ const QuantityCard = ({ data }) => {
         </span>
       </div>
       <span
-        className="text-base text-blue-700 hover:text-red-700 cursor-pointer"
+        className="text-sm font-semibold text-blue-700 hover:text-red-700 cursor-pointer"
         onClick={() => handleDelete(data.id)}
       >
         Xóa

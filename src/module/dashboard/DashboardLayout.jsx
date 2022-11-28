@@ -11,7 +11,7 @@ const DashboardStyles = styled.div`
   .dashboard {
     &-heading {
       font-weight: bold;
-      font-size: 36px;
+      font-size: 24px;
       margin-bottom: 40px;
       color: #1dc071;
       letter-spacing: 1px;

@@ -9,12 +9,14 @@ const initialState = {
   statusFilter: action_status.IDLE,
   statusBrand: action_status.IDLE,
   statusSearch: action_status.IDLE,
+  statusProductBrand: action_status.IDLE,
   totalPage: null,
   totalPageFilter: null,
   product: {},
   productId: {},
   productFilter: {},
   productSearch: {},
+  productBrand: {},
   brand: {},
 };
 
@@ -31,6 +33,15 @@ export const getProductSearch = createAsyncThunk(
   "user/getProduct/Search",
   async (payload) => {
     let query = `limit=5&keyword=${payload}`;
+    const response = await productApi.getAllProduct(query);
+    return response.data;
+  }
+);
+
+export const getProductBrand = createAsyncThunk(
+  "user/getProductBrand",
+  async (payload) => {
+    let query = `limit=15&brand=${payload}`;
     const response = await productApi.getAllProduct(query);
     return response.data;
   }
@@ -113,6 +124,16 @@ const productSlice = createSlice({
     },
     [getProductSearch.rejected]: (state, action) => {
       state.statusSearch = action_status.FAILED;
+    },
+    [getProductBrand.pending]: (state, action) => {
+      state.statusProductBrand = action_status.LOADING;
+    },
+    [getProductBrand.fulfilled]: (state, action) => {
+      state.statusProductBrand = action_status.SUCCEEDED;
+      state.productBrand = action.payload.data;
+    },
+    [getProductBrand.rejected]: (state, action) => {
+      state.statusProductBrand = action_status.FAILED;
     },
   },
 });

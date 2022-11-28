@@ -62,10 +62,10 @@ const CartPage = () => {
 
         {cart?.length > 0 ? (
           <>
-            <div className="text-3xl font-bold mt-10">Giỏ hàng</div>
+            <div className="text-2xl font-bold mt-10">Giỏ hàng</div>
 
             <div className="cart">
-              <div className="information-cart mt-7 bg-white text-lg rounded-lg">
+              <div className="information-cart mt-7 bg-white text-base rounded-lg">
                 <Table>
                   <thead>
                     <tr>
@@ -98,8 +98,8 @@ const CartPage = () => {
                   </tbody>
                 </Table>
               </div>
-              <div className="information-price bg-white mt-7 text-lg rounded-lg pb-8 pt-4 px-3 flex flex-col justify-start">
-                <span className="text-xl font-semibold">Thanh toán</span>
+              <div className="information-price bg-white mt-7 text-base rounded-lg flex flex-col justify-start p-3">
+                <span className="font-medium">Thanh toán</span>
                 <div className="flex items-center justify-between py-4">
                   <span className="text-[#8b8f9b] text-lg font-normal">
                     Tổng tạm tính
@@ -130,21 +130,21 @@ const CartPage = () => {
                 </div>
                 {!isLoggedIn ? (
                   <button
-                    className="w-full px-2 py-2 bg-blue-700 text-white mt-12 rounded-lg flex flex-col items-center"
+                    className="bg-blue-700 text-white rounded-lg flex flex-col items-center mx-auto py-2 mt-4 w-full"
                     type="button"
                     onClick={handleClick}
                   >
-                    <span className="font-medium text-xl">THANH TOÁN</span>
-                    <span className="text-base">
+                    <span className="font-medium text-base">THANH TOÁN</span>
+                    <span className="text-xs">
                       Bạn cần đăng nhập để tiếp tục
                     </span>
                   </button>
                 ) : (
                   <button
-                    className="w-full px-3 py-3 bg-blue-700 text-white mt-12 rounded-lg"
+                    className=" bg-blue-700 text-white rounded-lg mx-auto py-2 mt-4 w-full"
                     onClick={handleCheckout}
                   >
-                    <span className="font-medium text-xl ">TIẾP TỤC</span>
+                    <span className="font-medium text-base ">TIẾP TỤC</span>
                   </button>
                 )}
               </div>

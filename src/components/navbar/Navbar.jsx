@@ -17,7 +17,6 @@ const Navbar = () => {
   const loggedInUser = useSelector((state) => state.user.current);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [islogout, setIsLogout] = useState(false);
   const bodyStyle = document.body.style;
   let isLocked = false;
   const hanleMouseOver = () => {
@@ -36,12 +35,6 @@ const Navbar = () => {
   const isLoggedIn =
     loggedInUser === null ? null : loggedInUser.active === "active";
 
-  useEffect(() => {
-    if (localStorage.getItem("jwt") && loggedInUser.active === "verify") {
-      setIsLogout(true);
-    }
-  }, []);
-
   const handleLogout = () => {
     Swal.fire({
       title: "Đăng xuất ",
@@ -59,7 +52,6 @@ const Navbar = () => {
         await userApi.logout();
         navigate("/");
         Swal.fire("Tạm biệt! Hẹn gặp lại quý khách");
-        setIsLogout(false);
       }
     });
   };
@@ -101,40 +93,57 @@ const Navbar = () => {
 
   const search = useDebounce(keyword, 500);
 
+  useEffect(() => {
+    if (show === true) {
+      disableBodyScroll(bodyStyle);
+    } else {
+      enableBodyScroll(bodyStyle);
+    }
+  }, [show]);
+
   return (
-    <nav className=" bg-primary h-[90px] sticky z-50 shadow-md transition-all top-0 text-white -translate-y-0.5">
-      <div className="container flex items-center h-full justify-between">
+    <nav className=" bg-primary h-[80px] sticky z-50 shadow-md transition-all top-0 text-white -translate-y-0.5 ">
+      <div className="container flex items-center h-full justify-between ">
         <div className="flex items-center justify-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-10 h-10 text-white"
+          <Link
+            title="Tất cả sản phẩm"
+            className="cursor-pointer"
+            to="/product"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            />
-          </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-10 h-10 text-white"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+          </Link>
           <Link to="/" className="flex items-center">
             <div className="w-[100px] h-[120px]">
               <img
                 src="/images/logo.png"
                 alt="logo"
                 className="w-full h-full object-cover"
+                title="Trang chủ"
               />
             </div>
-            <span className="text-white font-medium text-3xl">HC.VN</span>
+            <span className="text-white font-medium text-3xl" title="Trang chủ">
+              HC.VN
+            </span>
           </Link>
         </div>
 
         <div className="w-[650px] flex items-center relative " ref={nodeRef}>
           <input
             type="text"
-            className="py-3 px-4 rounded-l-lg text-lg w-[600px] flex-shrink-0 text-black"
+            className="py-3 px-4 rounded-l-lg text-base w-[600px] flex-shrink-0 text-black"
             id="search"
             placeholder="Nhập tên laptop cần tìm ..."
             onClick={handleClick}
@@ -142,7 +151,7 @@ const Navbar = () => {
             value={keyword}
           />
           <div
-            className="w-[50px] bg-yellow-400 h-[52px] rounded-r-lg flex items-center justify-center cursor-pointer "
+            className="w-[50px] bg-yellow-400 h-[48px] rounded-r-lg flex items-center justify-center cursor-pointer "
             onClick={handleClickSearch}
           >
             <svg
@@ -165,7 +174,7 @@ const Navbar = () => {
           )}
         </div>
 
-        {!isLoggedIn && !islogout && (
+        {!isLoggedIn ? (
           <Link
             to="/sign-in"
             className="flex items-center justify-center hover:text-yellow-400"
@@ -186,34 +195,9 @@ const Navbar = () => {
             </svg>
             <span className="px-2 font-medium text-base">Đăng nhập</span>
           </Link>
+        ) : (
+          <Profile data={loggedInUser} />
         )}
-
-        {isLoggedIn && !islogout && <Profile data={loggedInUser} />}
-
-        {islogout && !isLoggedIn && (
-          <button
-            type="button"
-            className="flex items-center justify-center cursor-pointer hover:text-yellow-400"
-            onClick={handleLogout}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-10 h-10"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
-              />
-            </svg>
-            <span className="px-2 font-bold text-lg">Đăng xuất</span>
-          </button>
-        )}
-
         <div
           className="relative flex items-center gap-x-3 cart-home cursor-pointer"
           onMouseOver={hanleMouseOver}

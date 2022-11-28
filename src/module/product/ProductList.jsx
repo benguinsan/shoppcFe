@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ProductItem from "./ProductItem";
 import slugify from "slugify";
 import Pagination from "react-js-pagination";
 import ModalAdvanced from "../../components/Modal/ModalAdvanced";
 import { useEffect } from "react";
 import { formatPrice } from "../../utils/formatPrice";
+import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 
 const ProductList = ({ data, handlePageClick, page, totalPage }) => {
   const navigate = useNavigate();
-
+  const bodyStyle = document.body.style;
   const [showModal, setShowModal] = useState(false);
 
   const handleClick = (item) => {
@@ -28,6 +29,14 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
     }
   }, [selectedItems]);
 
+  useEffect(() => {
+    if (showModal === true) {
+      disableBodyScroll(bodyStyle);
+    } else {
+      enableBodyScroll(bodyStyle);
+    }
+  }, [showModal]);
+
   const removeFromCompare = (item) => {
     const filteredItems = selectedItems.filter(
       (product) => product.id !== item.id
@@ -40,10 +49,10 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
       <div className="mt-20">
         <div className="flex flex-col container rounded-lg bg-white ">
           <div className="flex items-center justify-between p-5 ">
-            <span className="font-bold text-2xl">Laptop</span>
+            <span className="font-bold text-xl">Laptop</span>
             <div className="flex items-center gap-x-1 cursor-pointer">
               <span
-                className="text-lg text-[#a497a2] font-semibold "
+                className="text-base text-[#a497a2] font-semibold "
                 onClick={() => navigate("/product")}
               >
                 Xem tất cả
@@ -101,158 +110,164 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
               setShowModal(false);
               setSelectedItems([]);
             }}
-            bodyClassName="w-[1200px] bg-white p-10 rounded-lg relative z-10 content h-[850px] overflow-y-auto overflow-x-hidden"
+            bodyClassName="w-[1050px] bg-white p-10 rounded-lg relative z-10 content h-[600px] overflow-y-auto overflow-x-hidden"
           >
-            <table className="table-product items-center">
+            <table className="table-product items-center table-fixed w-full">
               <thead>
                 <tr>
                   <th></th>
-                  <th className="text-lg font-semibold items-start">
+                  <th className="text-base font-semibold items-start">
                     Sản phẩm 1
                   </th>
-                  <th className="text-lg font-semibold">Sản phẩm 2</th>
+                  <th className="text-base font-semibold">Sản phẩm 2</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="text-lg font-semibold">Ảnh sản phẩm</td>
+                  <td className="text-base font-semibold">Ảnh sản phẩm</td>
                   <td>
                     <img
                       src={selectedItems[0]?.images[0]}
                       alt=""
-                      className="w-[200px] h-[200px] object-cover"
+                      className="w-[200px] h-[200px] object-cover mx-auto"
                     />
                   </td>
                   <td>
                     <img
                       src={selectedItems[1]?.images[0]}
                       alt=""
-                      className="w-[200px] h-[200px] object-cover"
+                      className="w-[200px] h-[200px] object-cover mx-auto"
                     />
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Tên sản phẩm</td>
+                  <td className="text-base font-semibold">Tên sản phẩm</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span
+                      className="text-base font-normal line-clamp-2 cursor-pointer"
+                      title={selectedItems[0]?.title}
+                    >
                       {selectedItems[0]?.title}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span
+                      className="text-base font-normal line-clamp-2 cursor-pointer"
+                      title={selectedItems[1]?.title}
+                    >
                       {selectedItems[1]?.title}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Thương hiệu</td>
+                  <td className="text-base font-semibold">Thương hiệu</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.brand.name}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.brand.name}
                     </span>
                   </td>
                 </tr>
 
                 <tr>
-                  <td className="text-lg font-semibold">Hệ điều hành</td>
+                  <td className="text-base font-semibold">Hệ điều hành</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.os}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.os}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Màu sắc</td>
+                  <td className="text-base font-semibold">Màu sắc</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.color}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.color}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">CPU</td>
+                  <td className="text-base font-semibold">CPU</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.cpu}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.cpu}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Màn hình</td>
+                  <td className="text-base font-semibold">Màn hình</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.screen}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.screen}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Graphic Card</td>
+                  <td className="text-base font-semibold">Graphic Card</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.graphicCard}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.graphicCard}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Pin</td>
+                  <td className="text-base font-semibold">Pin</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.battery}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.battery}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Nhu cầu</td>
+                  <td className="text-base font-semibold">Nhu cầu</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.demand}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.demand}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Ram</td>
+                  <td className="text-base font-semibold">Ram</td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {selectedItems[0]?.ram}
                       {Number(selectedItems[0]?.ram) -
                         Number(selectedItems[1]?.ram) >=
@@ -275,7 +290,7 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {selectedItems[1]?.ram}
                       {Number(selectedItems[1]?.ram) -
                         Number(selectedItems[0]?.ram) >=
@@ -299,9 +314,9 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Khối lượng</td>
+                  <td className="text-base font-semibold">Khối lượng</td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {selectedItems[0]?.weight}
                       {selectedItems[0]?.weight - selectedItems[1]?.weight <=
                         0 && (
@@ -323,7 +338,7 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {selectedItems[1]?.weight}
                       {selectedItems[1]?.weight - selectedItems[0]?.weight <=
                         0 && (
@@ -346,9 +361,9 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Giá tiền</td>
+                  <td className="text-base font-semibold">Giá tiền</td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {formatPrice(selectedItems[0]?.promotion)}
                       {selectedItems[0]?.promotion -
                         selectedItems[1]?.promotion <=
@@ -371,7 +386,7 @@ const ProductList = ({ data, handlePageClick, page, totalPage }) => {
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {formatPrice(selectedItems[1]?.promotion)}
                       {selectedItems[1]?.promotion -
                         selectedItems[0]?.promotion <=

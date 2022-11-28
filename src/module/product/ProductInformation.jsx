@@ -9,13 +9,21 @@ import Feedback from "../feedback/Feedback";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingPage from "../../components/loading/LoadingPage";
 import { action_status } from "../../utils/constants/status";
-import { getProductId } from "../../redux/product/productSlice";
+import {
+  getProductBrand,
+  getProductId,
+} from "../../redux/product/productSlice";
 import PageNotFound from "../../page/NotFoundPage";
+import ProductListHome from "../../module/product/ProductListHome";
 
 const ProductInformation = () => {
   const params = useParams();
-  const { statusId, productId } = useSelector((state) => state.product);
+  const { statusId, productId, statusProductBrand, productBrand } = useSelector(
+    (state) => state.product
+  );
   const dispatch = useDispatch();
+  console.log("Product Brand", productBrand);
+  console.log(productId?.brand?.name);
 
   useEffect(() => {
     try {
@@ -24,6 +32,14 @@ const ProductInformation = () => {
       console.log(error.message);
     }
   }, [params.id]);
+
+  useEffect(() => {
+    try {
+      dispatch(getProductBrand(productId?.brand?.id));
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [productId?.brand]);
 
   useEffect(() => {
     window.scrollTo({
@@ -86,11 +102,23 @@ const ProductInformation = () => {
             </div>
 
             <Feedback id={productId?._id} data={productId} />
-
             <BackToTopButton />
           </div>
+          {statusProductBrand === action_status.LOADING && <LoadingPage />}
+          {statusProductBrand === action_status.SUCCEEDED && (
+            <div className="container">
+              <div className="mt-10 w-full bg-white rounded-lg p-5">
+                <div className=" text-xl font-semibold">
+                  Cùng thương hiệu {productId?.brand?.name}
+                </div>
+                <ProductListHome data={productBrand} />
+              </div>
+            </div>
+          )}
+          {statusProductBrand === action_status.FAILED && <div>Error</div>}
         </div>
       )}
+
       {statusId === action_status.FAILED && <PageNotFound />}
     </>
   );

@@ -119,7 +119,7 @@ const UserOrder = () => {
                 <>
                   {order?.length > 0 &&
                     order.map((item) => (
-                      <tr className="text-lg" key={item._id}>
+                      <tr className="text-base" key={item._id}>
                         <td
                           className="cursor-pointer text-blue-600 hover:text-blue-900"
                           onClick={() =>
@@ -172,7 +172,7 @@ const UserOrder = () => {
                 <>
                   {order?.length > 0 &&
                     order.map((item) => (
-                      <tr className="text-lg" key={item._id}>
+                      <tr className="text-base" key={item._id}>
                         <td
                           className="cursor-pointer text-blue-600 hover:text-blue-900"
                           onClick={() =>
@@ -202,7 +202,7 @@ const UserOrder = () => {
                 <>
                   {order?.length > 0 &&
                     order.map((item) => (
-                      <tr className="text-lg" key={item._id}>
+                      <tr className="text-base" key={item._id}>
                         <td
                           className="cursor-pointer text-blue-600 hover:text-blue-900"
                           onClick={() =>
@@ -233,7 +233,7 @@ const UserOrder = () => {
                 <>
                   {order?.length > 0 &&
                     order.map((item) => (
-                      <tr className="text-lg" key={item._id}>
+                      <tr className="text-base" key={item._id}>
                         <td
                           className="cursor-pointer text-blue-600 hover:text-blue-900"
                           onClick={() =>
@@ -280,49 +280,49 @@ const UserOrder = () => {
       {status === action_status.FAILED && (
         <>
           {(state === "All" || state === undefined) && (
-            <div className="bg-white container rounded-lg h-[500px] flex flex-col items-center justify-center gap-y-3 ">
+            <div className="bg-white container rounded-lg h-[400px] flex flex-col items-center justify-center gap-y-3 ">
               <img
                 src="../images/logo-cart.png"
                 alt=""
-                className="w-[300px] h-[300px]"
+                className="w-[250px] h-[250px]"
               />
-              <span className="text-xl font-medium text-gray-400">
+              <span className="text-lg font-medium text-gray-400">
                 Hiện không có đơn hàng nào
               </span>
             </div>
           )}{" "}
           {state === "Success" && (
-            <div className="bg-white container rounded-lg h-[500px] flex flex-col items-center justify-center gap-y-3 ">
+            <div className="bg-white container rounded-lg h-[400px] flex flex-col items-center justify-center gap-y-3 ">
               <img
                 src="../images/logo-cart.png"
                 alt=""
-                className="w-[300px] h-[300px]"
+                className="w-[250px] h-[250px]"
               />
-              <span className="text-xl font-medium text-gray-400">
+              <span className="text-lg font-medium text-gray-400">
                 Hiện không có đơn hàng nào thành công
               </span>
             </div>
           )}
           {state === "Processed" && (
-            <div className="bg-white container rounded-lg h-[500px] flex flex-col items-center justify-center gap-y-3 ">
+            <div className="bg-white container rounded-lg h-[400px] flex flex-col items-center justify-center gap-y-3 ">
               <img
                 src="../images/logo-cart.png"
                 alt=""
-                className="w-[300px] h-[300px]"
+                className="w-[250px] h-[250px]"
               />
-              <span className="text-xl font-medium text-gray-400">
+              <span className="text-lg font-medium text-gray-400">
                 Hiện không có đơn hàng nào chờ xử lý
               </span>
             </div>
           )}
           {state === "Cancelled" && (
-            <div className="bg-white container rounded-lg h-[500px] flex flex-col items-center justify-center gap-y-3 ">
+            <div className="bg-white container rounded-lg h-[400px] flex flex-col items-center justify-center gap-y-3 ">
               <img
                 src="../images/logo-cart.png"
                 alt=""
-                className="w-[300px] h-[300px]"
+                className="w-[250px] h-[250px]"
               />
-              <span className="text-xl font-medium text-gray-400">
+              <span className="text-lg font-medium text-gray-400">
                 Hiện không có đơn hàng nào trong danh sách hủy
               </span>
             </div>

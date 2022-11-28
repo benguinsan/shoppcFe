@@ -29,23 +29,25 @@ const ProductItem = ({
           "https://lh3.googleusercontent.com/ZQFbZeosDa1ODQnaaunB72fejXPcl_hg7rfEcgVlZSkgtOTAHQH1M4RxVrH2cLN6gjqJvOAq1b8CeE92gjqDN2W3b2HsMkxb=rw"
         }
         alt=""
-        className="w-full h-[200px] object-cover rounded-lg mb-2 transition-transform hover:scale-105"
+        className="w-full h-[180px] object-cover rounded-lg mb-2 transition-transform hover:scale-105"
       />
       <div className="flex flex-col flex-1">
-        <h3 className="line-clamp-2 mb-2">{product?.title}</h3>
+        <h3 className="line-clamp-2 mb-2 text-sm font-medium">
+          {product?.title}
+        </h3>
         {product?.inventory < 5 && product?.inventory > 0 && (
-          <span className="text-orange-500 font-medium mb-2">
+          <span className="text-orange-500 font-medium mb-2 text-sm">
             Chỉ còn {product?.inventory} sản phẩm
           </span>
         )}
         {product?.inventory === 0 && (
-          <span className="text-orange-500 font-medium mb-2">
+          <span className="text-orange-500 font-medium mb-2 text-sm">
             Sản phẩm hiện tại hết hàng
           </span>
         )}
         {product?.inventory > 4 && <span className="mb-8"></span>}
         <div className="flex items-center justify-between text-sm  mb-2">
-          <span className="text-lg text-blue-700 font-bold">
+          <span className="text-lg text-blue-700 font-semibold">
             {formatPrice(product?.promotion)}
           </span>
           <span>
@@ -68,21 +70,21 @@ const ProductItem = ({
         <div></div>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <span className="text-base line-through text-slate-400">
+            <span className="text-sm line-through text-slate-400">
               {formatPrice(product?.price)}
             </span>
-            <span className="text-blue"> - {product?.percent}%</span>
+            <span className="text-blue text-sm"> - {product?.percent}%</span>
           </div>
           {selected && selected.includes(product) ? (
             <button
-              className="p-2 text-red-600 border-2 border-solid border-red-600 rounded-lg text-base font-medium transition-all "
+              className="p-2 text-red-600 border border-solid border-red-600 rounded-lg text-sm font-medium transition-all "
               onClick={(e) => handleRemove(e, product)}
             >
               Hủy
             </button>
           ) : (
             <button
-              className="p-2 text-green-600 border-2 border-solid border-green-600 rounded-lg text-base font-medium transition-all"
+              className="p-2 text-green-600 border border-solid border-green-600 rounded-lg text-sm font-medium transition-all"
               onClick={(e) => handleAdd(e, product)}
             >
               So sánh

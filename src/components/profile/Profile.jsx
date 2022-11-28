@@ -10,8 +10,8 @@ const ProfileStyles = styled.div`
   position: relative;
   cursor: pointer;
   .avatar {
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     img {
       width: 100%;
       height: 100%;
@@ -30,9 +30,9 @@ const Profile = ({ data }) => {
         <div className="avatar">
           <img src={data.avatar} alt="" />
         </div>
-        <div className="flex flex-col items-start justify-center text-white font-semibold gap-y-1 text-base name">
-          <span className="">Xin chào ,</span>
-          <span>{data.name}</span>
+        <div className="flex flex-col items-start justify-center text-white text-base">
+          <span className="text-sm font-medium">Xin chào ,</span>
+          <span className="text-sm font-medium">{data.name}</span>
         </div>
         <Dropdown />
       </ProfileStyles>

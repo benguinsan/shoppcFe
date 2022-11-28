@@ -13,22 +13,23 @@ const InformationOrder = ({ data }) => {
       <img
         src={data.product.images[0]}
         alt=""
-        className="w-[100px] h-[100px] border-2 border-solid"
+        className="w-[80px] h-[80px] border-2 border-solid"
       />
       <div className="flex flex-col justify-start items-start">
         <span
-          className="text-base line-clamp-2 hover:text-blue-700 cursor-pointer"
+          className="text-sm line-clamp-2 hover:text-blue-800 cursor-pointer font-medium"
           onClick={handleClick}
+          title={data.product.title}
         >
           {data.product.title}
         </span>
-        <span className="text-base text-[#a28faa]">
+        <span className="text-sm text-[#a28faa]">
           Số lượng: {data.quantity}
         </span>
-        <span className="text-lg font-medium">
+        <span className="text-base font-semibold text-blue-700">
           {formatPrice(data.product.promotion)}
         </span>
-        <span className="text-base text-[#a28faa] line-through">
+        <span className="text-sm text-[#a28faa] line-through">
           {formatPrice(data.product.price)}
         </span>
       </div>

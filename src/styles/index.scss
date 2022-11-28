@@ -19,9 +19,8 @@
 }
 .container {
   width: 100%;
-  max-width: 1350px;
+  max-width: 1400px;
   margin: 0 auto;
-  // padding: 0 20px;
 }
 a {
   text-decoration: none;
@@ -131,11 +130,11 @@ input::-webkit-inner-spin-button {
 
 table {
   border-collapse: collapse;
-  width: 100%;
+  // table-layout: fixed;
+  // width: 100%;
 }
 td {
   text-align: left;
-
   padding: 20px 20px 20px 20px;
 }
 .table-product tr:nth-child(even) {
@@ -172,7 +171,7 @@ td {
   margin-top: 20px;
 }
 .page-num {
-  padding: 10px 15px;
+  padding: 9px 11px;
   cursor: pointer;
   border-radius: 8px;
   font-weight: 500;
@@ -210,22 +209,4 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   -webkit-appearance: none;
   @apply bg-green-500;
-}
-
-header {
-  max-width: 1600px;
-  padding: 20px;
-  font-size: 16px;
-}
-nav {
-  max-width: 1600px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 20px;
-  font-size: 16px;
-}
-footer {
-  max-width: 1600px;
-  margin-left: auto;
-  margin-right: auto;
 }

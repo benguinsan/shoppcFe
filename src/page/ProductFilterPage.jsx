@@ -58,7 +58,7 @@ const ProductFilterPage = () => {
     } catch (error) {
       console.log(error.message);
     }
-  }, [page, sort, queryParams]);
+  }, [location.search]);
 
   useEffect(() => {
     try {

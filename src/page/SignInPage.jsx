@@ -124,7 +124,7 @@ const SignInPage = () => {
             control={control}
           />
           {errors.email && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.email?.message}
             </p>
           )}
@@ -134,21 +134,21 @@ const SignInPage = () => {
           <Label htmlFor="password">Mật khẩu</Label>
           <InputPasswordToggle control={control}></InputPasswordToggle>
           {errors.password && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.password?.message}
             </p>
           )}
         </Field>
 
-        <div className="flex items-center justify-between px-44 mt-8">
+        <div className="flex items-center justify-between px-48 mt-8">
           <div className="flex items-center">
-            <span className="text-black text-xl">
+            <span className="text-black text-base">
               Bạn chưa có tài khoản? &nbsp;
             </span>
 
             <Link
               to="/sign-up"
-              className="text-xl text-[#1DC071] font-semibold"
+              className="text-lg text-[#1DC071] font-semibold"
             >
               Đăng ký
             </Link>
@@ -156,7 +156,7 @@ const SignInPage = () => {
 
           <Link
             to="/forgot-password"
-            className="text-xl text-[#1DC071] font-semibold"
+            className="text-lg text-[#1DC071] font-semibold"
           >
             Quên mật khẩu
           </Link>
@@ -168,13 +168,13 @@ const SignInPage = () => {
           disable={isSubmitting}
           style={{
             width: "100%",
-            maxWidth: 300,
+            maxWidth: 250,
             margin: "30px auto",
           }}
         >
           Đăng nhập
         </Button>
-        <div className="w-[300px] mx-auto">
+        <div className="w-[250px] mx-auto">
           <GoogleButton
             type="light"
             style={{

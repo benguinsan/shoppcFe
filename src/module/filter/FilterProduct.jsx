@@ -5,9 +5,11 @@ import ProductItem from "../product/ProductItem";
 import ModalAdvanced from "../../components/Modal/ModalAdvanced";
 import { useState } from "react";
 import { formatPrice } from "../../utils/formatPrice";
+import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 
 const FilterProduct = ({ data }) => {
   const navigate = useNavigate();
+  const bodyStyle = document.body.style;
   const [selectedItems, setSelectedItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -15,6 +17,14 @@ const FilterProduct = ({ data }) => {
     const path = slugify(item.title, { strict: true });
     navigate(`/${path}/${item._id}`);
   };
+
+  useEffect(() => {
+    if (showModal === true) {
+      disableBodyScroll(bodyStyle);
+    } else {
+      enableBodyScroll(bodyStyle);
+    }
+  }, [showModal]);
 
   const addToCompare = (item) => {
     setSelectedItems((selectedItems) => [...selectedItems, item]);
@@ -35,7 +45,7 @@ const FilterProduct = ({ data }) => {
 
   return (
     <div>
-      <div className="grid-cols-4 grid gap-y-2 pb-10">
+      <div className="grid-cols-4 grid">
         {data.length > 0 &&
           data.map((item, index) => (
             <ProductItem
@@ -57,158 +67,164 @@ const FilterProduct = ({ data }) => {
               setShowModal(false);
               setSelectedItems([]);
             }}
-            bodyClassName="w-[1200px] bg-white p-10 rounded-lg relative z-10 content h-[850px] overflow-y-auto overflow-x-hidden"
+            bodyClassName="w-[1050px] bg-white p-10 rounded-lg relative z-10 content h-[600px] overflow-y-auto overflow-x-hidden"
           >
-            <table className="table-product items-center">
+            <table className="table-product items-center table-fixed w-full">
               <thead>
                 <tr>
                   <th></th>
-                  <th className="text-lg font-semibold items-start">
+                  <th className="text-base font-semibold items-start">
                     Sản phẩm 1
                   </th>
-                  <th className="text-lg font-semibold">Sản phẩm 2</th>
+                  <th className="text-base font-semibold">Sản phẩm 2</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="text-lg font-semibold">Ảnh sản phẩm</td>
+                  <td className="text-base font-semibold">Ảnh sản phẩm</td>
                   <td>
                     <img
                       src={selectedItems[0]?.images[0]}
                       alt=""
-                      className="w-[200px] h-[200px] object-cover"
+                      className="w-[200px] h-[200px] object-cover mx-auto"
                     />
                   </td>
                   <td>
                     <img
                       src={selectedItems[1]?.images[0]}
                       alt=""
-                      className="w-[200px] h-[200px] object-cover"
+                      className="w-[200px] h-[200px] object-cover mx-auto"
                     />
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Tên sản phẩm</td>
+                  <td className="text-base font-semibold">Tên sản phẩm</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span
+                      className="text-base font-normal line-clamp-2 cursor-pointer"
+                      title={selectedItems[0]?.title}
+                    >
                       {selectedItems[0]?.title}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span
+                      className="text-base font-normal line-clamp-2 cursor-pointer"
+                      title={selectedItems[1]?.title}
+                    >
                       {selectedItems[1]?.title}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Thương hiệu</td>
+                  <td className="text-base font-semibold">Thương hiệu</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.brand.name}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.brand.name}
                     </span>
                   </td>
                 </tr>
 
                 <tr>
-                  <td className="text-lg font-semibold">Hệ điều hành</td>
+                  <td className="text-base font-semibold">Hệ điều hành</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.os}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.os}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Màu sắc</td>
+                  <td className="text-base font-semibold">Màu sắc</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.color}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.color}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">CPU</td>
+                  <td className="text-base font-semibold">CPU</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.cpu}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.cpu}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Màn hình</td>
+                  <td className="text-base font-semibold">Màn hình</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.screen}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.screen}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Graphic Card</td>
+                  <td className="text-base font-semibold">Graphic Card</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.graphicCard}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.graphicCard}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Pin</td>
+                  <td className="text-base font-semibold">Pin</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.battery}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.battery}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Nhu cầu</td>
+                  <td className="text-base font-semibold">Nhu cầu</td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[0]?.demand}
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal">
+                    <span className="text-base font-normal">
                       {selectedItems[1]?.demand}
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Ram</td>
+                  <td className="text-base font-semibold">Ram</td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {selectedItems[0]?.ram}
                       {Number(selectedItems[0]?.ram) -
                         Number(selectedItems[1]?.ram) >=
@@ -231,7 +247,7 @@ const FilterProduct = ({ data }) => {
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {selectedItems[1]?.ram}
                       {Number(selectedItems[1]?.ram) -
                         Number(selectedItems[0]?.ram) >=
@@ -255,9 +271,9 @@ const FilterProduct = ({ data }) => {
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Khối lượng</td>
+                  <td className="text-base font-semibold">Khối lượng</td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {selectedItems[0]?.weight}
                       {selectedItems[0]?.weight - selectedItems[1]?.weight <=
                         0 && (
@@ -279,7 +295,7 @@ const FilterProduct = ({ data }) => {
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {selectedItems[1]?.weight}
                       {selectedItems[1]?.weight - selectedItems[0]?.weight <=
                         0 && (
@@ -302,9 +318,9 @@ const FilterProduct = ({ data }) => {
                   </td>
                 </tr>
                 <tr>
-                  <td className="text-lg font-semibold">Giá tiền</td>
+                  <td className="text-base font-semibold">Giá tiền</td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {formatPrice(selectedItems[0]?.promotion)}
                       {selectedItems[0]?.promotion -
                         selectedItems[1]?.promotion <=
@@ -327,7 +343,7 @@ const FilterProduct = ({ data }) => {
                     </span>
                   </td>
                   <td>
-                    <span className="text-lg font-normal flex items-center gap-x-2">
+                    <span className="text-base font-normal flex items-center gap-x-2">
                       {formatPrice(selectedItems[1]?.promotion)}
                       {selectedItems[1]?.promotion -
                         selectedItems[0]?.promotion <=

@@ -16,13 +16,14 @@ const ProductCard = ({ data }) => {
       />
       <div className="flex flex-col items-start flex-wrap">
         <span
-          className="text-base hover:text-blue-600 leading-7 cursor-pointer"
+          className="text-base font-medium hover:text-blue-600 cursor-pointer line-clamp-2"
+          title={data.product.title}
           onClick={handleClick}
         >
           {data.product.title}
         </span>
-        <span className="text-base text-[#8e8db7]">SKU: {data.product.id}</span>
-        <span className="text-orange-500 text-base">
+        <span className="text-sm text-[#8e8db7]">SKU: {data.product.id}</span>
+        <span className="text-orange-500 text-sm font-medium">
           Chỉ còn {data.product.inventory} sản phẩm{" "}
         </span>
       </div>

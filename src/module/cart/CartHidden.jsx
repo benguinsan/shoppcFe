@@ -8,17 +8,17 @@ const CartHidden = () => {
 
   return (
     <div className="mt-5">
-      <div className="container bg-white h-[600px] rounded-lg flex flex-col items-center justify-center">
+      <div className="container bg-white h-[450px] rounded-lg flex flex-col items-center justify-center">
         <img
           src="../images/logo-cart.png"
           alt=""
-          className="w-[300px]h-[300px] object-cover pb-5"
+          className="w-[250px] h-[250px] object-cover pb-5"
         />
-        <span className="text-[#969594] text-lg pb-6">
+        <span className="text-[#969594] text-base pb-6">
           Giỏ hàng chưa có sản phẩm nào
         </span>
         <button
-          className="px-6 py-3  rounded-lg bg-blue-700 text-white"
+          className="px-3 py-3  rounded-lg bg-blue-700 text-white"
           onClick={handleClick}
         >
           Mua sắm ngay

@@ -15,8 +15,8 @@ const Input = ({ name = "", type = "text", children, control, ...props }) => {
         id={name}
         {...props}
         {...field}
-        className={`w-full border-[1px] border-solid border-[#292D32] rounded-[8px] transition-all text-[#171725] font-medium text-lg ${
-          children ? "py-[16px] pr-[60px] pl-[20px]" : " px-[20px] py-[16px]"
+        className={`w-full border-[1px] border-solid border-[#292D32] rounded-[8px] transition-all text-[#171725] font-medium text-base ${
+          children ? "py-[14px] pr-[40px] pl-[20px]" : " px-[20px] py-[14px]"
         }`}
       />
       {children ? (

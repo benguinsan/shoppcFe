@@ -25,13 +25,18 @@ const SubInformationProduct = ({ data }) => {
   };
   return (
     <div className="product-info flex flex-col p-6">
-      <span className="text-2xl font-medium mb-2">{data?.title}</span>
+      <span
+        className="text-xl font-semibold mb-2 line-clamp-2 cursor-pointer"
+        title={data?.title}
+      >
+        {data?.title}
+      </span>
       <div className="flex items-center justify-start gap-x-5 mb-4">
-        <span className="text-lg text-slate-400">
+        <span className="text-base text-slate-400">
           Thương hiệu: {data?.brand?.name}
         </span>
         <span>|</span>
-        <span className="text-lg text-slate-400">SKU: {data?._id}</span>
+        <span className="text-base text-slate-400">SKU: {data?._id}</span>
       </div>
       {data?.inventory > 0 && data?.inventory < 5 && (
         <span className="text-orange-500 font-medium mb-4">
@@ -47,24 +52,24 @@ const SubInformationProduct = ({ data }) => {
         {formatPrice(data?.promotion)}
       </span>
       <div className="flex items-center mb-6">
-        <span className="text-base line-through text-slate-400 ">
+        <span className="text-lg line-through text-slate-400 ">
           {formatPrice(data?.price)}
         </span>
-        <span className="text-blue"> - {data?.percent}%</span>
+        <span className="text-blue text-lg"> - {data?.percent}%</span>
       </div>
       <span className="w-full border-dotted border-2 mb-6"></span>
       {data?.inventory > 0 && (
         <>
           <div className="flex items-center justify-between px-10">
             <button
-              className="px-24 py-4 bg-blue-800 text-white text-xl font-medium rounded-md"
+              className="px-8 py-3 bg-blue-800 text-white text-lg font-medium rounded-md w-[220px]"
               type="button"
               onClick={handleBuy}
             >
               MUA NGAY
             </button>
             <button
-              className="px-8 py-4  text-blue-700 text-xl font-medium rounded-md border-2 border-blue-700"
+              className="px-3 py-3  text-blue-700 text-lg font-medium rounded-md border-2 border-blue-700"
               type="button"
               onClick={handleAddCart}
             >
