@@ -4,10 +4,10 @@ import { formatPrice } from "../../utils/formatPrice";
 const PriceCard = ({ data }) => {
   return (
     <div className="flex flex-col items-end justify-center">
-      <span className="text-lg font-semibold">
+      <span className="text-base font-semibold">
         {formatPrice(data.product.promotion)}
       </span>
-      <span className="text-base line-through">
+      <span className="text-sm line-through">
         {formatPrice(data.product.price)}
       </span>
     </div>

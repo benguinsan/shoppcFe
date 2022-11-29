@@ -7,11 +7,24 @@ import QuantityCard from "./QuantityCard";
 import { formatPrice } from "../../utils/formatPrice";
 import { useSelector } from "react-redux";
 import CartHidden from "./CartHidden";
+import { useReactToPrint } from "react-to-print";
+import { useRef } from "react";
+import PDF from "../../components/PDF/PDF";
 
 const CartPage = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const { cart } = useSelector((state) => state.cart);
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "HC.VN chuyên bán cung cấp máy tính xách tay",
+    onAfterPrint: () => {
+      toast.dismiss();
+      toast.success("In thành công báo giá sản phẩm", { pauseOnHover: false });
+    },
+  });
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -40,7 +53,10 @@ const CartPage = () => {
     <div className="mt-10">
       <div className="container">
         <div className="flex items-center">
-          <Link to="/" className=" text-lg text-[#a8b4c9] flex items-center">
+          <Link
+            to="/"
+            className=" text-base text-[#a8b4c9] flex items-center font-medium"
+          >
             Trang chủ
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -57,12 +73,20 @@ const CartPage = () => {
               />
             </svg>
           </Link>
-          <span className="text-lg text-[#a8b4c9]">Giỏ hàng</span>
+          <span className="text-base text-[#a8b4c9] font-medium">Giỏ hàng</span>
         </div>
 
         {cart?.length > 0 ? (
           <>
-            <div className="text-2xl font-bold mt-10">Giỏ hàng</div>
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-bold mt-10">Giỏ hàng</div>
+              <button
+                className="text-sm font-medium mt-10 border-2 rounded-lg py-2 px-2 border-gray-600"
+                onClick={handlePrint}
+              >
+                Tải báo giá
+              </button>
+            </div>
 
             <div className="cart">
               <div className="information-cart mt-7 bg-white text-base rounded-lg">
@@ -88,7 +112,7 @@ const CartPage = () => {
                           <td>
                             <QuantityCard data={item} />
                           </td>
-                          <td className="text-xl font-semibold">
+                          <td className="text-base font-semibold">
                             {formatPrice(
                               item.product.promotion * item.quantity
                             )}
@@ -101,7 +125,7 @@ const CartPage = () => {
               <div className="information-price bg-white mt-7 text-base rounded-lg flex flex-col justify-start p-3">
                 <span className="font-medium">Thanh toán</span>
                 <div className="flex items-center justify-between py-4">
-                  <span className="text-[#8b8f9b] text-lg font-normal">
+                  <span className="text-[#8b8f9b] text-base font-medium">
                     Tổng tạm tính
                   </span>
                   <span>
@@ -115,7 +139,7 @@ const CartPage = () => {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#8b8f9b] text-lg font-normal">
+                  <span className="text-[#8b8f9b] text-base font-medium">
                     Thành tiền
                   </span>
                   <span className="text-blue-700 font-semibold text-xl">
@@ -154,6 +178,7 @@ const CartPage = () => {
           <CartHidden />
         )}
       </div>
+      <PDF componentRef={componentRef} />
     </div>
   );
 };

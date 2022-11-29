@@ -53,11 +53,11 @@ const QuantityCard = ({ data }) => {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
+            fill="bold"
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="w-6 h-6"
+            className="w-4 h-4"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H6" />
           </svg>
@@ -66,7 +66,7 @@ const QuantityCard = ({ data }) => {
           type="number"
           value={data.quantity}
           readOnly
-          className="p-2 bg-[#f8f8fc] w-[50px] text-center count"
+          className="p-1 bg-[#f8f8fc] w-[50px] text-center count"
         ></input>
         <span
           className="inline-block p-2 bg-[#f8f8fc] cursor-pointer"
@@ -80,11 +80,11 @@ const QuantityCard = ({ data }) => {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
+            fill="bold"
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="w-6 h-6"
+            className="w-4 h-4"
           >
             <path
               strokeLinecap="round"

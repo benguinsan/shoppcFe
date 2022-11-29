@@ -72,7 +72,7 @@ const ProductInformation = () => {
             <div className="flex items-center">
               <Link
                 to="/"
-                className=" text-lg text-[#a8b4c9] flex items-center"
+                className=" text-base text-[#a8b4c9] flex items-center font-medium"
               >
                 Trang chủ
                 <svg
@@ -90,7 +90,9 @@ const ProductInformation = () => {
                   />
                 </svg>
               </Link>
-              <span className="text-lg text-[#a8b4c9]">{productId?.title}</span>
+              <span className="text-base text-[#a8b4c9] font-medium">
+                {productId?.title}
+              </span>
             </div>
             <div className="ProductDetail">
               <InformationProduct data={productId} />

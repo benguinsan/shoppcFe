@@ -9,6 +9,7 @@ import SubInformationProduct from "./SubInformationProduct";
 
 const InformationProduct = ({ data }) => {
   const [activeThumb, setActiveThumb] = useState();
+
   return (
     <div className="Information-product bg-white rounded-xl py-8 px-2">
       <div className="product-image">
