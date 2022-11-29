@@ -6,7 +6,7 @@ const Accordion = ({ title, children, className = false }) => {
   return (
     <div className={`accordion ${active ? "active" : ""}`}>
       <div className="accordion__title" onClick={() => setActive(!active)}>
-        <span className="text-lg font-medium">{title} </span>
+        <span className="text-base font-medium">{title} </span>
         <div className="accordion__icon">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -14,7 +14,7 @@ const Accordion = ({ title, children, className = false }) => {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="w-5 h-5"
+            className="w-4 h-4"
           >
             <path
               strokeLinecap="round"

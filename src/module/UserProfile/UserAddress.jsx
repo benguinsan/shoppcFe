@@ -158,7 +158,7 @@ const UserAddress = () => {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="w-6 h-6"
+            className="w-5 h-5"
           >
             <path
               strokeLinecap="round"
@@ -166,7 +166,7 @@ const UserAddress = () => {
               d="M12 4.5v15m7.5-7.5h-15"
             />
           </svg>
-          <span className="text-lg font-medium">Thêm địa chỉ mới </span>
+          <span className="text-base font-medium">Thêm địa chỉ mới </span>
         </div>
       </button>
 

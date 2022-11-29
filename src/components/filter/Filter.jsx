@@ -32,7 +32,7 @@ const Filter = (props) => {
           />
         </svg>
       </span>
-      <span className="text-lg font-medium"> {props.label}</span>
+      <span className="text-base font-medium"> {props.label}</span>
     </label>
   );
 };

@@ -93,19 +93,20 @@ const SendMail = ({ onClick }) => {
                 style={{
                   width: "150px",
                   margin: "0 10px",
+                  height: "50px",
                 }}
               >
-                Gửi mã
+                <span className="text-base font-medium">Gửi mã</span>
               </Button>
             )}
             {!hiddenClock && (
-              <div className="clock w-[160px] py-[20px] flex items-center justify-center text-white rounded-md ">
-                <span className="text-xl font-semibold">{time}</span>
+              <div className="clock w-[100px] py-[20px] flex items-center justify-center text-white rounded-md ">
+                <span className="text-lg font-medium">{time}</span>
               </div>
             )}
           </div>
           {errors.email && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.email?.message}
             </p>
           )}

@@ -45,7 +45,7 @@ const FilterProduct = ({ data }) => {
 
   return (
     <div>
-      <div className="grid-cols-4 grid">
+      <div className="grid-cols-4 grid gap-y-2">
         {data.length > 0 &&
           data.map((item, index) => (
             <ProductItem

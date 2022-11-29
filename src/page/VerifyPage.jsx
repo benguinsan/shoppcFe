@@ -108,7 +108,7 @@ const VerifyPage = () => {
             control={control}
           ></Input>
           {errors.verify && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.verify?.message}
             </p>
           )}
@@ -119,7 +119,8 @@ const VerifyPage = () => {
           disable={isSubmitting}
           style={{
             width: "100%",
-            maxWidth: 300,
+            maxWidth: 250,
+            height: "50px",
             margin: "30px auto",
           }}
         >

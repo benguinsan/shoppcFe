@@ -71,7 +71,7 @@ const Rating = ({ onClose, onSubmit, id, rating = 0, review = "" }) => {
 
   return (
     <div className="flex flex-col justify-between">
-      <span className="text-2xl font-bold text-center">
+      <span className="text-xl font-semibold text-center">
         Đánh giá & nhận xét
       </span>
       <div className="flex items-center justify-center mt-10 cursor-pointer gap-x-14">
@@ -88,29 +88,29 @@ const Rating = ({ onClose, onSubmit, id, rating = 0, review = "" }) => {
           />
         ))}
       </div>
-      <div className="flex items-center justify-center gap-x-8 mt-5">
+      <div className="flex items-center justify-center gap-x-11 mt-5">
         {note.map((item, index) => (
-          <span key={index} className="text-lg font-bold">
+          <span key={index} className="text-base font-semibold">
             {item.content}
           </span>
         ))}
       </div>
       <textarea
         placeholder="Xin mời chia sẻ một số cảm nhận về sản phẩm ..."
-        className="w-full h-[250px] bg-[#f8f8f8] mt-10 p-5 text-lg font-medium rounded-lg resize-none border-2 border-solid"
+        className="w-full h-[250px] bg-[#f8f8f8] mt-10 p-5 text-base font-medium rounded-lg resize-none border-2 border-solid"
         onChange={(e) => setContent(e.target.value)}
         value={content}
       />
       <div className="flex items-center justify-end gap-x-5 mt-8">
         <button
-          className="py-2 px-6 border-2 border-blue-500 border-solid rounded-lg text-blue-500 font-semibold"
+          className="py-2 px-4 border-2 border-blue-500 border-solid rounded-lg text-blue-500 font-semibold"
           onClick={onClose}
         >
           Hủy bỏ
         </button>
         <button
           type="submit"
-          className="py-2 px-6  rounded-lg text-white bg-red-600 font-semibold border-2 border-solid border-red-600"
+          className="py-2 px-4  rounded-lg text-white bg-red-600 font-semibold border-2 border-solid border-red-600"
           onClick={handleOnSubmit}
         >
           Gửi

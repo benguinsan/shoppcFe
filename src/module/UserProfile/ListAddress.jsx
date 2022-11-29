@@ -55,7 +55,7 @@ const ListAddress = () => {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="w-28 h-28 animate-bounce"
+            className="w-20 h-20 animate-bounce"
           >
             <path
               strokeLinecap="round"
@@ -63,7 +63,7 @@ const ListAddress = () => {
               d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span className="text-xl font-medium">
+          <span className="text-lg font-medium">
             Hiện tại chưa có thông tin địa chỉ. Vui lòng bạn thêm địa chỉ mới
             !!!
           </span>

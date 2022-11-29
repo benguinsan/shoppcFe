@@ -174,20 +174,20 @@ const ItemAddress = ({ data, data_key }) => {
       <div className="w-full bg-white  border-2 border-dotted text-black px-5 py-5 rounded-lg flex items-center justify-between my-7 focus:border-solid">
         <div className="flex flex-col justify-between ">
           <div className="flex items-center gap-x-5 mb-2">
-            <h3 className="font-medium text-lg ">{data.name}</h3>
+            <h3 className="font-medium text-base ">{data.name}</h3>
             {data.setDefault && (
-              <div className="px-1 py-1 bg-blue-100 rounded-md font-medium">
+              <div className="px-1 py-1 bg-blue-100 rounded-md font-medium text-sm">
                 Mặc định
               </div>
             )}
           </div>
 
           <div className="flex flex-col">
-            <span className="text-base font-normal">
+            <span className="text-sm font-normal">
               Địa chỉ: {data.detail} , {data.ward}, {data.district} ,
               {data.province}
             </span>
-            <span className="text-base font-normal">
+            <span className="text-sm font-normal">
               Điện thoại: {data.phone}
             </span>
           </div>

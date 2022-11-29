@@ -16,20 +16,20 @@ const ProductOrder = ({ data }) => {
                 className="w-[120px] h-[120px]"
               />
               <div className="flex flex-col items-start gap-y-2">
-                <span className="text-lg font-medium">
+                <span className="text-base font-medium">
                   {item?.product.title}
                 </span>
-                <span className="text-base">SKU: {item?.product?._id}</span>
+                <span className="text-sm">SKU: {item?.product?._id}</span>
               </div>
             </div>
             <div className="flex flex-col items-end">
-              <span className="text-lg">
+              <span className="text-base font-medium">
                 {formatPrice(item?.product?.promotion)}
               </span>
-              <span className="text-base line-through">
+              <span className="text-sm line-through">
                 {formatPrice(item?.product?.price)}
               </span>
-              <span>X{item?.quantity}</span>
+              <span className="text-base font-medium">X{item?.quantity}</span>
             </div>
           </div>
         ))}

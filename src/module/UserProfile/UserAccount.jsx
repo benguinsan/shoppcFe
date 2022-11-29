@@ -32,10 +32,11 @@ const schema = yup.object({
       message: "Định dạng số điện thoại không đúng",
     }),
   dateOfBirth: yup
-    .date()
+    .string()
     .required("Vui lòng chọn ngày sinh")
     .nullable()
     .max(today, "Ngày sinh không hợp lệ"),
+  gender: yup.string().oneOf(["nam", "nữ", "khác"], "Vui lòng chọn giới tính"),
 });
 
 const Gender = {
@@ -169,7 +170,7 @@ const UserAccount = () => {
               <Label htmlFor="fullname">Họ tên</Label>
               <Input name="fullname" control={control} type="text"></Input>
               {errors.fullname && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.fullname?.message}
                 </p>
               )}
@@ -184,7 +185,7 @@ const UserAccount = () => {
               <Label htmlFor="sdt">Số điện thoại</Label>
               <Input name="sdt" type="number" control={control}></Input>
               {errors.sdt && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.sdt?.message}
                 </p>
               )}
@@ -194,7 +195,7 @@ const UserAccount = () => {
               <Label htmlFor="dateOfBirth">Ngày sinh</Label>
               <Input name="dateOfBirth" type="date" control={control}></Input>
               {errors.dateOfBirth && (
-                <p className="text-red-500 text-lg font-medium">
+                <p className="text-red-500 text-base font-medium">
                   {errors.dateOfBirth?.message}
                 </p>
               )}
@@ -231,6 +232,11 @@ const UserAccount = () => {
                   Khác
                 </Radio>
               </FieldCheckboxes>
+              {errors.gender && (
+                <p className="text-red-500 text-base font-medium">
+                  {errors.gender?.message}
+                </p>
+              )}
             </Field>
 
             <Button
@@ -239,8 +245,9 @@ const UserAccount = () => {
               type="submit"
               disabled={isSubmitting}
               isLoading={isSubmitting}
+              height="50px"
             >
-              Cập nhật thông tin
+              <span className="text-base font-medium"> Cập nhật thông tin</span>
             </Button>
           </form>
         )}

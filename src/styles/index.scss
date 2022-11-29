@@ -34,8 +34,8 @@ input::-moz-input-placeholder {
 
 // css checkbox
 .custom-checkbox-square {
-  width: 25px;
-  height: 25px;
+  width: 22px;
+  height: 22px;
 }
 .custom-checkbox input:checked + div .custom-checkbox-square {
   background-color: rgb(59 130 246 / var(--tw-bg-opacity));
@@ -189,7 +189,7 @@ td {
 // product filter
 .wrapper-product {
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-columns: 290px minmax(0, 1fr);
   gap: 0 20px;
   margin-top: 20px;
   align-items: flex-start;

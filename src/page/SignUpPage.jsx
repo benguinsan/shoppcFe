@@ -121,7 +121,7 @@ const SignUpPage = () => {
             control={control}
           />
           {errors.fullname && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.fullname?.message}
             </p>
           )}
@@ -136,7 +136,7 @@ const SignUpPage = () => {
             control={control}
           />
           {errors.email && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.email?.message}
             </p>
           )}
@@ -146,7 +146,7 @@ const SignUpPage = () => {
           <Label htmlFor="password">Mật khẩu</Label>
           <InputPasswordToggle control={control}></InputPasswordToggle>
           {errors.password && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.password?.message}
             </p>
           )}
@@ -159,7 +159,7 @@ const SignUpPage = () => {
             name="retypePassword"
           ></InputPasswordToggle>
           {errors.retypePassword && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.retypePassword?.message}
             </p>
           )}
@@ -172,7 +172,7 @@ const SignUpPage = () => {
             name="term"
           />
           {errors.term && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.term?.message}
             </p>
           )}
@@ -184,8 +184,9 @@ const SignUpPage = () => {
           disable={isSubmitting}
           style={{
             width: "100%",
-            maxWidth: 300,
+            maxWidth: 250,
             margin: "30px auto",
+            height: "50px",
           }}
         >
           Đăng ký
@@ -194,10 +195,10 @@ const SignUpPage = () => {
       <Field>
         <div className="flex items-center mx-auto pb-10">
           {" "}
-          <span className="text-black text-xl">
+          <span className="text-black text-base">
             Bạn đã có tài khoản? &nbsp;
           </span>
-          <Link to="/sign-in" className="text-xl text-[#1DC071] font-semibold">
+          <Link to="/sign-in" className="text-lg text-[#1DC071] font-semibold">
             Đăng nhập
           </Link>
         </div>

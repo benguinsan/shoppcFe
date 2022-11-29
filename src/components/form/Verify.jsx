@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import Field from "../field/Field";
 import Input from "../input/Input";
 import Button from "../button/Button";
-import userApi from "../../api/userApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { verifyResetPassword } from "../../redux/auth/userSlice";
@@ -75,8 +74,9 @@ const Verify = () => {
                 width: "150px",
                 margin: "0 10px",
               }}
+              height="50px"
             >
-              Xác nhận
+              <span className="text-base font-medium">Xác nhận</span>
             </Button>
           </div>
 

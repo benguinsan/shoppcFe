@@ -35,7 +35,7 @@ const Checkbox = ({ control, text, ...props }) => {
         </div>
         <label
           htmlFor={props.name}
-          className="text-xl cursor-pointer font-medium"
+          className="text-base cursor-pointer font-medium"
         >
           {text}
         </label>

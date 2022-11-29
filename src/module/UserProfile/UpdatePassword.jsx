@@ -77,7 +77,7 @@ const UpdatePassword = () => {
             name="passwordCurrent"
           ></InputPasswordToggle>
           {errors.passwordCurrent && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.passwordCurrent?.message}
             </p>
           )}
@@ -90,7 +90,7 @@ const UpdatePassword = () => {
             name="password"
           ></InputPasswordToggle>
           {errors.password && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.password?.message}
             </p>
           )}
@@ -103,7 +103,7 @@ const UpdatePassword = () => {
             name="passwordConfirm"
           ></InputPasswordToggle>
           {errors.passwordConfirm && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.passwordConfirm?.message}
             </p>
           )}
@@ -115,8 +115,9 @@ const UpdatePassword = () => {
           type="submit"
           disabled={isSubmitting}
           isLoading={isSubmitting}
+          height="50px"
         >
-          Đổi mật khẩu
+          <span className="text-base font-medium"> Đổi mật khẩu</span>
         </Button>
       </form>
     </div>

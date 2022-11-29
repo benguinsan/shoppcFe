@@ -94,7 +94,7 @@ const ResetPasswordPage = () => {
             control={control}
           ></InputPasswordToggle>
           {errors.password && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.password?.message}
             </p>
           )}
@@ -106,7 +106,7 @@ const ResetPasswordPage = () => {
             control={control}
           ></InputPasswordToggle>
           {errors.retypePassword && (
-            <p className="text-red-500 text-lg font-medium">
+            <p className="text-red-500 text-base font-medium">
               {errors.retypePassword?.message}
             </p>
           )}
@@ -117,8 +117,9 @@ const ResetPasswordPage = () => {
           disable={isSubmitting}
           style={{
             width: "100%",
-            maxWidth: 300,
+            maxWidth: 250,
             margin: "30px auto",
+            height: "50px",
           }}
         >
           Xác nhận

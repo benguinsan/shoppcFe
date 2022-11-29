@@ -83,9 +83,9 @@ const Feelback = ({ id, data }) => {
             </span>
             <StatisticFeedback data={feedback} />
             <div className="flex flex-col items-center gap-y-5 py-5">
-              <span className="text-2xl ">Bạn đánh giá sao sản phẩm này</span>
+              <span className="text-xl ">Bạn đánh giá sao sản phẩm này</span>
               <button
-                className="text-lg py-3 px-28 rounded-lg font-semibold text-white bg-red-600"
+                className="text-lg py-3 px-10 rounded-lg font-medium text-white bg-red-600"
                 onClick={handleClick}
               >
                 Đánh giá ngay

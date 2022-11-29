@@ -170,6 +170,7 @@ const SignInPage = () => {
             width: "100%",
             maxWidth: 250,
             margin: "30px auto",
+            height: "50px",
           }}
         >
           Đăng nhập
@@ -180,8 +181,7 @@ const SignInPage = () => {
             style={{
               width: "100%",
               borderRadius: "8px",
-              height: "60px",
-              padding: "7px",
+              height: "50px",
               fontSize: "18px",
               fontWeight: "bold",
             }}

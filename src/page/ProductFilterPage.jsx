@@ -194,7 +194,10 @@ const ProductFilterPage = () => {
         <div className="container">
           {" "}
           <div className="flex items-center">
-            <Link to="/" className=" text-lg text-[#a8b4c9] flex items-center">
+            <Link
+              to="/"
+              className=" text-base text-[#a8b4c9] flex items-center font-medium"
+            >
               Trang chủ
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -211,7 +214,9 @@ const ProductFilterPage = () => {
                 />
               </svg>
             </Link>
-            <span className="text-lg text-[#a8b4c9]">Laptop chính hãng</span>
+            <span className="text-base text-[#a8b4c9] font-medium">
+              Laptop chính hãng
+            </span>
           </div>
           <div className="wrapper-product">
             {statusBrand === action_status.LOADING && <LoadingPage />}
@@ -290,7 +295,9 @@ const ProductFilterPage = () => {
                 <>
                   <div className="flex flex-col container rounded-lg bg-white ">
                     <div className="flex items-center p-5 gap-x-5 ">
-                      <span className="font-medium text-lg ">Sắp xếp theo</span>
+                      <span className="font-medium text-base ">
+                        Sắp xếp theo
+                      </span>
                       <FilterSort onChange={handleClickSort} />
                     </div>
                     <FilterProduct data={productFilter} />

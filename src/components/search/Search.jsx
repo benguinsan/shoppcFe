@@ -43,10 +43,13 @@ const Search = ({ onClickItem, keyword }) => {
                 <img
                   src={item?.images[0]}
                   alt=""
-                  className="w-[110px] h-[110px]"
+                  className="w-[100px] h-[100px]"
                 />
                 <div className="flex flex-col  justify-start p-5">
-                  <span className="font-medium whitespace-nowrap line-clamp-1">
+                  <span
+                    className="font-medium line-clamp-1 text-base"
+                    title={item?.title}
+                  >
                     {item?.title}
                   </span>
                   <div className="font-medium text-base text-blue-700">

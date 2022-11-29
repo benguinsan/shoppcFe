@@ -73,27 +73,27 @@ const RangeSlider = ({
     <>
       <div className="flex justify-between items-center gap-x-3">
         <div className="rounded-md">
-          <span className="py-2 font-medium"> Min</span>
+          <span className="py-2 font-medium text-sm"> Min</span>
           <input
             onChange={(e) => setMinValue(e.target.value)}
             type="number"
             value={minValue}
-            className="w-28 rounded-md border border-gray-400 p-2"
+            className="w-28 rounded-md border border-gray-400 p-1"
           />
         </div>
         <div className="font-semibold text-lg h-[10px]"> - </div>
         <div className="rounded-md ">
-          <span className="py-2 font-medium"> Max</span>
+          <span className="py-2 font-medium text-sm"> Max</span>
           <input
             onChange={(e) => setMaxValue(e.target.value)}
             type="number"
             value={maxValue}
-            className="w-28 rounded-md border border-gray-400 p-2"
+            className="w-28 rounded-md border border-gray-400 p-1"
           />
         </div>
       </div>
 
-      <div className="my-6">
+      <div className="my-5">
         <div className="slider relative h-1 rounded-md bg-gray-300">
           <div
             className="progress absolute h-1 bg-green-300 rounded "

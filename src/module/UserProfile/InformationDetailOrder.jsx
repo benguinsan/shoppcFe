@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { cancelOrder, getOrderId } from "../../redux/order/orderSlice";
 import { action_status } from "../../utils/constants/status";
 import LoadingPage from "../../components/loading/LoadingPage";
-import PageNotFound from "../../page/NotFoundPage";
+import Swal from "sweetalert2";
 
 const InformationDetailOrder = () => {
   const navigate = useNavigate();
@@ -25,18 +25,31 @@ const InformationDetailOrder = () => {
   }, []);
 
   const handleClick = () => {
-    const data = {
-      data: {
-        status: "Cancelled",
-      },
-      id: params.id,
-    };
-    try {
-      dispatch(cancelOrder(data));
-      navigate(-1);
-    } catch (error) {
-      console.log(error.message);
-    }
+    Swal.fire({
+      title: "Chú ý ",
+      text: "Bạn muốn hủy đơn hàng này ?",
+      showCancelButton: true,
+      icon: "question",
+      cancelButtonColor: "#d33",
+      confirmButtonColor: "#3085d6",
+      cancelButtonText: "Hủy bỏ",
+      confirmButtonText: "Đồng ý",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const data = {
+          data: {
+            status: "Cancelled",
+          },
+          id: params.id,
+        };
+        try {
+          dispatch(cancelOrder(data));
+          navigate(-1);
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+    });
   };
   return (
     <>
@@ -54,7 +67,7 @@ const InformationDetailOrder = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="w-7 h-7"
+                className="w-5 h-5"
               >
                 <path
                   strokeLinecap="round"
@@ -64,12 +77,12 @@ const InformationDetailOrder = () => {
               </svg>
             </button>
             <div className="flex items-center gap-x-4 ">
-              <span className="text-2xl font-medium">
+              <span className="text-xl font-medium">
                 ĐƠN HÀNG: {orderId?._id}
               </span>
               {orderId?.status === "Processed" && (
                 <button
-                  className="border-2 border-red-400 p-2 rounded-lg text-red-400 text-lg font-medium hover:text-red-600 hover:border-red-600"
+                  className="border-2 border-red-400 p-2 rounded-lg text-red-400 text-sm font-medium hover:text-red-600 hover:border-red-600"
                   onClick={handleClick}
                 >
                   Hủy đơn
@@ -79,43 +92,45 @@ const InformationDetailOrder = () => {
           </div>
           <div className="grid grid-cols-2 h-[200px] mt-5 gap-x-5">
             <div className="bg-white flex flex-col items-start p-5 rounded-lg text-lg justify-between">
-              <span className=" font-medium">Thông tin người nhận</span>
+              <span className=" font-medium text-lg">Thông tin người nhận</span>
               <div className="flex flex-col items-start">
-                <div className="flex items-center gap-x-2">
-                  <span className=" font-medium">Người nhận:</span>
+                <div className="flex items-center gap-x-2 text-base">
+                  <span className=" font-medium ">Người nhận:</span>
                   <span>{orderId?.receiver}</span>
                 </div>
-                <div className="flex items-center gap-x-2">
+                <div className="flex items-center gap-x-2 text-base">
                   <span className=" font-medium">Hình thức nhận hàng:</span>
                   <span>Giao tiêu chuẩn</span>
                 </div>
-                <div className="flex items-center gap-x-2 flex-wrap">
+                <div className="flex items-center gap-x-2 flex-wrap text-base">
                   <span className=" font-medium">Địa chỉ:</span>
                   <span>{orderId?.address}</span>
                 </div>
-                <div className="flex items-center gap-x-2">
+                <div className="flex items-center gap-x-2 text-base">
                   <span className=" font-medium">Điện thoại:</span>
                   <span>{orderId?.phone}</span>
                 </div>
               </div>
             </div>
             <div className="bg-white flex flex-col items-start p-5 rounded-lg text-lg gap-y-3">
-              <span className=" font-medium">Thông tin đơn hàng</span>
+              <span className=" font-medium text-lg">Thông tin đơn hàng</span>
               <div className="flex flex-col items-start">
                 <div className="flex items-center gap-x-2">
-                  <span className=" font-medium">Trạng thái đơn hàng:</span>
+                  <span className=" font-medium text-base">
+                    Trạng thái đơn hàng:
+                  </span>
                   {orderId?.status === "Processed" && (
-                    <span className="px-2 rounded-lg text-white bg-orange-400">
+                    <span className="px-2 rounded-lg text-white bg-orange-400 text-base">
                       Đang xử lý
                     </span>
                   )}
                   {orderId?.status === "Cancelled" && (
-                    <span className="px-2 rounded-lg text-white bg-red-400">
+                    <span className="px-2 rounded-lg text-white bg-red-400 text-base">
                       Đã hủy đơn
                     </span>
                   )}
                   {orderId?.status === "Success" && (
-                    <span className="px-2 rounded-lg text-white bg-green-400">
+                    <span className="px-2 rounded-lg text-white bg-green-400 text-base">
                       Thành công
                     </span>
                   )}
@@ -126,7 +141,7 @@ const InformationDetailOrder = () => {
                   )}
                 </div>
                 <div className="flex items-center gap-x-2">
-                  <span className=" font-medium">Thời gian tạo:</span>
+                  <span className=" font-medium text-base">Thời gian tạo:</span>
                   <span> {format(new Date(orderId?.createdAt), "HH:mm")} </span>
                   <span>
                     {" "}
@@ -137,18 +152,18 @@ const InformationDetailOrder = () => {
             </div>
           </div>
           <div className="flex flex-col items-start p-5 bg-white rounded-lg mt-10">
-            <span className="text-xl font-medium">Sản phẩm</span>
+            <span className="text-lg font-medium">Sản phẩm</span>
             <ProductOrder data={orderId?.cart} />
           </div>
           <div className="flex flex-col items-start p-5 bg-white rounded-lg mt-10">
-            <span className="text-xl font-medium border-b-2 border-solid w-full pb-5">
+            <span className="text-lg font-medium border-b-2 border-solid w-full pb-5">
               Phương thức thanh toán
             </span>
             <div className="flex items-center mt-5 w-full justify-between">
-              <span className="text-lg  ">
+              <span className="text-base  ">
                 Thanh toán bằng {orderId?.payments}
               </span>
-              <span className="text-lg font-medium">
+              <span className="text-base font-medium">
                 {formatPrice(orderId?.totalPrice)}
               </span>
             </div>
