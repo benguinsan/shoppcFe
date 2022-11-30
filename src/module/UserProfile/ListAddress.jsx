@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { action_status } from "../../utils/constants/status";
 import { getAddress, refresh } from "../../redux/auth/addressSlice";
 import LoadingPage from "../../components/loading/LoadingPage";
+import Skeleton from "../../components/skeleton/Skeleton";
 
 const ListAddress = () => {
   const { status, updateAddress, add, deleteAddress, address } = useSelector(
@@ -41,7 +42,30 @@ const ListAddress = () => {
 
   return (
     <>
-      {status === action_status.LOADING && <LoadingPage />}
+      {status === action_status.LOADING && (
+        <>
+          <div className="w-full bg-white  border-2 border-dotted px-5 py-5 rounded-lg flex items-center justify-between my-7 focus:border-solid">
+            <div className="flex flex-col justify-between gap-y-3 ">
+              <div className="flex items-center gap-x-5 mb-2">
+                <Skeleton className="w-[100px] h-4 rounded-md" />
+                <Skeleton className="w-[100px] h-4 rounded-md" />
+              </div>
+              <Skeleton className="w-[600px] h-4 rounded-md" />
+              <Skeleton className="w-[250px] h-4 rounded-md" />
+            </div>
+          </div>
+          <div className="w-full bg-white  border-2 border-dotted px-5 py-5 rounded-lg flex items-center justify-between my-7 focus:border-solid">
+            <div className="flex flex-col justify-between gap-y-3 ">
+              <div className="flex items-center gap-x-5 mb-2">
+                <Skeleton className="w-[100px] h-4 rounded-md" />
+                <Skeleton className="w-[100px] h-4 rounded-md" />
+              </div>
+              <Skeleton className="w-[600px] h-4 rounded-md" />
+              <Skeleton className="w-[250px] h-4 rounded-md" />
+            </div>
+          </div>
+        </>
+      )}
       {status === action_status.SUCCEEDED &&
         address.length > 0 &&
         address.map((item, index) => (

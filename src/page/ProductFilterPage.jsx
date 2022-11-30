@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import FilterProduct from "../module/filter/FilterProduct";
 import { useDispatch, useSelector } from "react-redux";
 import { action_status } from "../utils/constants/status";
-import LoadingPage from "../components/loading/LoadingPage";
 import { useEffect } from "react";
 import { getBrand, getProductFilter } from "../redux/product/productSlice";
 import { useState } from "react";
@@ -17,6 +16,8 @@ import Filter from "../components/filter/Filter";
 import { ramData } from "../api/ramData";
 import { demandData } from "../api/demandData";
 import BackToTopButton from "../components/backtotop/BackToTopButton";
+import Skeleton from "../components/skeleton/Skeleton";
+import SkeletonItem from "../components/skeleton/SkeletonItem";
 
 const ProductFilterPage = () => {
   const params = queryString.parse(location.search);
@@ -219,11 +220,86 @@ const ProductFilterPage = () => {
             </span>
           </div>
           <div className="wrapper-product">
-            {statusBrand === action_status.LOADING && <LoadingPage />}
+            {statusBrand === action_status.LOADING && (
+              <>
+                <div className="product-filter w-full  bg-white rounded-lg flex flex-col items-start">
+                  <Skeleton className="h-3 w-1/2 rounded-lg ml-4" />
+                  <div className="flex items-center justify-between p-4">
+                    <Skeleton className="h-2 w-1/4 rounded-md" />
+                    <Skeleton className="h-2 w-1/4 rounded-md" />
+                  </div>
+                  <div className="flex items-center justify-between px-4">
+                    <Skeleton className="h-4 w-1/3 rounded-md" />
+                    <Skeleton className="h-4 w-1/3 rounded-md" />
+                  </div>
+                  <Skeleton className="h-3 w-[250px] rounded-lg m-4" />
+                  <div className="flex flex-col m-4">
+                    <Skeleton className="h-3 w-1/2 rounded-md " />
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col m-4">
+                    <Skeleton className="h-3 w-1/2 rounded-md " />
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col m-4">
+                    <Skeleton className="h-3 w-1/2 rounded-md " />
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col m-4">
+                    <Skeleton className="h-3 w-1/2 rounded-md " />
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                    <div className="flex items-center gap-x-2 mt-3">
+                      <Skeleton className="w-4 h-4 rounded-md" />
+                      <Skeleton className="w-1/2 h-3 rounded-md" />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
             {statusBrand === action_status.SUCCEEDED && (
               <>
                 {" "}
-                <div className="product-filter w-full  bg-white rounded-lg flex flex-col items-start text-black">
+                <div className="product-filter w-full  bg-white rounded-lg flex flex-col  text-black">
                   <FilterPrice onChange={handleChangePrice} />
                   <Accordion title="Thương hiệu" className="true">
                     {brand.length > 0 &&
@@ -290,7 +366,19 @@ const ProductFilterPage = () => {
             )}
 
             <div className="product-list">
-              {statusFilter === action_status.LOADING && <LoadingPage />}{" "}
+              {statusFilter === action_status.LOADING && (
+                <div className="flex flex-col container rounded-lg bg-white">
+                  <div className="flex items-center p-5 gap-x-5">
+                    <Skeleton className="w-[100px] h-5 rounded-md" />
+                    <Skeleton className="w-[80px] h-5 rounded-md" />
+                    <Skeleton className="w-[80px] h-5 rounded-md" />
+                  </div>
+
+                  <SkeletonItem className="my-5 grid-cols-4" totalItem={4} />
+                  <SkeletonItem className="my-5 grid-cols-4" totalItem={4} />
+                  <SkeletonItem className="my-5 grid-cols-4" totalItem={4} />
+                </div>
+              )}
               {statusFilter === action_status.SUCCEEDED && (
                 <>
                   <div className="flex flex-col container rounded-lg bg-white ">

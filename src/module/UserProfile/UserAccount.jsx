@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, refresh, updateInfoUser } from "../../redux/auth/userSlice";
 import { action_status } from "../../utils/constants/status";
-import LoadingPage from "../../components/loading/LoadingPage";
+import Skeleton from "../../components/skeleton/Skeleton";
 
 const today = moment();
 const schema = yup.object({
@@ -152,7 +152,39 @@ const UserAccount = () => {
           title="Thông tin tài khoản"
           className="px-5 py-5"
         ></DashboardHeading>
-        {status === action_status.LOADING && <LoadingPage />}
+        {status === action_status.LOADING && (
+          <div className="pb-16">
+            <Field>
+              <Skeleton className="w-[100px] h-4 rounded-lg" />
+              <Skeleton className="w-36 h-36 rounded-full mx-auto" />
+            </Field>
+            <Field>
+              <Skeleton className="w-[100px] h-4 rounded-lg" />
+              <Skeleton className="w-full h-4 rounded-md" />
+            </Field>
+            <Field>
+              <Skeleton className="w-[100px] h-4 rounded-lg" />
+              <Skeleton className="w-full h-4 rounded-md" />
+            </Field>
+            <Field>
+              <Skeleton className="w-[100px] h-4 rounded-lg" />
+              <Skeleton className="w-full h-4 rounded-md" />
+            </Field>
+            <Field>
+              <Skeleton className="w-[100px] h-4 rounded-lg" />
+              <Skeleton className="w-full h-4 rounded-md" />
+            </Field>
+            <Field>
+              <Skeleton className="w-[100px] h-4 rounded-lg" />
+              <div className="flex items-center gap-x-5">
+                <Skeleton className="w-6 h-6 rounded-full" />
+                <Skeleton className="w-6 h-6 rounded-full" />
+                <Skeleton className="w-6 h-6 rounded-full" />
+              </div>
+            </Field>
+            <Skeleton className="w-[200px] h-[40px] rounded-lg mx-auto mt-10" />
+          </div>
+        )}
         {status === action_status.SUCCEEDED && (
           <form className="pb-16" onSubmit={handleSubmit(handleUpdate)}>
             <Field>

@@ -15,6 +15,8 @@ import {
 } from "../../redux/product/productSlice";
 import PageNotFound from "../../page/NotFoundPage";
 import ProductListHome from "../../module/product/ProductListHome";
+import Skeleton from "../../components/skeleton/Skeleton";
+import SkeletonItem from "../../components/skeleton/SkeletonItem";
 
 const ProductInformation = () => {
   const params = useParams();
@@ -62,7 +64,69 @@ const ProductInformation = () => {
       {statusId === action_status.LOADING && (
         <div className="mt-10 rounded-lg">
           <div className="container">
-            <LoadingPage />
+            <div className="flex items-center gap-x-5">
+              <Skeleton className="w-[100px] h-4 rounded-md" />
+              <Skeleton className="w-[400px] h-4 rounded-md" />
+            </div>
+            <div className="ProductDetail">
+              <div className="Information-product bg-white rounded-xl py-8 px-2">
+                <div className="flex flex-col gap-y-3">
+                  <Skeleton className="w-[300px] h-[300px] rounded-md" />
+                  <div className="flex items-center gap-x-3 ">
+                    <Skeleton className="w-[50px] h-[50px] rounded-md" />
+                    <Skeleton className="w-[50px] h-[50px] rounded-md" />
+                    <Skeleton className="w-[50px] h-[50px] rounded-md" />
+                    <Skeleton className="w-[50px] h-[50px] rounded-md" />
+                    <Skeleton className="w-[50px] h-[50px] rounded-md" />
+                  </div>
+                </div>
+                <div className="product-info flex flex-col p-2">
+                  <Skeleton className="w-full h-5 rounded-lg" />
+                  <Skeleton className="w-3/5 h-5 rounded-lg mt-4  " />
+                  <div className="flex items-center gap-x-5 mt-8">
+                    <Skeleton className="w-4/12 h-3 rounded-md" />
+                    <Skeleton className="w-4/12 h-3 rounded-md" />
+                  </div>
+                  <Skeleton className="w-1/2 h-5 rounded-md mt-8" />
+                  <div className="flex items-center gap-x-5 mt-8">
+                    <Skeleton className="w-1/5 h-3 rounded-md" />
+                    <Skeleton className="w-1/5 h-3 rounded-md" />
+                  </div>
+                  <div className="flex items-center gap-x-5 mt-10 justify-center">
+                    <Skeleton className="w-1/2 h-12 rounded" />
+                    <Skeleton className="w-1/2 h-12 rounded" />
+                  </div>
+                </div>
+              </div>
+              <div className="Information-service bg-white w-full flex flex-col rounded-xl py-5 px-5">
+                <Skeleton className="w-full h-5 rounded-md mb-8" />
+                <div className="flex items-center mb-4 gap-x-4">
+                  <Skeleton className="w-7 h-7 rounded-md" />
+                  <Skeleton className="w-full h-5 rounded-md" />
+                </div>
+                <div className="flex items-center mb-4 gap-x-4">
+                  <Skeleton className="w-7 h-7 rounded-md" />
+                  <Skeleton className="w-full h-5 rounded-md" />
+                </div>
+                <div className="flex items-center mb-4 gap-x-4">
+                  <Skeleton className="w-7 h-7 rounded-md" />
+                  <Skeleton className="w-full h-5 rounded-md" />
+                </div>
+                <Skeleton className="w-full h-5 rounded-md mb-8 mt-4" />
+                <div className="flex items-center mb-4 gap-x-4">
+                  <Skeleton className="w-7 h-7 rounded-md" />
+                  <Skeleton className="w-full h-5 rounded-md" />
+                </div>
+                <div className="flex items-center mb-4 gap-x-4">
+                  <Skeleton className="w-7 h-7 rounded-md" />
+                  <Skeleton className="w-full h-5 rounded-md" />
+                </div>
+                <div className="flex items-center mb-4 gap-x-4">
+                  <Skeleton className="w-7 h-7 rounded-md" />
+                  <Skeleton className="w-full h-5 rounded-md" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -104,9 +168,18 @@ const ProductInformation = () => {
             </div>
 
             <Feedback id={productId?._id} data={productId} />
+
             <BackToTopButton />
           </div>
-          {statusProductBrand === action_status.LOADING && <LoadingPage />}
+
+          {statusProductBrand === action_status.LOADING && (
+            <div className="container">
+              <div className="mt-10 w-full bg-white rounded-lg p-5">
+                <Skeleton className="w-[200px] h-5 rounded-md" />
+                <SkeletonItem className="grid-cols-5 mt-5" totalItem={5} />
+              </div>
+            </div>
+          )}
           {statusProductBrand === action_status.SUCCEEDED && (
             <div className="container">
               <div className="mt-10 w-full bg-white rounded-lg p-5">
