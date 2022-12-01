@@ -12,6 +12,7 @@ import LoadingPage from "../../components/loading/LoadingPage";
 import { useState } from "react";
 import Pagination from "react-js-pagination";
 import queryString from "query-string";
+import Skeleton from "../../components/skeleton/Skeleton";
 
 const UserOrder = () => {
   const navigate = useNavigate();
@@ -101,7 +102,78 @@ const UserOrder = () => {
         </div>
       </div>
 
-      {status === action_status.LOADING && <LoadingPage />}
+      {status === action_status.LOADING && (
+        <>
+          {" "}
+          <Table>
+            <thead>
+              <tr>
+                <th>Mã đơn hàng</th>
+                <th>Ngày mua</th>
+                <th>Sản phẩm</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>
+                  {" "}
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  {" "}
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  {" "}
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+                <th>
+                  <Skeleton className="w-40 h-5 rounded-md" />
+                </th>
+              </tr>
+            </tbody>
+          </Table>
+        </>
+      )}
       {status === action_status.SUCCEEDED && (
         <>
           <Table>
@@ -262,6 +334,7 @@ const UserOrder = () => {
               )}
             </tbody>
           </Table>
+
           <div className="flex items-center justify-center mt-5">
             <Pagination
               activePage={page}

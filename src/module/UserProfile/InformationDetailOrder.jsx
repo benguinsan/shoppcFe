@@ -9,6 +9,7 @@ import { cancelOrder, getOrderId } from "../../redux/order/orderSlice";
 import { action_status } from "../../utils/constants/status";
 import LoadingPage from "../../components/loading/LoadingPage";
 import Swal from "sweetalert2";
+import Skeleton from "../../components/skeleton/Skeleton";
 
 const InformationDetailOrder = () => {
   const navigate = useNavigate();
@@ -53,7 +54,85 @@ const InformationDetailOrder = () => {
   };
   return (
     <>
-      {statusId === action_status.LOADING && <LoadingPage />}
+      {statusId === action_status.LOADING && (
+        <>
+          <div className="container flex flex-col">
+            <div className="flex items-center justify-start gap-x-5">
+              <Skeleton className="w-7 h-7 rounded-lg" />
+              <Skeleton className="w-72 h-4 rounded-md" />
+            </div>
+            <div className="grid grid-cols-2 h-[200px] mt-5 gap-x-5">
+              <div className="bg-white flex flex-col items-start p-5 rounded-lg text-lg gap-y-10">
+                <Skeleton className="w-60 h-4 rounded-md" />
+                <div className="flex flex-col items-start gap-y-4">
+                  <div className="flex items-center gap-x-2">
+                    <Skeleton className="w-24 h-3 rounded-md" />
+                    <Skeleton className="w-64 h-3 rounded-md" />
+                  </div>
+                  <div className="flex items-center gap-x-2">
+                    <Skeleton className="w-24 h-3 rounded-md" />
+                    <Skeleton className="w-64 h-3 rounded-md" />
+                  </div>
+                  <div className="flex items-center gap-x-2">
+                    <Skeleton className="w-24 h-3 rounded-md" />
+                    <Skeleton className="w-64 h-3 rounded-md" />
+                  </div>
+                  <div className="flex items-center gap-x-2">
+                    <Skeleton className="w-24 h-3 rounded-md" />
+                    <Skeleton className="w-64 h-3 rounded-md" />
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white flex flex-col items-start p-5 rounded-lg text-lg gap-y-10">
+                <Skeleton className="w-60 h-4 rounded-md" />
+                <div className="flex flex-col items-start gap-y-4">
+                  <div className="flex items-center gap-x-2">
+                    <Skeleton className="w-24 h-3 rounded-md" />
+                    <Skeleton className="w-64 h-3 rounded-md" />
+                  </div>
+                  <div className="flex items-center gap-x-2">
+                    <Skeleton className="w-24 h-3 rounded-md" />
+                    <Skeleton className="w-64 h-3 rounded-md" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col items-start p-5 bg-white rounded-lg mt-10">
+            <Skeleton className="w-60 h-4 rounded-md" />
+            <div className="flex flex-col items-start mt-5 w-full">
+              <div className="flex items-center w-full gap-x-5">
+                <Skeleton className="w-14 h-14 rounded-lg" />
+                <div className="flex flex-col gap-y-2 w-full">
+                  <Skeleton className="w-1/2 h-3 rounded-md" />
+                  <Skeleton className="w-1/3 h-3 rounded-md" />
+                  <Skeleton className="w-1/4 h-3 rounded-md" />
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col items-start mt-5 w-full">
+              <div className="flex items-center w-full gap-x-5">
+                <Skeleton className="w-14 h-14 rounded-lg" />
+                <div className="flex flex-col gap-y-2 w-full">
+                  <Skeleton className="w-1/2 h-3 rounded-md" />
+                  <Skeleton className="w-1/3 h-3 rounded-md" />
+                  <Skeleton className="w-1/4 h-3 rounded-md" />
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col items-start mt-5 w-full">
+              <div className="flex items-center w-full gap-x-5">
+                <Skeleton className="w-14 h-14 rounded-lg" />
+                <div className="flex flex-col gap-y-2 w-full">
+                  <Skeleton className="w-1/2 h-3 rounded-md" />
+                  <Skeleton className="w-1/3 h-3 rounded-md" />
+                  <Skeleton className="w-1/4 h-3 rounded-md" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
       {statusId === action_status.SUCCEEDED && (
         <div className="container flex flex-col">
           <div className="flex items-center justify-start gap-x-5">
