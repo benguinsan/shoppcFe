@@ -23,7 +23,10 @@ export const createFeedback = createAsyncThunk(
 export const getFeedback = createAsyncThunk(
   "user/getFeedback",
   async (payload) => {
-    const response = await reviewApi.getReview(payload);
+    console.log(payload);
+    const query = `page=${payload.page}&limit=3`;
+    const response = await reviewApi.getReview(payload.id, query);
+    console.log("Respnse:", response);
     return response.data;
   }
 );
@@ -55,6 +58,7 @@ const feedbackSlice = createSlice({
     feedbackUpdate: false,
     feedbackDelete: false,
     feedback: {},
+    totalPage: null,
   },
   reducers: {
     refresh: (state, action) => {
@@ -70,6 +74,7 @@ const feedbackSlice = createSlice({
     [getFeedback.fulfilled]: (state, action) => {
       state.status = action_status.SUCCEEDED;
       state.feedback = action.payload;
+      state.totalPage = action.payload.totalPage;
     },
     [getFeedback.rejected]: (state, action) => {
       state.status = action_status.FAILED;

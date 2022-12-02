@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^2.9.8",
+    "@iconify/react": "^4.0.1",
     "@paypal/react-paypal-js": "^7.8.1",
     "@reduxjs/toolkit": "^1.8.6",
     "@tailwindcss/line-clamp": "^0.4.2",
@@ -34,6 +35,8 @@
     "sass": "^1.55.0",
     "slick-carousel": "^1.8.1",
     "slugify": "^1.6.5",
+    "stream-chat": "^8.1.2",
+    "stream-chat-react": "^10.4.1",
     "styled-components": "^5.3.6",
     "sweetalert2": "^11.6.0",
     "swiper": "^8.4.4",

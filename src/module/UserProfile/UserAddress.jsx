@@ -175,132 +175,134 @@ const UserAddress = () => {
         onClose={() => {
           setShowModal(false);
         }}
-        bodyClassName="w-[750px] bg-white px-10 py-5 rounded-lg relative z-10 content h-[650px] overflow-y-auto overflow-x-hidden"
+        bodyClassName="w-[750px] bg-white  rounded-lg relative z-10 content h-[650px]  overflow-x-hidden"
       >
-        <h3 className="text-lg font-semibold text-black text-left mb-3">
-          Thông tin người nhận hàng
-        </h3>
-        <form onSubmit={handleSubmit(handleSend)} autoComplete="off">
-          <div className="flex flex-col items-start gap-4 mb-5">
-            <Label htmlFor="fullname">* Họ tên</Label>
-            <Input
-              type="text"
-              name="fullname"
-              placeholder="Mời bạn nhập tên của bạn"
-              control={control}
-            ></Input>
-            {errors.fullname && (
-              <p className="text-red-500 text-base font-medium">
-                {errors.fullname?.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col items-start gap-4 mb-5">
-            <Label htmlFor="sdt">* Số điện thoại</Label>
-            <Input
-              type="number"
-              name="sdt"
-              placeholder="Mời bạn nhập số điện thoại"
-              control={control}
-            ></Input>
-            {errors.sdt && (
-              <p className="text-red-500 text-base font-medium">
-                {errors.sdt?.message}
-              </p>
-            )}
-          </div>
-
+        <div className="overflow-y-auto h-[650px] px-10 py-5 ">
           <h3 className="text-lg font-semibold text-black text-left mb-3">
-            Địa chỉ nhận hàng
+            Thông tin người nhận hàng
           </h3>
-
-          <div className="flex items-center justify-between">
+          <form onSubmit={handleSubmit(handleSend)} autoComplete="off">
             <div className="flex flex-col items-start gap-4 mb-5">
-              <Label htmlFor="province">* Tỉnh/Thành phố</Label>
-              <DropdownSelect
-                control={control}
-                name="province"
-                dropdownLabel="Chọn"
-                setValue={setValue}
-                data={province}
-                onClick={(id) => setProvinceId(id)}
-              ></DropdownSelect>
-              {errors.province && (
-                <p className="text-red-500 text-base font-medium">
-                  {errors.province?.message}
-                </p>
-              )}
-            </div>
-
-            <div className="flex flex-col items-start gap-4 mb-5">
-              <Label htmlFor="district">* Quận/Huyện</Label>
-              <DropdownSelect
-                control={control}
-                name="dictrict"
-                dropdownLabel="Chọn"
-                setValue={setValue}
-                data={district}
-                onClick={(id) => setDistrictId(id)}
-              ></DropdownSelect>
-              {errors.dictrict && (
-                <p className="text-red-500 text-base font-medium">
-                  {errors.dictrict?.message}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col items-start gap-4 mb-5">
-              <Label htmlFor="ward">* Phường/Xã</Label>
-              <DropdownSelect
-                control={control}
-                name="ward"
-                dropdownLabel="Chọn"
-                setValue={setValue}
-                data={ward}
-              ></DropdownSelect>
-              {errors.ward && (
-                <p className="text-red-500 text-base font-medium">
-                  {errors.ward?.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col items-start gap-4 mb-5">
-              <Label htmlFor="address">* Địa chỉ cụ thể</Label>
+              <Label htmlFor="fullname">* Họ tên</Label>
               <Input
                 type="text"
-                name="address"
-                placeholder="Số nhà, ngõ, tên đường"
-                style={{ width: "300px" }}
+                name="fullname"
+                placeholder="Mời bạn nhập tên của bạn"
                 control={control}
               ></Input>
-              {errors.address && (
+              {errors.fullname && (
                 <p className="text-red-500 text-base font-medium">
-                  {errors.address?.message}
+                  {errors.fullname?.message}
                 </p>
               )}
             </div>
-          </div>
-          <div className="flex items-center justify-end gap-x-4 mt-5">
-            <button
-              className="p-3 text-base font-medium bg-white text-[#316BFF] rounded-lg border border-solid border-[blue]"
-              type="button"
-              onClick={() => setShowModal(false)}
-            >
-              Hủy bỏ
-            </button>
-            <Button
-              height="50px"
-              type="submit"
-              isLoding={isSubmitting}
-              disable={isSubmitting}
-            >
-              <span className="text-base font-medium">Lưu địa chỉ</span>
-            </Button>
-          </div>
-        </form>
+
+            <div className="flex flex-col items-start gap-4 mb-5">
+              <Label htmlFor="sdt">* Số điện thoại</Label>
+              <Input
+                type="number"
+                name="sdt"
+                placeholder="Mời bạn nhập số điện thoại"
+                control={control}
+              ></Input>
+              {errors.sdt && (
+                <p className="text-red-500 text-base font-medium">
+                  {errors.sdt?.message}
+                </p>
+              )}
+            </div>
+
+            <h3 className="text-lg font-semibold text-black text-left mb-3">
+              Địa chỉ nhận hàng
+            </h3>
+
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col items-start gap-4 mb-5">
+                <Label htmlFor="province">* Tỉnh/Thành phố</Label>
+                <DropdownSelect
+                  control={control}
+                  name="province"
+                  dropdownLabel="Chọn"
+                  setValue={setValue}
+                  data={province}
+                  onClick={(id) => setProvinceId(id)}
+                ></DropdownSelect>
+                {errors.province && (
+                  <p className="text-red-500 text-base font-medium">
+                    {errors.province?.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex flex-col items-start gap-4 mb-5">
+                <Label htmlFor="district">* Quận/Huyện</Label>
+                <DropdownSelect
+                  control={control}
+                  name="dictrict"
+                  dropdownLabel="Chọn"
+                  setValue={setValue}
+                  data={district}
+                  onClick={(id) => setDistrictId(id)}
+                ></DropdownSelect>
+                {errors.dictrict && (
+                  <p className="text-red-500 text-base font-medium">
+                    {errors.dictrict?.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col items-start gap-4 mb-5">
+                <Label htmlFor="ward">* Phường/Xã</Label>
+                <DropdownSelect
+                  control={control}
+                  name="ward"
+                  dropdownLabel="Chọn"
+                  setValue={setValue}
+                  data={ward}
+                ></DropdownSelect>
+                {errors.ward && (
+                  <p className="text-red-500 text-base font-medium">
+                    {errors.ward?.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col items-start gap-4 mb-5">
+                <Label htmlFor="address">* Địa chỉ cụ thể</Label>
+                <Input
+                  type="text"
+                  name="address"
+                  placeholder="Số nhà, ngõ, tên đường"
+                  style={{ width: "300px" }}
+                  control={control}
+                ></Input>
+                {errors.address && (
+                  <p className="text-red-500 text-base font-medium">
+                    {errors.address?.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-x-4 mt-5">
+              <button
+                className="p-3 text-base font-medium bg-white text-[#316BFF] rounded-lg border border-solid border-[blue]"
+                type="button"
+                onClick={() => setShowModal(false)}
+              >
+                Hủy bỏ
+              </button>
+              <Button
+                height="50px"
+                type="submit"
+                isLoding={isSubmitting}
+                disable={isSubmitting}
+              >
+                Lưu địa chỉ
+              </Button>
+            </div>
+          </form>
+        </div>
       </ModalAdvanced>
 
       <ListAddress />

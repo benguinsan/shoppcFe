@@ -8,7 +8,7 @@ const PageNotFoundStyles = styled.div`
   justify-content: center;
   flex-direction: column;
   color: white;
-  background-color: #171725;
+  background-color: #eeeeee;
   .page-content {
     max-width: 1000px;
     margin: 0 auto;
@@ -22,10 +22,12 @@ const PageNotFoundStyles = styled.div`
     font-size: 60px;
     font-weight: bold;
     margin-bottom: 20px;
+    color: #171725;
   }
   .description {
     max-width: 800px;
     margin: 0 auto 40px;
+    color: #171725;
   }
   .back {
     display: inline-block;

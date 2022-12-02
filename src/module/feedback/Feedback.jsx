@@ -5,6 +5,7 @@ import StatisticFeedback from "./StatisticFeedback";
 import ModalAdvanced from "../../components/Modal/ModalAdvanced";
 import { useState } from "react";
 import Rating from "./Rating";
+import Pagination from "react-js-pagination";
 import {
   createFeedback,
   getFeedback,
@@ -12,13 +13,13 @@ import {
 } from "../../redux/feedback/feedbackSlice";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import LoadingPage from "../../components/loading/LoadingPage";
 import { action_status } from "../../utils/constants/status";
 import FeedbackList from "../feedback/FeedbackList";
 import Skeleton from "../../components/skeleton/Skeleton";
 
 const Feelback = ({ id, data }) => {
   const { current } = useSelector((state) => state.user);
+  const [page, setPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
   const {
@@ -27,7 +28,7 @@ const Feelback = ({ id, data }) => {
     feedbackDelete,
     status,
     feedback,
-    error,
+    totalPage,
   } = useSelector((state) => state.feedback);
 
   const handleClick = () => {
@@ -54,23 +55,44 @@ const Feelback = ({ id, data }) => {
   };
 
   useEffect(() => {
-    dispatch(getFeedback(id));
-  }, [id, dispatch]);
+    const data = {
+      id,
+      page,
+    };
+    dispatch(getFeedback(data));
+  }, [id, page]);
 
   useEffect(() => {
     if (feedbackAdd) {
-      dispatch(getFeedback(id));
+      const data = {
+        id,
+        page,
+      };
+      dispatch(getFeedback(data));
       dispatch(refresh());
     }
     if (feedbackUpdate) {
-      dispatch(getFeedback(id));
+      const data = {
+        id,
+        page,
+      };
+      dispatch(getFeedback(data));
       dispatch(refresh());
     }
     if (feedbackDelete) {
-      dispatch(getFeedback(id));
+      const data = {
+        id,
+        page,
+      };
+      dispatch(getFeedback(data));
       dispatch(refresh());
     }
-  }, [feedbackAdd, feedbackUpdate, feedbackDelete, dispatch]);
+  }, [feedbackAdd, feedbackUpdate, feedbackDelete]);
+
+  const handlePageClick = (values) => {
+    setPage(values);
+    console.log("Values:", values);
+  };
 
   return (
     <div className="mt-10">
@@ -150,6 +172,19 @@ const Feelback = ({ id, data }) => {
             </div>
 
             <FeedbackList data={feedback.data} />
+          </div>
+          <div className="flex justify-center items-center mt-2">
+            <Pagination
+              activePage={page}
+              nextPageText={">"}
+              prevPageText={"<"}
+              totalItemsCount={totalPage}
+              itemsCountPerPage={1}
+              firstPageText={"<<"}
+              lastPageText={">>"}
+              linkClass="page-num"
+              onChange={handlePageClick}
+            />
           </div>
           <ModalAdvanced
             visible={showModal}

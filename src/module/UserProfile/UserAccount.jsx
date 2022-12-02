@@ -279,7 +279,7 @@ const UserAccount = () => {
               isLoading={isSubmitting}
               height="50px"
             >
-              <span className="text-base font-medium"> Cập nhật thông tin</span>
+              Cập nhật thông tin
             </Button>
           </form>
         )}

@@ -1,12 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { action_status } from "../../utils/constants/status";
-import LoadingPage from "../loading/LoadingPage";
 import { formatPrice } from "../../utils/formatPrice";
 import { useNavigate } from "react-router-dom";
 import slugify from "slugify";
 import { useEffect } from "react";
 import { getProductSearch } from "../../redux/product/productSlice";
+import Skeleton from "../skeleton/Skeleton";
 
 const Search = ({ onClickItem, keyword }) => {
   const { productSearch, statusSearch } = useSelector((state) => state.product);
@@ -30,7 +30,39 @@ const Search = ({ onClickItem, keyword }) => {
 
   return (
     <div className="absolute top-14 left-0 w-full rounded-lg h-[350px] z-10 bg-white shadow-lg overflow-hidden overflow-y-auto">
-      {statusSearch === action_status.LOADING && <LoadingPage />}
+      {statusSearch === action_status.LOADING && (
+        <>
+          <div className="flex flex-col items-start gap-y-10 p-5">
+            <div className="flex items-start  border-solid border-b-gray-200 w-full border-b-2 gap-x-5">
+              <Skeleton className="w-20 h-20 rounded-lg" />
+              <div className="flex flex-col justify-start w-full gap-y-3">
+                <Skeleton className="w-2/3 h-4 rounded-md" />
+                <Skeleton className="w-2/4 h-2 rounded-md" />
+                <Skeleton className="w-2/5 h-2 rounded-md" />
+                <Skeleton className="w-2/6 h-2 rounded-md" />
+              </div>
+            </div>
+            <div className="flex items-start  border-solid border-b-gray-200 w-full border-b-2 gap-x-5">
+              <Skeleton className="w-20 h-20 rounded-lg" />
+              <div className="flex flex-col justify-start w-full gap-y-3">
+                <Skeleton className="w-2/3 h-4 rounded-md" />
+                <Skeleton className="w-2/4 h-2 rounded-md" />
+                <Skeleton className="w-2/5 h-2 rounded-md" />
+                <Skeleton className="w-2/6 h-2 rounded-md" />
+              </div>
+            </div>
+            <div className="flex items-start  border-solid border-b-gray-200 w-full border-b-2 gap-x-5">
+              <Skeleton className="w-20 h-20 rounded-lg" />
+              <div className="flex flex-col justify-start w-full gap-y-3">
+                <Skeleton className="w-2/3 h-4 rounded-md" />
+                <Skeleton className="w-2/4 h-2 rounded-md" />
+                <Skeleton className="w-2/5 h-2 rounded-md" />
+                <Skeleton className="w-2/6 h-2 rounded-md" />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
       {statusSearch === action_status.SUCCEEDED && (
         <div className="flex flex-col items-start">
           {productSearch.length > 0 &&

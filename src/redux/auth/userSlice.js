@@ -55,6 +55,7 @@ export const verifyResetPassword = createAsyncThunk(
 
 export const login = createAsyncThunk("user/login", async (payload) => {
   const response = await userApi.login(payload);
+  localStorage.setItem("tokenStream", response.tokenStream);
   localStorage.setItem(StorageKeys.TOKEN, response.token);
   localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data.user));
   return response.data.user;
@@ -64,6 +65,7 @@ export const loginWithGoogle = createAsyncThunk(
   "user/loginWithGoogle",
   async (payload) => {
     const response = await userApi.loginWithGoogle(payload);
+    localStorage.setItem("tokenStream", response.tokenStream);
     localStorage.setItem(StorageKeys.TOKEN, response.token);
     localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data.user));
     return response.data.user;
@@ -100,6 +102,7 @@ const userSlice = createSlice({
       localStorage.removeItem("cart");
       localStorage.removeItem("order");
       localStorage.removeItem("keyword");
+      localStorage.removeItem("tokenStream");
       state.current = null;
     },
     refresh: (state, action) => {

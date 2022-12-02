@@ -11,6 +11,7 @@ import { action_status } from "../utils/constants/status";
 import { useState } from "react";
 import SkeletonItem from "../components/skeleton/SkeletonItem";
 import Skeleton from "../components/skeleton/Skeleton";
+
 const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();

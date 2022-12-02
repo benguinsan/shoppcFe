@@ -7,7 +7,6 @@ import ProductParameters from "./information/ProductParameters";
 import BackToTopButton from "../../components/backtotop/BackToTopButton";
 import Feedback from "../feedback/Feedback";
 import { useDispatch, useSelector } from "react-redux";
-import LoadingPage from "../../components/loading/LoadingPage";
 import { action_status } from "../../utils/constants/status";
 import {
   getProductBrand,
@@ -24,8 +23,6 @@ const ProductInformation = () => {
     (state) => state.product
   );
   const dispatch = useDispatch();
-  console.log("Product Brand", productBrand);
-  console.log(productId?.brand?.name);
 
   useEffect(() => {
     try {
