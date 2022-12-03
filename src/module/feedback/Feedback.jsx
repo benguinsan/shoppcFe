@@ -34,7 +34,7 @@ const Feelback = ({ id, data }) => {
   const handleClick = () => {
     if (current === null) {
       toast.dismiss();
-      toast.warning("Vui lòng đăng nhập");
+      toast.warning("Vui lòng đăng nhập", { pauseOnHover: false });
       return;
     } else {
       setShowModal(true);
@@ -91,7 +91,7 @@ const Feelback = ({ id, data }) => {
 
   const handlePageClick = (values) => {
     setPage(values);
-    console.log("Values:", values);
+    console.log("PageFeedback:", values);
   };
 
   return (

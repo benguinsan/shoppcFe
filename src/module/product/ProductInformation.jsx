@@ -166,7 +166,7 @@ const ProductInformation = () => {
             </div>
 
             <Feedback id={productId?._id} data={productId} />
-            <Comment />
+            <Comment id={params?.id} />
 
             <BackToTopButton />
           </div>
