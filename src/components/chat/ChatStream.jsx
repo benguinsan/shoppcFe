@@ -47,10 +47,10 @@ const ChatStream = () => {
   useEffect(() => {
     async function init() {
       const chatClient = StreamChat.getInstance(key.REACT_APP_STREAM_API_KEY);
-      if (user.role === "user") {
+      if (user?.role === "user") {
         await chatClient.connectUser(user, tokenStream);
         const channel = chatClient.channel("messaging", {
-          members: ["6370de3a54ea3d5abac936d7", user.id],
+          members: ["6370de3a54ea3d5abac936d7", user?.id],
         });
         await channel.watch();
 
@@ -64,8 +64,12 @@ const ChatStream = () => {
     }
     init();
 
-    if (client) return () => client.disconnectUser();
-  }, [current, tokenStream, key.REACT_APP_STREAM_API_KEY]);
+    if (client)
+      return () => {
+        setClient(null);
+        client.disconnectUser();
+      };
+  }, [user.id, tokenStream]);
 
   if (!client)
     return (

@@ -12,6 +12,7 @@ export const register = createAsyncThunk("user/register", async (payload) => {
 
 export const verify = createAsyncThunk("user/verify", async (payload) => {
   const response = await userApi.verify(payload);
+  localStorage.setItem("tokenStream", response.tokenStream);
   localStorage.setItem(StorageKeys.TOKEN, response.token);
   localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data.user));
   return response.data.user;
@@ -31,6 +32,7 @@ export const resetPassword = createAsyncThunk(
   async (payload) => {
     console.log(payload);
     const response = await userApi.resetPassword(payload, payload.token);
+    localStorage.setItem("tokenStream", response.tokenStream);
     localStorage.setItem(StorageKeys.TOKEN, response.token);
     localStorage.setItem(StorageKeys.USER, JSON.stringify(response.data.user));
     return response.data.user;

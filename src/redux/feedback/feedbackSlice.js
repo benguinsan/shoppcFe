@@ -26,7 +26,6 @@ export const getFeedback = createAsyncThunk(
     console.log(payload);
     const query = `page=${payload.page}&limit=3`;
     const response = await reviewApi.getReview(payload.id, query);
-    console.log("Respnse:", response);
     return response.data;
   }
 );

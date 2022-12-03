@@ -16,6 +16,7 @@ import PageNotFound from "../../page/NotFoundPage";
 import ProductListHome from "../../module/product/ProductListHome";
 import Skeleton from "../../components/skeleton/Skeleton";
 import SkeletonItem from "../../components/skeleton/SkeletonItem";
+import Comment from "../../components/comment/Comment";
 
 const ProductInformation = () => {
   const params = useParams();
@@ -165,6 +166,7 @@ const ProductInformation = () => {
             </div>
 
             <Feedback id={productId?._id} data={productId} />
+            <Comment />
 
             <BackToTopButton />
           </div>
