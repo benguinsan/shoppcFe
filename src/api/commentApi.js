@@ -17,5 +17,9 @@ const commentApi = {
     const url = `/api/v1/comments/${id}`;
     return axiosClient.delete(url);
   },
+  likeComment(id) {
+    const url = `/api/v1/comments/setLike/${id}`;
+    return axiosClient.patch(url);
+  },
 };
 export default commentApi;

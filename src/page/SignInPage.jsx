@@ -16,6 +16,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import GoogleButton from "react-google-button";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../config/firebase";
+import { async } from "@firebase/util";
 
 const schema = yup.object({
   email: yup
@@ -71,6 +72,11 @@ const SignInPage = () => {
       if (user.active === "verify") {
         return navigate("/verify");
       }
+      if (user.active === "ban") {
+        toast.dismiss();
+        toast.warning("Tài khoản của bạn bị cấm. Vui lòng liên hệ admin");
+        return;
+      }
       toast.dismiss();
       toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
       reset({
@@ -86,26 +92,27 @@ const SignInPage = () => {
 
   const provider = new GoogleAuthProvider();
 
-  const handleLogInWithGoogle = async () => {
-    try {
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          const data = {
-            user: result._tokenResponse,
-          };
-          dispatch(loginWithGoogle(data));
+  const handleLogInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then(async (result) => {
+        const data = {
+          user: result._tokenResponse,
+        };
+        try {
+          const resultAction = await dispatch(loginWithGoogle(data));
+          unwrapResult(resultAction);
           toast.dismiss();
           toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
           navigate("/");
-        })
-        .catch((error) => {
-          console.log("Error", error);
-        });
-    } catch (error) {
-      toast.dismiss();
-      console.log(error.message);
-      toast.error(error.message, { pauseOnHover: false });
-    }
+        } catch (error) {
+          toast.dismiss();
+          console.log(error.message);
+          toast.error(error.message, { pauseOnHover: false });
+        }
+      })
+      .catch((error) => {
+        console.log("Error", error.message);
+      });
   };
 
   return (

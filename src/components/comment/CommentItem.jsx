@@ -5,15 +5,16 @@ import { useParams } from "react-router-dom";
 import {
   createComment,
   deleteComment,
+  likeComment,
   updateComment,
 } from "../../redux/feedback/commentSlice";
 import { toast } from "react-toastify";
 import { formatDistance } from "date-fns";
 import viLocale from "date-fns/locale/vi";
+import { useEffect } from "react";
 
 const CommentItem = ({ comment }) => {
   const [active, setActive] = useState(false);
-  const [textLike, settextLike] = useState(2);
   const [hidden, setHidden] = useState(true);
   const [text, setText] = useState("");
   const [edit, setEdit] = useState(false);
@@ -23,6 +24,7 @@ const CommentItem = ({ comment }) => {
   const params = useParams();
   const { current } = useSelector((state) => state.user);
   console.log(current);
+  console.log("CommentItem", comment);
 
   const handleSend = () => {
     if (current === null) {
@@ -67,11 +69,10 @@ const CommentItem = ({ comment }) => {
   };
 
   const handleLike = () => {
-    setActive(!active);
-    if (active) {
-      settextLike(textLike - 1);
-    } else {
-      settextLike(textLike + 1);
+    try {
+      dispatch(likeComment(comment._id));
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
@@ -99,21 +100,36 @@ const CommentItem = ({ comment }) => {
     setShow(!show);
   };
 
+  useEffect(() => {
+    const check =
+      comment?.like?.findIndex((item) => item === current?._id) || false;
+    if (check !== -1) {
+      setActive(true);
+    } else {
+      setActive(false);
+    }
+  }, [comment?.like]);
+
   const nestedComments = (comment.children || []).map((comment) => {
     return <CommentItem key={comment.id} comment={comment} type="child" />;
   });
 
   return (
-    <>
+    <div>
       <div className="flex flex-col w-full mt-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center justify-start gap-x-3">
             <img
               src={comment?.user?.avatar}
               alt=""
-              className="rounded-full w-[50px] h-[50px] object-cover"
+              className="rounded-full w-[50px] h-[50px] object-cover bg-red-600"
             />
             <span className="text-lg font-semibold">{comment?.user?.name}</span>
+            {comment?.user?.role === "admin" && (
+              <span className="text-white px-4 py-1 inline-block rounded-lg bg-red-700 text-sm font-bold">
+                QTV
+              </span>
+            )}
           </div>
 
           <div className="text-[#8f8f8f] font-semibold text-base">
@@ -129,7 +145,9 @@ const CommentItem = ({ comment }) => {
 
         <div className="w-full bg-[#f3f4f6] mt-3 rounded-lg flex flex-col p-5  justify-between gap-y-4 ml-12 ">
           <div className="flex items-center justify-start gap-x-2 flex-wrap">
-            <span className="text-base font-medium">Hỏi đáp:</span>
+            <span className="text-base font-medium">
+              {comment?.parent !== null ? "Trả lời: " : "Hỏi đáp: "}
+            </span>
             <span className="break-all">{comment?.comment}</span>
           </div>
           <div className="flex items-center gap-x-5">
@@ -141,10 +159,10 @@ const CommentItem = ({ comment }) => {
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  fill={`${active ? "bold" : "none"}`}
+                  fill={`${active ? "red" : "none"}`}
                   viewBox="0 0 24 24"
-                  strokeWidth="1.8"
-                  stroke="blue"
+                  strokeWidth="2"
+                  stroke="red"
                   className="w-5 h-5"
                 >
                   <path
@@ -154,7 +172,9 @@ const CommentItem = ({ comment }) => {
                   />
                 </svg>
               </span>
-              <span className="text-base font-medium">{textLike}</span>
+              <span className="text-base font-medium">
+                {comment?.like?.length}
+              </span>
             </div>
 
             <span
@@ -286,7 +306,7 @@ const CommentItem = ({ comment }) => {
       )}
 
       {show && <div className="ml-12 transition-all ">{nestedComments}</div>}
-    </>
+    </div>
   );
 };
 

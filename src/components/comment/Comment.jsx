@@ -23,6 +23,7 @@ const Comment = ({ id }) => {
     comment,
     totalPage,
     status,
+    commentLike,
   } = useSelector((state) => state.comment);
   const dispatch = useDispatch();
   const { current } = useSelector((state) => state.user);
@@ -91,7 +92,15 @@ const Comment = ({ id }) => {
       dispatch(getComment(data));
       dispatch(refresh());
     }
-  }, [commentAdd, commentUpdate, commentDelete]);
+    if (commentLike) {
+      const data = {
+        id: id,
+        page: page,
+      };
+      dispatch(getComment(data));
+      dispatch(refresh());
+    }
+  }, [commentAdd, commentUpdate, commentDelete, commentLike]);
 
   const handlePageClick = (values) => {
     setPage(values);

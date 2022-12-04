@@ -42,12 +42,21 @@ export const deleteComment = createAsyncThunk(
   }
 );
 
+export const likeComment = createAsyncThunk(
+  "user/likeComment",
+  async (payload) => {
+    const response = await commentApi.likeComment(payload);
+    return response.data;
+  }
+);
+
 const CommentSlice = createSlice({
   name: "comment",
   initialState: {
     commentAdd: false,
     commentUpdate: false,
     commentDelete: false,
+    commentLike: false,
     comment: {},
     totalPage: null,
     status: action_status.IDLE,
@@ -57,6 +66,7 @@ const CommentSlice = createSlice({
       state.commentAdd = false;
       state.commentUpdate = false;
       state.commentDelete = false;
+      state.commentLike = false;
     },
   },
   extraReducers: {
@@ -79,6 +89,9 @@ const CommentSlice = createSlice({
     },
     [deleteComment.fulfilled]: (state, action) => {
       state.commentDelete = true;
+    },
+    [likeComment.fulfilled]: (state, action) => {
+      state.commentLike = true;
     },
   },
 });
