@@ -17,12 +17,21 @@ import LoadingPage from "../loading/LoadingPage";
 import DashboardHeading from "../../module/dashboard/DashboardHeding";
 import { key } from "../../utils/constants/key";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ChatStream = () => {
   const { current } = useSelector((state) => state.user);
   const tokenStream = localStorage.getItem("tokenStream");
-  console.log("User", current);
-  console.log("tokenStream", tokenStream);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (current === null) {
+      toast.dismiss();
+      toast.warning("Vui lòng đăng nhập");
+      navigate("/sign-in");
+    }
+  }, [current]);
 
   const user = {
     name: current?.name,

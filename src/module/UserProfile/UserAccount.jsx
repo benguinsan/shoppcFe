@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUser, refresh, updateInfoUser } from "../../redux/auth/userSlice";
 import { action_status } from "../../utils/constants/status";
 import Skeleton from "../../components/skeleton/Skeleton";
+import { useNavigate } from "react-router-dom";
 
 const today = moment();
 const schema = yup.object({
@@ -60,12 +61,21 @@ const UserAccount = () => {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const { user, update, status } = useSelector((state) => state.user);
+  const { user, update, status, current } = useSelector((state) => state.user);
 
   const watchGender = watch("gender");
   const [image, setImage] = useState("");
   const [progress, setProgress] = useState();
+
+  useEffect(() => {
+    if (current === null) {
+      toast.dismiss();
+      toast.warning("Vui lòng đăng nhập");
+      navigate("/sign-in");
+    }
+  }, [current]);
 
   useEffect(() => {
     if (update) {

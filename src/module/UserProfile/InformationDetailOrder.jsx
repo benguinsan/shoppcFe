@@ -10,12 +10,22 @@ import { action_status } from "../../utils/constants/status";
 import LoadingPage from "../../components/loading/LoadingPage";
 import Swal from "sweetalert2";
 import Skeleton from "../../components/skeleton/Skeleton";
+import { toast } from "react-toastify";
 
 const InformationDetailOrder = () => {
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useDispatch();
   const { orderId, statusId } = useSelector((state) => state.order);
+  const { current } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (current === null) {
+      toast.dismiss();
+      toast.warning("Vui lòng đăng nhập");
+      navigate("/sign-in");
+    }
+  }, [current]);
 
   useEffect(() => {
     try {

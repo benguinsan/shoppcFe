@@ -8,11 +8,11 @@ import { getOrder, refresh } from "../../redux/order/orderSlice";
 import { useEffect } from "react";
 import { action_status } from "../../utils/constants/status";
 import { format } from "date-fns";
-import LoadingPage from "../../components/loading/LoadingPage";
 import { useState } from "react";
 import Pagination from "react-js-pagination";
 import queryString from "query-string";
 import Skeleton from "../../components/skeleton/Skeleton";
+import { toast } from "react-toastify";
 
 const UserOrder = () => {
   const navigate = useNavigate();
@@ -26,6 +26,14 @@ const UserOrder = () => {
   const params = queryString.parse(location.search);
   const [state, setState] = useState(params.status);
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    if (current === null) {
+      toast.dismiss();
+      toast.warning("Vui lòng đăng nhập");
+      navigate("/sign-in");
+    }
+  }, [current]);
 
   useEffect(() => {
     try {

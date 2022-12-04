@@ -14,6 +14,7 @@ import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addAddress } from "../../redux/auth/addressSlice";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object({
   fullname: yup
@@ -60,6 +61,16 @@ const UserAddress = () => {
   const [ward, setWard] = useState([]);
   const dispatch = useDispatch();
   const { add } = useSelector((state) => state.address);
+  const { current } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (current === null) {
+      toast.dismiss();
+      toast.warning("Vui lòng đăng nhập");
+      navigate("/sign-in");
+    }
+  }, [current]);
 
   const bodyStyle = document.body.style;
   let isLocked = false;

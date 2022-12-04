@@ -9,6 +9,9 @@ import * as yup from "yup";
 import Button from "../../components/button/Button";
 import userApi from "../../api/userApi";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object({
   passwordCurrent: yup
@@ -46,6 +49,17 @@ const UpdatePassword = () => {
     formState: { isSubmitting, isValid, errors },
     reset,
   } = useForm({ mode: "onChange", resolver: yupResolver(schema) });
+
+  const { current } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (current === null) {
+      toast.dismiss();
+      toast.warning("Vui lòng đăng nhập");
+      navigate("/sign-in");
+    }
+  }, [current]);
 
   const handleReset = async (values) => {
     if (!isValid) return;
