@@ -51,12 +51,19 @@ Dự án là một trang web bán hàng laptop trực tuyến, giúp người d�
 #### Trang giỏ hàng
 ![Trang giỏ hàng](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837968/Screenshot_from_2023-03-03_17-02-43_trks35.png)
 #### Chức năng đánh giá sao và nhận xét
+![Đánh giá sao và nhận xét](https://firebasestorage.googleapis.com/v0/b/test-8c816.appspot.com/o/ecom%2Fecom%2Fdanh%20gia%20nhan%20xet.png?alt=media&token=3d6b94d2-7139-46d4-82d2-ed42a1d2dd21)
 ![Đánh giá sao và nhận xét](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837968/Screenshot_from_2023-03-03_17-01-10_aynchs.png)
-![Đánh giá sao và nhận xét](https://drive.google.com/file/d/1pKmvto8Y4eo2I4vApfnYINz096TEW-hC/view?usp=share_link)
 #### Chức năng hỏi đáp
+![hỏi đáp](https://firebasestorage.googleapis.com/v0/b/test-8c816.appspot.com/o/ecom%2Fecom%2Fhoi%20dap.png?alt=media&token=226710a4-98e5-4e01-b259-c0648a8f2c8f)
 ![Chức năng hỏi đáp](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837969/Screenshot_from_2023-03-03_17-02-13_hbglgf.png)
 #### Chức năng in báo giá PDF
 ![in báo giá](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837967/Screenshot_from_2023-03-03_17-02-48_zezsng.png)
+#### Chức năng thanh toán
+![thanh toán](https://firebasestorage.googleapis.com/v0/b/test-8c816.appspot.com/o/ecom%2Fecom%2Fthanh%20toan.png?alt=media&token=b8b89829-a51d-4899-b1e3-463eb59bdd78)
+![thanh toán](https://firebasestorage.googleapis.com/v0/b/test-8c816.appspot.com/o/ecom%2Fecom%2Fthanh%20toan%201.png?alt=media&token=69998f93-8579-4943-af2d-64177ca88b72)
+#### Chức năng so sánh thông số giữa 2 sản phẩm
+![so sánh](https://firebasestorage.googleapis.com/v0/b/test-8c816.appspot.com/o/ecom%2Fecom%2Fso%20sanh.png?alt=media&token=6ad0555d-37a2-4bbd-9711-96b687ea029b)
+
 
 
 
