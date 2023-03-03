@@ -2,16 +2,16 @@
 
 ### Mô tả dự án:
 Dự án là một trang web bán hàng laptop trực tuyến, giúp người dùng tìm kiếm và mua các sản phẩm laptop phù hợp với nhu cầu của họ. Trang web này cung cấp các tính năng như:
-- 1. Đăng nhập, đăng ký và xác thực tài khoản qua gmail đăng ký.
-- 2. Hỗ trợ đăng nhập bên thứ 2 là Google.
-- 3. Quên mật khẩu.
-- 4. Quản lý thông tin cá nhân: thông tin cá nhân, quản lý địa chỉ và người giao nhận hàng, quản lý đơn hàng, cập nhật lại mật khẩu.
-- 5. Xem tất cả sản phẩm và chi tiết từng sản phẩm.
-- 6. Đánh giá sao và nhận xét sau khi mua hàng thành công.
-- 7. Hỏi đáp về sản phẩm: thích, bỏ thích, trả lời, thêm, sửa, xóa bài hỏi đáp.
-- 8. Tìm kiếm bằng từ khóa và tìm kiếm nâng cao: lọc theo khoảng giá, lọc theo tên sản phẩm, màu sắc, cấu hình, nhu cầu.
-- 9. So sánh thông số giữa 2 sản phẩm.
-- 10.Hỗ trợ hai hình thức thanh toán: paypal và trả tiền khi nhận hàng thành công.
+- Đăng nhập, đăng ký và xác thực tài khoản qua gmail đăng ký.
+- Hỗ trợ đăng nhập bên thứ 2 là Google.
+- Quên mật khẩu.
+- Quản lý thông tin cá nhân: thông tin cá nhân, quản lý địa chỉ và người giao nhận hàng, quản lý đơn hàng, cập nhật lại mật khẩu.
+- Xem tất cả sản phẩm và chi tiết từng sản phẩm.
+- Đánh giá sao và nhận xét sau khi mua hàng thành công.
+- Hỏi đáp về sản phẩm: thích, bỏ thích, trả lời, thêm, sửa, xóa bài hỏi đáp.
+- Tìm kiếm bằng từ khóa và tìm kiếm nâng cao: lọc theo khoảng giá, lọc theo tên sản phẩm, màu sắc, cấu hình, nhu cầu.
+- So sánh thông số giữa 2 sản phẩm.
+- Hỗ trợ hai hình thức thanh toán: paypal và trả tiền khi nhận hàng thành công.
 
 ### Công nghệ sử dụng:
 - FrontEnd: ReactJS.
@@ -28,6 +28,35 @@ Dự án là một trang web bán hàng laptop trực tuyến, giúp người d�
 - Bên FrontEnd: [https://hctech.onrender.com/](https://hctech.onrender.com/)
 
 ### Kết quả đạt được
+#### Trang chủ
+![Trang chủ](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837972/Screenshot_from_2023-03-03_16-59-45_m3x8bs.png)
+#### Trang đăng nhập
+![Trang đăng nhập](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837969/Screenshot_from_2023-03-03_16-59-49_orzmfq.png)
+#### Trang đăng ký tài khoản
+![Trang đăng ký](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837968/Screenshot_from_2023-03-03_16-59-54_cs7fgk.png)
+#### Trang quên mật khẩu
+![Trang quên mật khẩu](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837969/Screenshot_from_2023-03-03_16-59-58_o56yw4.png)
+#### Trang thông tin tài khoản
+![Trang thông tin tài khoản](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837967/Screenshot_from_2023-03-03_17-02-57_nid6hv.png)
+#### Trang quản lý đơn hàng
+![Trang quản lý đơn hàng](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837967/Screenshot_from_2023-03-03_17-03-13_s0ly0q.png)
+#### Trang chi tiết đơn hàng
+![Trang chi tiết đơn hàng](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837967/Screenshot_from_2023-03-03_17-03-18_zp1yfs.png)
+#### Trang quản lý thông tin giao nhận hàng
+![Trang quản lý thông tin giao nhận hàng](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837967/Screenshot_from_2023-03-03_17-03-25_bptpla.png)
+#### Trang cập nhật mật khẩu
+![Trang cập nhật mật khẩu](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837966/Screenshot_from_2023-03-03_17-03-37_ep9nht.png)
+#### Trang lọc sản phẩm nâng cao
+![Trang lọc sản phẩm nâng cao](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837970/Screenshot_from_2023-03-03_17-00-09_btplie.png)
+#### Trang giỏ hàng
+![Trang giỏ hàng](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837968/Screenshot_from_2023-03-03_17-02-43_trks35.png)
+#### Chức năng đánh giá sao và nhận xét
+![Đánh giá sao và nhận xét](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837968/Screenshot_from_2023-03-03_17-01-10_aynchs.png)
+![Đánh giá sao và nhận xét](https://drive.google.com/file/d/1pKmvto8Y4eo2I4vApfnYINz096TEW-hC/view?usp=share_link)
+#### Chức năng hỏi đáp
+![Chức năng hỏi đáp](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837969/Screenshot_from_2023-03-03_17-02-13_hbglgf.png)
+#### Chức năng in báo giá PDF
+![in báo giá](https://res.cloudinary.com/dbekkzxtt/image/upload/v1677837967/Screenshot_from_2023-03-03_17-02-48_zezsng.png)
 
 
 
