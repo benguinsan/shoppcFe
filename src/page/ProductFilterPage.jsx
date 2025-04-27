@@ -1,10 +1,7 @@
 import React, { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FilterProduct from "../module/filter/FilterProduct";
-import { useDispatch, useSelector } from "react-redux";
-import { action_status } from "../utils/constants/status";
 import { useEffect } from "react";
-import { getBrand, getProductFilter } from "../redux/product/productSlice";
 import { useState } from "react";
 import Pagination from "react-js-pagination";
 import FilterSort from "../module/filter/FilterSort";
@@ -15,15 +12,18 @@ import Accordion from "../components/accordion/Accordion";
 import Filter from "../components/filter/Filter";
 import { ramData } from "../api/ramData";
 import { demandData } from "../api/demandData";
-import BackToTopButton from "../components/backtotop/BackToTopButton";
-import Skeleton from "../components/skeleton/Skeleton";
-import SkeletonItem from "../components/skeleton/SkeletonItem";
+import { productData, brandData } from "../data/productData";
 
 const ProductFilterPage = () => {
   const params = queryString.parse(location.search);
-  const { productFilter, statusFilter, totalPageFilter, statusBrand, brand } =
-    useSelector((state) => state.product);
+  console.log(params);
+
   const keyword = localStorage.getItem("keyword");
+
+  // console.log(productData);
+  // console.log(brandData);
+  // console.log(ramData);
+  // console.log(demandData);
 
   const queryParams = useMemo(() => {
     return {
@@ -38,7 +38,8 @@ const ProductFilterPage = () => {
 
   const [page, setPage] = useState(queryParams.page);
   const [sort, setSort] = useState(queryParams.sort);
-  const dispatch = useDispatch();
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [totalPageFilter, setTotalPageFilter] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,29 +48,92 @@ const ProductFilterPage = () => {
       behavior: "smooth",
     });
     try {
-      let filters = queryParams;
-      if (keyword) {
-        filters = {
-          ...queryParams,
-          keyword: keyword,
-        };
-      }
-      dispatch(getProductFilter(filters));
-      setSort(queryParams.sort);
+      // Lọc sản phẩm dựa trên các tham số query
+      filterProducts();
     } catch (error) {
       console.log(error.message);
     }
   }, [location.search]);
 
-  useEffect(() => {
-    try {
-      if (statusBrand === action_status.IDLE) {
-        dispatch(getBrand());
-      }
-    } catch (error) {
-      console.log(error.message);
+  // Hàm lọc sản phẩm dựa trên các tham số query
+  const filterProducts = () => {
+    let filtered = [...productData];
+    
+    // Lọc theo từ khóa
+    if (keyword) {
+      filtered = filtered.filter(product => 
+        product.title.toLowerCase().includes(keyword.toLowerCase())
+      );
     }
-  }, []);
+    
+    // Lọc theo thương hiệu
+    if (params.brand) {
+      const brands = params.brand.split(',');
+      filtered = filtered.filter(product => 
+        brands.includes(product.brand)       
+      );
+    }
+    
+    // Lọc theo màu sắc
+    if (params.color) {
+      const colors = params.color.split(',');
+      filtered = filtered.filter(product => 
+        colors.includes(product.color)
+      );
+    }
+    
+    // Lọc theo RAM
+    if (params.ram) {
+      const rams = params.ram.split(',');
+      filtered = filtered.filter(product => 
+        rams.includes(product.ram)
+      );
+    }
+    
+    // Lọc theo nhu cầu
+    if (params.demand) {
+      const demands = params.demand.split(',');
+      filtered = filtered.filter(product => 
+        demands.some(demand => product.demand.includes(demand))
+      );
+    }
+    
+    // Lọc theo giá
+    if (params.promotion_gte && params.promotion_lte) {
+      filtered = filtered.filter(product => 
+        product.promotion >= Number(params.promotion_gte) && 
+        product.promotion <= Number(params.promotion_lte)
+      );
+    }
+    
+    // Sắp xếp
+    if (params.sort) {
+      switch(params.sort) {
+        case "promotion":
+          filtered.sort((a, b) => a.promotion - b.promotion);
+          break;
+        case "promotion_desc":
+          filtered.sort((a, b) => b.promotion - a.promotion);
+          break;
+        case "newest":
+          // Giả sử id lớn hơn = mới hơn
+          filtered.sort((a, b) => Number(b.id) - Number(a.id));
+          break;
+        default:
+          filtered.sort((a, b) => a.promotion - b.promotion);
+      }
+    }
+    
+    // Phân trang
+    const itemsPerPage = queryParams.limit;
+    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    setTotalPageFilter(totalPages);
+    
+    const startIndex = (queryParams.page - 1) * itemsPerPage;
+    const paginatedProducts = filtered.slice(startIndex, startIndex + itemsPerPage);
+    
+    setFilteredProducts(paginatedProducts);
+  };
 
   const initFilter = {
     brand: params?.brand?.split(",") || [],
@@ -220,208 +284,98 @@ const ProductFilterPage = () => {
             </span>
           </div>
           <div className="wrapper-product">
-            {statusBrand === action_status.LOADING && (
-              <>
-                <div className="product-filter w-full  bg-white rounded-lg flex flex-col items-start">
-                  <Skeleton className="h-3 w-1/2 rounded-lg ml-4" />
-                  <div className="flex items-center justify-between p-4">
-                    <Skeleton className="h-2 w-1/4 rounded-md" />
-                    <Skeleton className="h-2 w-1/4 rounded-md" />
-                  </div>
-                  <div className="flex items-center justify-between px-4">
-                    <Skeleton className="h-4 w-1/3 rounded-md" />
-                    <Skeleton className="h-4 w-1/3 rounded-md" />
-                  </div>
-                  <Skeleton className="h-3 w-[250px] rounded-lg m-4" />
-                  <div className="flex flex-col m-4">
-                    <Skeleton className="h-3 w-1/2 rounded-md " />
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col m-4">
-                    <Skeleton className="h-3 w-1/2 rounded-md " />
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col m-4">
-                    <Skeleton className="h-3 w-1/2 rounded-md " />
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col m-4">
-                    <Skeleton className="h-3 w-1/2 rounded-md " />
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                    <div className="flex items-center gap-x-2 mt-3">
-                      <Skeleton className="w-4 h-4 rounded-md" />
-                      <Skeleton className="w-1/2 h-3 rounded-md" />
-                    </div>
-                  </div>
+            <div className="product-filter w-full  bg-white rounded-lg flex flex-col items-start">
+              <div className="flex items-center justify-between w-full p-4">
+                <div className="text-base font-medium">Bộ lọc</div>
+                <div className="text-base font-medium">
+                  {filteredProducts.length} sản phẩm
                 </div>
-              </>
-            )}
-            {statusBrand === action_status.SUCCEEDED && (
-              <>
-                {" "}
-                <div className="product-filter w-full  bg-white rounded-lg flex flex-col  text-black">
-                  <FilterPrice onChange={handleChangePrice} />
-                  <Accordion title="Thương hiệu" className="true">
-                    {brand.length > 0 &&
-                      brand.map((item) => {
-                        return (
-                          <Filter
-                            label={item.name}
-                            key={item.id}
-                            onChange={(input) => {
-                              filterSelect("Brands", input.checked, item);
-                            }}
-                            checked={filter.brand.includes(item.id)}
-                          />
-                        );
-                      })}
-                  </Accordion>
-                  <Accordion title="Màu sắc" className="true">
-                    {colorData.length > 0 &&
-                      colorData.map((item) => {
-                        return (
-                          <Filter
-                            label={item.name}
-                            key={item.id}
-                            onChange={(input) => {
-                              filterSelect("Colors", input.checked, item);
-                            }}
-                            checked={filter.color.includes(item.name)}
-                          />
-                        );
-                      })}
-                  </Accordion>
-                  <Accordion title="Ram">
-                    {ramData.length > 0 &&
-                      ramData.map((item) => {
-                        return (
-                          <Filter
-                            label={`${item.name}GB`}
-                            key={item.id}
-                            onChange={(input) => {
-                              filterSelect("Rams", input.checked, item);
-                            }}
-                            checked={filter.ram.includes(item.name)}
-                          />
-                        );
-                      })}
-                  </Accordion>
-                  <Accordion title="Nhu cầu">
-                    {demandData.length > 0 &&
-                      demandData.map((item) => {
-                        return (
-                          <Filter
-                            label={item.name}
-                            key={item.id}
-                            onChange={(input) => {
-                              filterSelect("Demands", input.checked, item);
-                            }}
-                            checked={filter.demand.includes(item.value)}
-                          />
-                        );
-                      })}
-                  </Accordion>
-                </div>
-              </>
-            )}
-
-            <div className="product-list">
-              {statusFilter === action_status.LOADING && (
-                <div className="flex flex-col container rounded-lg bg-white">
-                  <div className="flex items-center p-5 gap-x-5">
-                    <Skeleton className="w-[100px] h-5 rounded-md" />
-                    <Skeleton className="w-[80px] h-5 rounded-md" />
-                    <Skeleton className="w-[80px] h-5 rounded-md" />
-                  </div>
-
-                  <SkeletonItem className="my-5 grid-cols-4" totalItem={4} />
-                  <SkeletonItem className="my-5 grid-cols-4" totalItem={4} />
-                  <SkeletonItem className="my-5 grid-cols-4" totalItem={4} />
-                </div>
-              )}
-              {statusFilter === action_status.SUCCEEDED && (
-                <>
-                  <div className="flex flex-col container rounded-lg bg-white ">
-                    <div className="flex items-center p-5 gap-x-5 ">
-                      <span className="font-medium text-base ">
-                        Sắp xếp theo
-                      </span>
-                      <FilterSort onChange={handleClickSort} />
-                    </div>
-                    <FilterProduct data={productFilter} />
-                  </div>
-                  <div className="flex justify-center items-center mt-2">
-                    <Pagination
-                      activePage={page}
-                      nextPageText={">"}
-                      prevPageText={"<"}
-                      totalItemsCount={totalPageFilter}
-                      itemsCountPerPage={1}
-                      firstPageText={"<<"}
-                      lastPageText={">>"}
-                      linkClass="page-num"
-                      onChange={handlePageClick}
-                    />
-                  </div>
-                </>
-              )}
-              {statusFilter === action_status.FAILED && (
-                <div className="h-[700px] bg-white flex items-center justify-center flex-col gap-y-6">
-                  <img
-                    src="../images/search.png"
-                    alt=""
-                    className="w-[200px]"
+              </div>
+              <div className="flex items-center justify-between w-full px-4">
+                <div className="text-lg font-semibold">Laptop</div>
+                <FilterSort
+                  sort={sort}
+                  handleClickSort={handleClickSort}
+                  queryParams={queryParams}
+                />
+              </div>
+              <FilterPrice
+                handleChangePrice={handleChangePrice}
+                queryParams={queryParams}
+              />
+              <div className="flex flex-col m-4">
+                <Accordion title="Thương hiệu">
+                  <Filter
+                    data={brandData}
+                    type="Brands"
+                    filterSelect={filterSelect}
+                    filter={filter}
                   />
-                  <span className="text-xl font-medium">
-                    Không tìm thấy sản phẩm nào
-                  </span>
+                </Accordion>
+              </div>
+              <div className="flex flex-col m-4">
+                <Accordion title="Màu sắc">
+                  <Filter
+                    data={colorData}
+                    type="Colors"
+                    filterSelect={filterSelect}
+                    filter={filter}
+                  />
+                </Accordion>
+              </div>
+              <div className="flex flex-col m-4">
+                <Accordion title="RAM">
+                  <Filter
+                    data={ramData}
+                    type="Rams"
+                    filterSelect={filterSelect}
+                    filter={filter}
+                  />
+                </Accordion>
+              </div>
+              <div className="flex flex-col m-4">
+                <Accordion title="Nhu cầu">
+                  <Filter
+                    data={demandData}
+                    type="Demands"
+                    filterSelect={filterSelect}
+                    filter={filter}
+                  />
+                </Accordion>
+              </div>
+            </div>
+
+            {/* product list */}
+            <div className="product-list">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {filteredProducts.map((item) => (
+                  <FilterProduct key={item.id} data={item} />
+                ))}
+              </div>
+              {totalPageFilter > 0 && (
+                <div className="flex items-center justify-center mt-10">
+                  <Pagination
+                    activePage={page}
+                    itemsCountPerPage={20}
+                    totalItemsCount={totalPageFilter * 20}
+                    pageRangeDisplayed={5}
+                    onChange={handlePageClick}
+                    nextPageText={">"}
+                    prevPageText={"<"}
+                    firstPageText={"<<"}
+                    lastPageText={">>"}
+                    innerClass="flex items-center gap-x-2"
+                    itemClass="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 cursor-pointer"
+                    linkClass="w-full h-full flex items-center justify-center"
+                    activeClass="bg-[#0070f3] text-white"
+                    activeLinkClass="text-white font-medium"
+                  />
                 </div>
               )}
             </div>
           </div>
         </div>
       </div>
-      <BackToTopButton />
     </>
   );
 };

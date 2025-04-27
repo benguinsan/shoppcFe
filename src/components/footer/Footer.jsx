@@ -69,17 +69,6 @@ const Footer = () => {
             </div>
           </div>
         </div>
-
-        <div className="flex items-center justify-center">
-          <div className="w-[100px] h-[100px]">
-            <img
-              src="/images/logo.png"
-              alt=""
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <span className="text-2xl font-bold">HC.VN</span>
-        </div>
       </div>
     </footer>
   );
