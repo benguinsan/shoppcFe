@@ -50,6 +50,8 @@ const ProductFilterPage = () => {
     try {
       // Lọc sản phẩm dựa trên các tham số query
       filterProducts();
+
+      console.log("fuk",filteredProducts);
     } catch (error) {
       console.log(error.message);
     }
@@ -285,20 +287,6 @@ const ProductFilterPage = () => {
           </div>
           <div className="wrapper-product">
             <div className="product-filter w-full  bg-white rounded-lg flex flex-col items-start">
-              <div className="flex items-center justify-between w-full p-4">
-                <div className="text-base font-medium">Bộ lọc</div>
-                <div className="text-base font-medium">
-                  {filteredProducts.length} sản phẩm
-                </div>
-              </div>
-              <div className="flex items-center justify-between w-full px-4">
-                <div className="text-lg font-semibold">Laptop</div>
-                <FilterSort
-                  sort={sort}
-                  handleClickSort={handleClickSort}
-                  queryParams={queryParams}
-                />
-              </div>
               <FilterPrice
                 handleChangePrice={handleChangePrice}
                 queryParams={queryParams}
@@ -347,10 +335,19 @@ const ProductFilterPage = () => {
 
             {/* product list */}
             <div className="product-list">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredProducts.map((item) => (
-                  <FilterProduct key={item.id} data={item} />
-                ))}
+              <div className="flex flex-col container rounded-lg bg-white ">
+                <div className="flex items-center p-5 gap-x-5 ">
+                  <span className="font-medium text-base ">
+                    Sắp xếp theo
+                  </span>
+                  <FilterSort onChange={handleClickSort} />
+                </div>
+              
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {filteredProducts.map((item) => (
+                    <FilterProduct key={item.id} data={item} />
+                  ))}
+                </div>
               </div>
               {totalPageFilter > 0 && (
                 <div className="flex items-center justify-center mt-10">
