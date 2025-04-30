@@ -31,6 +31,9 @@ import Dashboard from "./page/admin/dashboard";
 import Products from "./page/admin/product/products";
 import Orders from "./page/admin/order/orders";
 import Warranties from "./page/admin/warranty/warranties";
+import Suppliers from "./page/admin/supplier/suppliers";
+import CreateSupplier from "./page/admin/supplier/create";
+import UpdateSupplier from "./page/admin/supplier/update";
 
 function App() {
   return (
@@ -47,6 +50,9 @@ function App() {
             <Route path="products" element={<Products />} />
             <Route path="orders" element={<Orders />} />
             <Route path="warranties" element={<Warranties />} />
+            <Route path="suppliers" element={<Suppliers />} />
+            <Route path="supplier/create" element={<CreateSupplier />} />
+            <Route path="supplier/update/:id" element={<UpdateSupplier />} />
           </Route>
 
           {/* Public and authenticated user routes */}

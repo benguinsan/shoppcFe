@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Button, Modal, Space, Card } from "antd";
+import { Table, Button, Modal, Space, Card, Dropdown, message } from "antd";
 import AdminTable from "../../../components/admin/ui/table";
-import { EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined, DownOutlined } from "@ant-design/icons";
 
 const Orders = () => {
   const [sortedInfo, setSortedInfo] = useState({});
@@ -59,17 +59,54 @@ const Orders = () => {
       title: "Trạng Thái",
       dataIndex: "status",
       key: "status",
-      render: (status, record) => (
-        <Space>
-          <Button
-            onClick={() => handleStatusChange(record.orderId)}
-            type={status ? "default" : "primary"}
-            danger={status}
+      render: (status, record) => {
+        // Hàm xử lý khi chọn trạng thái
+        const handleMenuClick = ({ key }) => {
+          handleStatusChange(record.orderId, key);
+        };
+
+        // Các trạng thái có thể chọn
+        const items = [
+          {
+            key: "paid",
+            label: "Đã thanh toán",
+          },
+          {
+            key: "unpaid",
+            label: "Chưa thanh toán",
+          },
+          {
+            key: "cancelled",
+            label: "Đã huỷ",
+          },
+        ];
+
+        // Xác định text hiển thị dựa vào giá trị status hiện tại
+        let statusText = "Chưa thanh toán";
+        let statusColor = "#faad14"; // Màu vàng cho trạng thái chưa thanh toán
+
+        if (status === "paid") {
+          statusText = "Đã thanh toán";
+          statusColor = "#52c41a"; // Màu xanh cho đã thanh toán
+        } else if (status === "cancelled") {
+          statusText = "Đã huỷ";
+          statusColor = "#ff4d4f"; // Màu đỏ cho đã hủy
+        }
+
+        return (
+          <Dropdown
+            menu={{
+              items,
+              onClick: handleMenuClick,
+            }}
+            placement="bottomRight"
           >
-            {status ? "Hủy" : "Xác nhận"}
-          </Button>
-        </Space>
-      ),
+            <Button style={{ color: statusColor, borderColor: statusColor }}>
+              {statusText} <DownOutlined />
+            </Button>
+          </Dropdown>
+        );
+      },
     },
     {
       title: "Thao tác",
@@ -116,9 +153,29 @@ const Orders = () => {
     },
   ];
 
-  const handleStatusChange = (orderId) => {
-    // Logic to change order status
-    console.log(`Changed status of order: ${orderId}`);
+  const handleStatusChange = (orderId, newStatus) => {
+    // Gọi API cập nhật trạng thái đơn hàng
+    console.log(`Đã đổi trạng thái của đơn hàng ${orderId} thành ${newStatus}`);
+
+    // Hiển thị thông báo
+    let statusText = "";
+    switch (newStatus) {
+      case "paid":
+        statusText = "đã thanh toán";
+        break;
+      case "unpaid":
+        statusText = "chưa thanh toán";
+        break;
+      case "cancelled":
+        statusText = "đã huỷ";
+        break;
+      default:
+        statusText = newStatus;
+    }
+
+    message.success(
+      `Đã cập nhật trạng thái đơn hàng #${orderId} thành ${statusText}`
+    );
   };
 
   const showOrderDetails = (orderId) => {
@@ -137,7 +194,9 @@ const Orders = () => {
   return (
     <div className="p-4">
       <Space style={{ marginBottom: 16 }}>
-        <Button onClick={clearAll}>Clear</Button>
+        <Button onClick={clearAll} className="clear-button" danger>
+          Clear
+        </Button>
       </Space>
       <AdminTable
         columns={columns}
@@ -148,7 +207,7 @@ const Orders = () => {
             employeeId: "EMP456",
             creationDate: "2025-04-25T10:30:00",
             totalAmount: 21450000,
-            status: true,
+            status: "unpaid", // có thể là 'paid', 'unpaid', hoặc 'cancelled'
           },
         ]}
         rowKey="orderId"
@@ -188,6 +247,16 @@ const Orders = () => {
         .detail-button:hover {
           background-color: #096dd9 !important;
           border-color: #096dd9 !important;
+        }
+        .clear-button {
+          background-color: #ff4d4f !important;
+          border-color: #ff4d4f !important;
+          color: white !important;
+        }
+
+        .clear-button:hover {
+          background-color: #d9363e !important;
+          border-color: #d9363e !important;
         }
       `}</style>
     </div>

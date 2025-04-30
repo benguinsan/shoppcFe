@@ -32,7 +32,6 @@ const items = [
   getItem("Nhà cung cấp", "supplier", <DesktopOutlined />, [
     getItem("Danh sách nhà cung cấp", "suppliers"),
     getItem("Thêm nhà cung cấp", "supplier/create"),
-    getItem("Cập nhật nhà cung cấp", "supplier/update"),
   ]),
   getItem("Nhập hàng", "imports", <DesktopOutlined />, [
     getItem("Danh sách phiếu nhập", "imports"),

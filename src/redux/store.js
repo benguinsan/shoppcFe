@@ -4,6 +4,9 @@ import cartReducer from "../redux/cart/cartSlice";
 import productReducer from "./product/productSlice";
 import addressReducer from "../redux/auth/addressSlice";
 import orderReducer from "../redux/order/orderSlice";
+import orderAdminReducer from "../redux/admin/orderAdminSlice";
+import warrantyAdminReducer from "../redux/admin/warrantyAdminSlice";
+import supplierReducer from "../redux/admin/supplierSlice";
 
 const rootReducer = {
   user: userReducer,
@@ -11,6 +14,9 @@ const rootReducer = {
   cart: cartReducer,
   product: productReducer,
   order: orderReducer,
+  orderAdmin: orderAdminReducer,
+  warrantyAdmin: warrantyAdminReducer,
+  supplier: supplierReducer,
 };
 
 const store = configureStore({
