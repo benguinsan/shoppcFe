@@ -27,7 +27,7 @@ const items = [
     getItem("Cập nhật loại sản phẩm", "producttype/update"),
   ]),
   getItem("Hóa đơn", "order", <DesktopOutlined />, [
-    getItem("Danh sách hóa đơn", "order"),
+    getItem("Danh sách hóa đơn", "orders"),
   ]),
   getItem("Nhà cung cấp", "supplier", <DesktopOutlined />, [
     getItem("Danh sách nhà cung cấp", "suppliers"),
@@ -39,7 +39,7 @@ const items = [
     getItem("Nhập hàng", "imports/create"),
   ]),
   getItem("Bảo hành", "guarantee", <DesktopOutlined />, [
-    getItem("Danh sách bảo hành", "guarantees"),
+    getItem("Danh sách bảo hành", "warranties"),
   ]),
   getItem("Thống kê", "statistic", <DesktopOutlined />, [
     getItem("Thống kê", "statistics"),

@@ -29,6 +29,8 @@ import ChatStream from "./components/chat/ChatStream";
 import AdminLayout from "./components/admin/layoutAdmin";
 import Dashboard from "./page/admin/dashboard";
 import Products from "./page/admin/product/products";
+import Orders from "./page/admin/order/orders";
+import Warranties from "./page/admin/warranty/warranties";
 
 function App() {
   return (
@@ -43,6 +45,8 @@ function App() {
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="products" element={<Products />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="warranties" element={<Warranties />} />
           </Route>
 
           {/* Public and authenticated user routes */}
