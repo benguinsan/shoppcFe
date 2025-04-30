@@ -29,6 +29,12 @@ import ChatStream from "./components/chat/ChatStream";
 import AdminLayout from "./components/admin/layoutAdmin";
 import Dashboard from "./page/admin/dashboard";
 import Products from "./page/admin/product/products";
+import ProductCreate from "./page/admin/product/create";
+import ProductEdit from "./page/admin/product/edit";
+import ProductTypes from "./page/admin/category/category";
+import Categories from "./page/admin/category/category";
+import CreateCategory from "./page/admin/category/create";
+import EditCategory from "./page/admin/category/edit";
 
 function App() {
   return (
@@ -43,6 +49,11 @@ function App() {
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="products" element={<Products />} />
+            <Route path="product/create" element={<ProductCreate />} />
+            <Route path="product/update" element={<ProductEdit />} />
+            <Route path="categories" element={<Categories />} />
+            <Route path="category/create" element={<CreateCategory />} />
+            <Route path="category/update" element={<EditCategory />} />
           </Route>
 
           {/* Public and authenticated user routes */}

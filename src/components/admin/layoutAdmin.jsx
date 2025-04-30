@@ -21,13 +21,16 @@ const items = [
     getItem("Thêm sản phẩm", "product/create"),
     getItem("Cập nhật sản phẩm", "product/update"),
   ]),
-  getItem("Loại sản phẩm", "product_type", <DesktopOutlined />, [
-    getItem("Danh sách Loại sản phẩm", "producttypes"),
-    getItem("Thêm loại sản phẩm", "producttype/create"),
-    getItem("Cập nhật loại sản phẩm", "producttype/update"),
+  getItem("Loại sản phẩm", "category", <DesktopOutlined />, [
+    getItem("Danh sách Loại sản phẩm", "categories"),
+    getItem("Thêm loại sản phẩm", "category/create"),
+    getItem("Cập nhật loại sản phẩm", "category/update"),
+  ]),
+  getItem("Người dùng", "users", <DesktopOutlined />, [
+    getItem("Danh sách người dùng", "users"),
   ]),
   getItem("Hóa đơn", "order", <DesktopOutlined />, [
-    getItem("Danh sách hóa đơn", "order"),
+    getItem("Danh sách hóa đơn", "orders"),
   ]),
   getItem("Nhà cung cấp", "supplier", <DesktopOutlined />, [
     getItem("Danh sách nhà cung cấp", "suppliers"),
@@ -38,8 +41,18 @@ const items = [
     getItem("Danh sách phiếu nhập", "imports"),
     getItem("Nhập hàng", "imports/create"),
   ]),
+  getItem("Khuyến mãi", "sale", <DesktopOutlined />, [
+    getItem("Danh sách khuyến mãi", "sales"),
+    getItem("Thêm khuyến mãi", "sale/create"),
+    getItem("Cập nhật khuyến mãi", "sale/update"),
+  ]),
   getItem("Bảo hành", "guarantee", <DesktopOutlined />, [
     getItem("Danh sách bảo hành", "guarantees"),
+  ]),
+  getItem("Tài khoản", "account", <DesktopOutlined />, [
+    getItem("Danh sách tài khoản", "accounts"),
+    getItem("Thêm tài khoản", "account/create"),
+    getItem("Cập nhật quyền tài khoản", "account/update"),
   ]),
   getItem("Thống kê", "statistic", <DesktopOutlined />, [
     getItem("Thống kê", "statistics"),
