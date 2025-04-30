@@ -31,10 +31,11 @@ import Dashboard from "./page/admin/dashboard";
 import Products from "./page/admin/product/products";
 import ProductCreate from "./page/admin/product/create";
 import ProductEdit from "./page/admin/product/edit";
-import ProductTypes from "./page/admin/category/category";
 import Categories from "./page/admin/category/category";
 import CreateCategory from "./page/admin/category/create";
 import EditCategory from "./page/admin/category/edit";
+import Orders from "./page/admin/order/orders";
+import Warranties from "./page/admin/warranty/warranties";
 
 function App() {
   return (
@@ -54,6 +55,8 @@ function App() {
             <Route path="categories" element={<Categories />} />
             <Route path="category/create" element={<CreateCategory />} />
             <Route path="category/update" element={<EditCategory />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="warranties" element={<Warranties />} />
           </Route>
 
           {/* Public and authenticated user routes */}
