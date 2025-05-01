@@ -8,15 +8,15 @@ const ProductItem = ({
   removeFromCompare,
   selected,
 }) => {
-  const handleRemove = (e, product) => {
-    e.stopPropagation();
-    removeFromCompare(product);
-  };
+  // const handleRemove = (e, product) => {
+  //   e.stopPropagation();
+  //   removeFromCompare(product);
+  // };
 
-  const handleAdd = (e, product) => {
-    e.stopPropagation();
-    addToCompare(product);
-  };
+  // const handleAdd = (e, product) => {
+  //   e.stopPropagation();
+  //   addToCompare(product);
+  // };
 
   return (
     <div
@@ -24,31 +24,28 @@ const ProductItem = ({
       onClick={onClickItem}
     >
       <img
-        src={
-          product?.images[0] ||
-          "https://lh3.googleusercontent.com/ZQFbZeosDa1ODQnaaunB72fejXPcl_hg7rfEcgVlZSkgtOTAHQH1M4RxVrH2cLN6gjqJvOAq1b8CeE92gjqDN2W3b2HsMkxb=rw"
-        }
-        alt=""
+        src={product?.ImgUrl || "https://via.placeholder.com/300"}
+        alt={product?.TenSP}
         className="w-full h-[180px] object-cover rounded-lg mb-2 transition-transform hover:scale-105"
       />
       <div className="flex flex-col flex-1">
-        <h3 className="line-clamp-2 mb-2 text-sm font-medium">
-          {product?.title}
+        <h3 className="text-sm font-medium mb-2 truncate hover:text-clip hover:whitespace-normal">
+          {product?.TenSP}
         </h3>
-        {product?.inventory < 5 && product?.inventory > 0 && (
+        {/* {product?.inventory < 5 && product?.inventory > 0 && (
           <span className="text-orange-500 font-medium mb-2 text-sm">
             Chỉ còn {product?.inventory} sản phẩm
           </span>
-        )}
-        {product?.inventory === 0 && (
+        )} */}
+        {/* {product?.inventory === 0 && (
           <span className="text-orange-500 font-medium mb-2 text-sm">
             Sản phẩm hiện tại hết hàng
           </span>
         )}
-        {product?.inventory > 4 && <span className="mb-8"></span>}
+        {product?.inventory > 4 && <span className="mb-8"></span>} */}
         <div className="flex items-center justify-between text-sm  mb-2">
           <span className="text-lg text-blue-700 font-semibold">
-            {formatPrice(product?.promotion)}
+            {formatPrice(product?.Gia)}
           </span>
           <span>
             <svg
@@ -75,21 +72,6 @@ const ProductItem = ({
             </span>
             <span className="text-blue text-sm"> - {product?.percent}%</span>
           </div>
-          {selected && selected.includes(product) ? (
-            <button
-              className="p-2 text-red-600 border border-solid border-red-600 rounded-lg text-sm font-medium transition-all "
-              onClick={(e) => handleRemove(e, product)}
-            >
-              Hủy
-            </button>
-          ) : (
-            <button
-              className="p-2 text-green-600 border border-solid border-green-600 rounded-lg text-sm font-medium transition-all"
-              onClick={(e) => handleAdd(e, product)}
-            >
-              So sánh
-            </button>
-          )}
         </div>
       </div>
     </div>

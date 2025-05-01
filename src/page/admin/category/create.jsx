@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Form, Input, Button, message } from "antd";
-import { fetchCreateCategory } from "../../../redux/category/categoryAdminSlice";
+import {
+  fetchCreateCategory,
+  fetchCategories,
+} from "../../../redux/category/categoryAdminSlice";
 import { useDispatch } from "react-redux";
 const { TextArea } = Input;
 

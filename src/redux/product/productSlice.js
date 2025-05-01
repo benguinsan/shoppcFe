@@ -1,141 +1,77 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import productApi from "../../api/productApi";
-import { action_status } from "../../utils/constants/status";
-import queryString from "query-string";
+// src/redux/features/product/productSlice.js
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+export const fetchProducts = createAsyncThunk(
+  "products/fetchProducts",
+  async (filters = {}, thunkAPI) => {
+    try {
+      // Tạo object params chỉ chứa các key có giá trị (khác undefined và null)
+      const params = {};
+      const {
+        page = 0,
+        limit = 20,
+        MaLSP,
+        RAM,
+        min_price,
+        max_price,
+        ...rest
+      } = filters;
 
-const initialState = {
-  status: action_status.IDLE,
-  statusId: action_status.IDLE,
-  statusFilter: action_status.IDLE,
-  statusBrand: action_status.IDLE,
-  statusSearch: action_status.IDLE,
-  statusProductBrand: action_status.IDLE,
-  totalPage: null,
-  totalPageFilter: null,
-  product: {},
-  productId: {},
-  productFilter: {},
-  productSearch: {},
-  productBrand: {},
-  brand: {},
-};
+      params.page = page;
+      params.limit = limit;
 
-export const getProduct = createAsyncThunk(
-  "user/getProduct",
-  async (payload) => {
-    let query = `page=${payload.page}&limit=${payload.limit}`;
-    const response = await productApi.getAllProduct(query);
-    return response.data;
-  }
-);
+      if (MaLSP !== undefined && MaLSP !== null) params.MaLSP = MaLSP;
+      if (RAM !== undefined && RAM !== null) params.RAM = RAM;
+      if (min_price !== undefined && min_price !== null)
+        params.min_price = min_price;
+      if (max_price !== undefined && max_price !== null)
+        params.max_price = max_price;
 
-export const getProductSearch = createAsyncThunk(
-  "user/getProduct/Search",
-  async (payload) => {
-    let query = `limit=5&keyword=${payload}`;
-    const response = await productApi.getAllProduct(query);
-    return response.data;
-  }
-);
+      // Nếu bạn có thêm các filter khác, bạn có thể thêm chúng từ `rest`
+      Object.entries(rest).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params[key] = value;
+        }
+      });
 
-export const getProductBrand = createAsyncThunk(
-  "user/getProductBrand",
-  async (payload) => {
-    let query = `limit=15&brand=${payload}`;
-    const response = await productApi.getAllProduct(query);
-    return response.data;
-  }
-);
+      const response = await axios.get(
+        `http://localhost/shoppc/api/sanpham/filter`,
+        { params }
+      );
 
-export const getBrand = createAsyncThunk("user/getBrand", async (payload) => {
-  const response = await productApi.getBrand();
-  return response.data;
-});
-
-export const getProductFilter = createAsyncThunk(
-  "user/getProductFilter",
-  async (payload) => {
-    const query = queryString.stringify(payload);
-    const response = await productApi.getAllProduct(query);
-    return response.data;
-  }
-);
-
-export const getProductId = createAsyncThunk(
-  "user/getProductId",
-  async (payload) => {
-    const response = await productApi.getProductId(payload);
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message || "Lỗi khi lấy sản phẩm");
+    }
   }
 );
 
 const productSlice = createSlice({
-  name: "product",
-  initialState,
-  extraReducers: {
-    [getProduct.pending]: (state, action) => {
-      state.status = action_status.LOADING;
+  name: "products",
+  initialState: {
+    items: {
+      data: [],
+      totalPages: 0,
+      currentPage: 0,
     },
-    [getProduct.fulfilled]: (state, action) => {
-      state.status = action_status.SUCCEEDED;
-      state.product = action.payload.data;
-      state.totalPage = action.payload.totalPage;
-    },
-    [getProduct.rejected]: (state, action) => {
-      state.status = action_status.FAILED;
-    },
-    [getProductId.pending]: (state, action) => {
-      state.statusId = action_status.LOADING;
-    },
-    [getProductId.fulfilled]: (state, action) => {
-      state.statusId = action_status.SUCCEEDED;
-      state.productId = action.payload.data;
-    },
-    [getProductId.rejected]: (state, action) => {
-      state.statusId = action_status.FAILED;
-    },
-    [getProductFilter.pending]: (state, action) => {
-      state.statusFilter = action_status.LOADING;
-    },
-    [getProductFilter.fulfilled]: (state, action) => {
-      state.statusFilter = action_status.SUCCEEDED;
-      state.productFilter = action.payload.data;
-      state.totalPageFilter = action.payload.totalPage;
-    },
-    [getProductFilter.rejected]: (state, action) => {
-      state.statusFilter = action_status.FAILED;
-    },
-    [getBrand.pending]: (state, action) => {
-      state.statusBrand = action_status.LOADING;
-    },
-    [getBrand.fulfilled]: (state, action) => {
-      state.statusBrand = action_status.SUCCEEDED;
-      state.brand = action.payload.data;
-    },
-    [getBrand.rejected]: (state, action) => {
-      state.statusBrand = action_status.FAILED;
-    },
-    [getProductSearch.pending]: (state, action) => {
-      state.statusSearch = action_status.LOADING;
-    },
-    [getProductSearch.fulfilled]: (state, action) => {
-      state.statusSearch = action_status.SUCCEEDED;
-      state.productSearch = action.payload.data;
-    },
-    [getProductSearch.rejected]: (state, action) => {
-      state.statusSearch = action_status.FAILED;
-    },
-    [getProductBrand.pending]: (state, action) => {
-      state.statusProductBrand = action_status.LOADING;
-    },
-    [getProductBrand.fulfilled]: (state, action) => {
-      state.statusProductBrand = action_status.SUCCEEDED;
-      state.productBrand = action.payload.data;
-    },
-    [getProductBrand.rejected]: (state, action) => {
-      state.statusProductBrand = action_status.FAILED;
-    },
+    status: "idle",
+    error: null,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProducts.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.items = action.payload;
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      });
   },
 });
-const { actions, reducer } = productSlice;
-export default reducer;
+export default productSlice.reducer;

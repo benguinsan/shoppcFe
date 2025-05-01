@@ -5,7 +5,7 @@ import { formatPrice } from "../../utils/formatPrice";
 import { useNavigate } from "react-router-dom";
 import slugify from "slugify";
 import { useEffect } from "react";
-import { getProductSearch } from "../../redux/product/productSlice";
+// import { getProductSearch } from "../../redux/product/productSlice";
 import Skeleton from "../skeleton/Skeleton";
 
 const Search = ({ onClickItem, keyword }) => {

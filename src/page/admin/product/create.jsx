@@ -102,7 +102,7 @@ const ProductCreate = () => {
 
       if (result.success) {
         message.success("Tạo sản phẩm thành công!");
-        dispatch(fetchProducts({ page: 0, limit: 15 }));
+        dispatch(fetchProducts({ page: 0, limit: 3 }));
         form.resetFields();
       } else {
         throw new Error(result.message || "Tạo sản phẩm thất bại");

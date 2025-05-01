@@ -20,6 +20,7 @@ const items = [
     getItem("Danh sách sản phẩm", "products"),
     getItem("Thêm sản phẩm", "product/create"),
     getItem("Cập nhật sản phẩm", "product/update"),
+    getItem("Hàng", "product/series"),
   ]),
   getItem("Loại sản phẩm", "category", <DesktopOutlined />, [
     getItem("Danh sách Loại sản phẩm", "categories"),
