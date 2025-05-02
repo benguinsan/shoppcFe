@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import slugify from "slugify";
 import { useNavigate } from "react-router-dom";
 import ProductItem from "../product/ProductItem";
 import ModalAdvanced from "../../components/Modal/ModalAdvanced";
-import { useState } from "react";
 import { formatPrice } from "../../utils/formatPrice";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 
@@ -13,9 +12,9 @@ const FilterProduct = ({ data }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
-  const handleClick = (item) => {
-    const path = slugify(item.title, { strict: true });
-    navigate(`/${path}/${item._id}`);
+  const handleClick = () => {
+    const path = slugify(data.title, { strict: true });
+    navigate(`/${path}/${data._id}`);
   };
 
   useEffect(() => {
@@ -43,30 +42,71 @@ const FilterProduct = ({ data }) => {
     setSelectedItems((selectedItems) => filteredItems);
   };
 
-  return (
-    <div>
-      {data.length === 0 && (
-        <div className="h-[700px] bg-white flex items-center justify-center flex-col gap-y-6">
-          <img src="../images/search.png" alt="" className="w-[200px]" />
-          <span className="text-xl font-medium">
-            Không tìm thấy sản phẩm nào
-          </span>
-        </div>
-      )}
-      <div className="grid-cols-4 grid gap-y-2">
-        {data.length > 0 &&
-          data.map((item, index) => (
-            <ProductItem
-              product={item}
-              onClickItem={() => handleClick(item)}
-              key={index}
-              className="border-2 border-solid border-[#f6f6f6]"
-              selected={selectedItems}
-              addToCompare={addToCompare}
-              removeFromCompare={removeFromCompare}
-            />
-          ))}
+  if (!data) {
+    return (
+      <div className="h-[300px] bg-white flex items-center justify-center flex-col gap-y-6">
+        <span className="text-xl font-medium">
+          Không tìm thấy sản phẩm
+        </span>
       </div>
+    );
+  }
+
+  return (
+    <div className="product-card bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+      <div className="product-image relative">
+        <img 
+          src={data.images[0]} 
+          alt={data.title} 
+          className="w-full h-[200px] object-contain mb-4"
+          onClick={handleClick}
+        />
+        {data.inventory === 0 && (
+          <span className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 text-xs rounded">
+            Hết hàng
+          </span>
+        )}
+      </div>
+      
+      <h3 
+        className="text-lg font-medium mb-2 line-clamp-2 h-[56px] cursor-pointer" 
+        onClick={handleClick}
+      >
+        {data.title}
+      </h3>
+      
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-gray-500 line-through text-sm">
+          {data.price.toLocaleString('vi-VN')}đ
+        </span>
+        <span className="text-red-600 font-bold">
+          {data.promotion.toLocaleString('vi-VN')}đ
+        </span>
+      </div>
+      
+      <div className="flex flex-col gap-1 text-sm text-gray-600 mb-4">
+        <p>CPU: {data.cpu}</p>
+        <p>RAM: {data.ram}GB</p>
+        <p>Màn hình: {data.screen}</p>
+      </div>
+      
+      <div className="flex justify-between items-center">
+        <button 
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          onClick={handleClick}
+        >
+          Chi tiết
+        </button>
+        
+        <button 
+          className="border border-gray-300 px-3 py-2 rounded hover:bg-gray-100 transition"
+          onClick={() => addToCompare(data)}
+          disabled={selectedItems.length >= 2 && !selectedItems.some(item => item.id === data.id)}
+        >
+          So sánh
+        </button>
+      </div>
+      
       {selectedItems.length === 2 && (
         <div>
           <ModalAdvanced
