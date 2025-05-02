@@ -81,7 +81,7 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
             ))}
         </Swiper>
       </div>
-      {selectedItems.length === 2 && (
+      {/* {selectedItems.length === 2 && (
         <div>
           <ModalAdvanced
             visible={showModal}
@@ -392,7 +392,7 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
             </table>
           </ModalAdvanced>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

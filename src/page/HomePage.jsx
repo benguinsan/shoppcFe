@@ -1,25 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Banner from "../components/banner/Banner";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import ProductListHome from "../module/product/ProductListHome";
 import ProductList from "../module/product/ProductList";
 import { useDispatch, useSelector } from "react-redux";
-// import { getProduct } from "../redux/product/productSlice";
-import { productData } from "../data/productData";
-import { useState } from "react";
-
-
+import { fetchProducts } from "../redux/product/productSlice";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { status, totalPage, product } = useSelector((state) => state.product);
+  const { items, status } = useSelector((state) => state.product);
   const [page, setPage] = useState(1);
 
-  console.log(productData)
-
   useEffect(() => {
+    // Verify account check
     if (
       localStorage.getItem("jwt") &&
       JSON.parse(localStorage.getItem("user")).active === "verify"
@@ -31,27 +26,14 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    // Fetch initial products
+    dispatch(
+      fetchProducts({
+        page: 0,
+        limit: 10,
+      })
+    );
   }, [dispatch]);
-
-  useEffect(() => {
-    function fetchDataProduct(page) {
-      const limit = 10;
-      const data = {
-        page: page,
-        limit: limit,
-      };
-      try {
-        dispatch(getProduct(data));
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
-    fetchDataProduct(page);
-  }, [page]);
 
   const handlePageClick = (values) => {
     setPage(values);
@@ -64,13 +46,21 @@ const HomePage = () => {
   return (
     <>
       <Banner />
-      <ProductListHome data={productData} bg="bg1" className="pt-20" />
-      <ProductListHome data={productData} bg="bg2" className="pt-20" />
+      <ProductListHome
+        data={items?.dataSource || []}
+        bg="bg1"
+        className="pt-20"
+      />
+      <ProductListHome
+        data={items?.dataSource || []}
+        bg="bg2"
+        className="pt-20"
+      />
       <ProductList
-        data={productData}
+        data={items?.dataSource || []}
         handlePageClick={handlePageClick}
         page={page}
-        totalPage={totalPage}
+        totalPage={items?.totalElements || 0}
       />
     </>
   );

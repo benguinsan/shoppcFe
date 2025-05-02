@@ -1,92 +1,125 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Button, Modal, Space, Card } from "antd";
+import { Button, message, Space } from "antd";
 import AdminTable from "../../../components/admin/ui/table";
+import {
+  fetchProducts,
+  fetchChangeStatusProduct,
+} from "../../../redux/product/productAdminSlice";
 
 const Products = () => {
+  const dispatch = useDispatch();
   const [sortedInfo, setSortedInfo] = useState({});
+
+  const { dataSource, pageNo, pageSize, totalElements, loading } = useSelector(
+    (state) => state.productAdmin
+  );
+
+  useEffect(() => {
+    dispatch(fetchProducts({ page: 0, limit: pageSize }));
+  }, [dispatch, pageSize]);
+
+  const handleChange = (pagination, filters, sorter) => {
+    setSortedInfo(sorter);
+    dispatch(
+      fetchProducts({
+        page: pagination.current - 1,
+        limit: pagination.pageSize,
+      })
+    );
+  };
+
+  const clearAll = () => {
+    setSortedInfo({});
+  };
+
   const columns = [
     {
       title: "Mã SP",
-      dataIndex: "productId", // Cập nhật tên cột
+      dataIndex: "MaSP",
       key: "productId",
-      //   sorter: (a, b) => a.songId - b.songId,
-      //   sortOrder: sortedInfo.columnKey === "songId" ? sortedInfo.order : null,
     },
     {
       title: "Mã LSP",
-      dataIndex: "productTypeId", // Cập nhật tên cột
+      dataIndex: "MaLoaiSP",
       key: "productTypeId",
-      //   sorter: (a, b) => a.songName - b.songName,
-      //   sortOrder: sortedInfo.columnKey === "songName" ? sortedInfo.order : null,
     },
     {
       title: "Tên SP",
-      dataIndex: "title",
+      dataIndex: "TenSP",
       key: "title",
     },
     {
       title: "Mô tả",
-      dataIndex: "description",
+      dataIndex: "MoTa",
       key: "description",
+      render: (text) => (
+        <div className="truncate max-w-[200px]" title={text}>
+          {text}
+        </div>
+      ),
     },
     {
       title: "CPU",
-      dataIndex: "cpu",
+      dataIndex: "CPU",
       key: "cpu",
-      //   render: (duration) => {
-      //     const minutes = Math.floor(duration / 60);
-      //     const seconds = duration % 60;
-      //     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-      //   },
     },
     {
       title: "RAM",
-      dataIndex: "ram",
+      dataIndex: "RAM",
       key: "ram",
     },
     {
       title: "GPU",
-      dataIndex: "gpu",
+      dataIndex: "GPU",
       key: "gpu",
     },
     {
       title: "Storage",
-      dataIndex: "storage",
+      dataIndex: "Storage",
       key: "storage",
     },
     {
       title: "Màn hình",
-      dataIndex: "screen",
+      dataIndex: "ManHinh",
       key: "screen",
     },
     {
       title: "Giá",
-      dataIndex: "price",
+      dataIndex: "Gia",
       key: "price",
     },
     {
       title: "Hình ảnh",
-      dataIndex: "imgUrl",
+      dataIndex: "ImgUrl",
       key: "imgUrl",
       render: (url) => (
         <img
           src={url}
-          alt="Cover"
+          alt="Ảnh sản phẩm"
           style={{ width: 40, height: 40, objectFit: "cover" }}
         />
       ),
     },
     {
       title: "Trạng thái",
-      dataIndex: "status", // Cập nhật tên cột
+      dataIndex: "TrangThai",
       key: "status",
       render: (status, record) => (
         <Space>
           <Button
-            onClick={() => handleStatusChange(record.productId)} // Gọi hàm khi nhấn nút
-            type={status ? "default" : "primary"}
-            danger={status} // nút màu đỏ nếu đang private
+            onClick={() => handleStatusChange(record.MaSP)}
+            type="default"
+            danger={status}
+            style={
+              !status
+                ? {
+                    backgroundColor: "#52c41a",
+                    color: "#fff",
+                    borderColor: "#52c41a",
+                  }
+                : {}
+            }
           >
             {status ? "Hủy" : "Kích hoạt"}
           </Button>
@@ -95,18 +128,32 @@ const Products = () => {
     },
   ];
 
-  // const handleChange = (pagination, filter, sorter) => {
-  //   setSortedInfo(sorter);
-  //   dispatch(
-  //     fetchSongsAdmin({
-  //       pageNo: pagination.current - 1,
-  //       pageSize: pagination.pageSize,
-  //     })
-  //   );
-  // };
-  const clearAll = () => {
-    setSortedInfo({});
+  const handleStatusChange = async (productId) => {
+    try {
+      const result = await dispatch(
+        fetchChangeStatusProduct(productId)
+      ).unwrap();
+
+      if (result && result.success) {
+        message.success(
+          result.message || "Trạng thái sản phẩm đã được cập nhật!"
+        );
+        // Refresh data immediately after successful status change
+        await dispatch(
+          fetchProducts({
+            page: pageNo,
+            limit: pageSize,
+          })
+        );
+      } else {
+        throw new Error(result?.message || "Cập nhật thất bại");
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trạng thái:", error);
+      message.error(error.message || "Không thể cập nhật trạng thái sản phẩm!");
+    }
   };
+
   return (
     <div className="p-4">
       <Space style={{ marginBottom: 16 }}>
@@ -114,12 +161,13 @@ const Products = () => {
       </Space>
       <AdminTable
         columns={columns}
-        dataSource={[]}
-        rowKey="productId"
-        handleChange={() => {}}
-        pageNo={0}
-        pageSize={10}
-        totalElements={0}
+        dataSource={dataSource}
+        rowKey="MaSP"
+        handleChange={handleChange}
+        pageNo={pageNo}
+        pageSize={pageSize}
+        totalElements={totalElements}
+        loading={loading}
       />
     </div>
   );
