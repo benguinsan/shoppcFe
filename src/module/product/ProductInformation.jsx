@@ -12,59 +12,46 @@ import ProductParameters from "./information/ProductParameters";
 // } from "../../redux/product/productSlice";
 import PageNotFound from "../../page/NotFoundPage";
 import ProductListHome from "../../module/product/ProductListHome";
-
-// fake data
-import { getProductById, getProductsByBrand } from "../../data/productData";
+import productApi from "../../api/productApi";
 
 const ProductInformation = () => {
   const params = useParams();
-  // const { statusId, productId, statusProductBrand, productBrand } = useSelector(
-  //   (state) => state.product
-  // );
-  // const dispatch = useDispatch();
-  const [productId, setProductId] = useState(null);
-  const [productBrand, setProductBrand] = useState([]);
+  console.log("URL Params:", params);
+  
+  const [product, setProduct] = useState(null);
   const [notFound, setNotFound] = useState(false);
-
+  const [loading, setLoading] = useState(true);
 
   // Lấy thông tin sản phẩm theo ID
-  // useEffect(() => {
-  //   try {
-  //     dispatch(getProductId(params.id));
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // }, [params.id]);
-  
-  // sử dụng fake data
   useEffect(() => {
+    setLoading(true);
     try {
-      const product = getProductById(params.id);
-      if (product) {
-        setProductId(product);
-        // Lấy sản phẩm cùng thương hiệu
-        if (product.brand?.id) {
-          const brandProducts = getProductsByBrand(product.brand.id);
-          setProductBrand(brandProducts);
-        }
-      } else {
-        setNotFound(true);
-      }
+      productApi.getSanPhamById(params.id)
+        .then(response => {
+          const productData = response.data;
+          console.log("Product data received in component:", productData);
+          if (productData) {
+            setProduct(productData[0]);
+            setLoading(false);
+          } else {
+            console.log("Product not found");
+            setNotFound(true);
+            setLoading(false);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching product:", error);
+          setNotFound(true);
+          setLoading(false);
+        });
     } catch (error) {
-      console.log(error.message);
+      console.error("Exception in useEffect:", error.message);
       setNotFound(true);
+      setLoading(false);
     }
   }, [params.id]);
 
-
-  useEffect(() => {
-    try {
-      dispatch(getProductBrand(productId?.brand?.id));
-    } catch (error) {
-      console.log(error.message);
-    }
-  }, [productId?.brand]);
-
+  // Scroll to top when product ID changes
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -88,14 +75,14 @@ const ProductInformation = () => {
   }
 
   // Hiển thị nội dung chính khi có dữ liệu sản phẩm
-  if (productId) {
+  if (product) {
     return (
       <div className="mt-10">
         <div className="container">
           <div className="flex items-center">
             <Link
               to="/"
-              className=" text-base text-[#a8b4c9] flex items-center font-medium"
+              className="text-base text-[#a8b4c9] flex items-center font-medium"
             >
               Trang chủ
               <svg
@@ -114,29 +101,18 @@ const ProductInformation = () => {
               </svg>
             </Link>
             <span className="text-base text-[#a8b4c9] font-medium">
-              {productId?.title}
+              {product?.TenSP}
             </span>
           </div>
           <div className="ProductDetail">
-            <InformationProduct data={productId} />
+            <InformationProduct data={product} />
             <InformationService />
           </div>
           <div className="ProductDescription">
-            <ProductDescription data={productId} />
-            <ProductParameters data={productId} />
+            <ProductDescription data={product} />
+            <ProductParameters data={product} />
           </div>
         </div>
-
-        {productBrand.length > 0 && (
-          <div className="container">
-            <div className="mt-10 w-full bg-white rounded-lg p-5">
-              <div className=" text-xl font-semibold">
-                Cùng thương hiệu {productId?.brand?.name}
-              </div>
-              <ProductListHome data={productBrand} />
-            </div>
-          </div>
-        )}
       </div>
     );
   }

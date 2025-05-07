@@ -22,21 +22,16 @@ const schema = yup.object({
     .required("Vui lòng nhập họ tên")
     .min(3, "Tối thiểu phải có 3 ký tự")
     .max(30, "Vượt quá 30 ký tự cho phép"),
-  email: yup
+  username: yup
     .string()
-    .email("Vui lòng nhập đúng định dạng email")
-    .required("Vui lòng nhập email"),
+    .required("Vui lòng nhập tên tài khoản")
+    .min(3, "Tối thiểu phải có 3 ký tự")
+    .max(30, "Vượt quá 30 ký tự cho phép"),
   password: yup
     .string()
     .required("Vui lòng nhập mật khẩu")
     .min(8, "Tối thiểu 8 ký tự")
-    .max(30, "Vượt quá 30 ký tự cho phép")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message: "Bắt buộc phải có chữ hoa, chữ thường, ký tự đặc biệt, số",
-      }
-    ),
+    .max(30, "Vượt quá 30 ký tự cho phép"),
   retypePassword: yup
     .string()
     .required("Vui lòng nhập lại mật khẩu")
@@ -70,24 +65,15 @@ const SignUpPage = () => {
       top: 0,
       behavior: "smooth",
     });
-    if (
-      localStorage.getItem("jwt") &&
-      JSON.parse(localStorage.getItem("user")).active === "verify"
-    ) {
-      toast.dismiss();
-      toast.warning("Vui lòng xác thực tài khoản", { pauseOnHover: false });
-      return navigate("/verify");
-    }
   }, []);
 
   const handleSignUp = async (values) => {
     if (!isValid) return;
     try {
       const data = {
-        name: values.fullname,
-        email: values.email,
-        password: values.password,
-        passwordConfirm: values.retypePassword,
+        HoTen: values.fullname,
+        TenTK: values.username,
+        MatKhau: values.password,
       };
       const action = register(data);
       const resultAction = await dispatch(action);
@@ -97,12 +83,12 @@ const SignUpPage = () => {
       toast.success("Đăng ký tài khoản thành công", { pauseOnHover: false });
       reset({
         fullname: "",
-        email: "",
+        username: "",
         password: "",
         retypePassword: "",
         term: false,
       });
-      navigate("/verify");
+      navigate("/sign-in");
     } catch (error) {
       toast.dismiss();
       toast.error(error.message, { pauseOnHover: false });
@@ -128,16 +114,16 @@ const SignUpPage = () => {
         </Field>
 
         <Field>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="username">Tên tài khoản</Label>
           <Input
-            type="email"
-            name="email"
-            placeholder="Mời bạn nhập email"
+            type="text"
+            name="username"
+            placeholder="Mời bạn nhập tên tài khoản"
             control={control}
           />
-          {errors.email && (
+          {errors.username && (
             <p className="text-red-500 text-base font-medium">
-              {errors.email?.message}
+              {errors.username?.message}
             </p>
           )}
         </Field>

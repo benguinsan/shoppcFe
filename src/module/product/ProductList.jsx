@@ -30,9 +30,9 @@ const ProductList = () => {
     );
   }, [dispatch, currentPage]);
 
-  useEffect(() => {
-    console.log("Fetched products:", items);
-  }, [items]);
+  // useEffect(() => {
+  //   console.log("Fetched products:", items);
+  // }, [items]);
 
   return (
     <div className="mt-20">

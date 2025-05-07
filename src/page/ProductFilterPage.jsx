@@ -11,19 +11,19 @@ import { colorData } from "../api/colorData";
 import Accordion from "../components/accordion/Accordion";
 import Filter from "../components/filter/Filter";
 import { ramData } from "../api/ramData";
-import { demandData } from "../api/demandData";
-import { productData, brandData } from "../data/productData";
+// import { demandData } from "../api/demandData";
+// import { productData, brandData } from "../data/productData";
+import { fetchProducts } from "../redux/product/productSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const ProductFilterPage = () => {
+  const dispatch = useDispatch();
+  const { items, status } = useSelector((state) => state.product);
+
   const params = queryString.parse(location.search);
   console.log(params);
 
   const keyword = localStorage.getItem("keyword");
-
-  // console.log(productData);
-  // console.log(brandData);
-  // console.log(ramData);
-  // console.log(demandData);
 
   const queryParams = useMemo(() => {
     return {
@@ -43,160 +43,32 @@ const ProductFilterPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Fetch initial products with query params
+    dispatch(
+      fetchProducts({
+        page: queryParams.page - 1, // Chuyển đổi từ page UI (bắt đầu từ 1) sang page API (bắt đầu từ 0)
+        limit: queryParams.limit,
+        sort: queryParams.sort,
+        promotion_gte: queryParams.promotion_gte || undefined,
+        promotion_lte: queryParams.promotion_lte || undefined,
+        ram: params.ram || undefined,
+        keyword: keyword || undefined
+      })
+    );
+  }, [dispatch, location.search, queryParams]);
+
+  // Không cần filterProducts nữa vì API đã xử lý lọc và phân trang
+  useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-    try {
-      // Lọc sản phẩm dựa trên các tham số query
-      filterProducts();
-
-      console.log("fuk",filteredProducts);
-    } catch (error) {
-      console.log(error.message);
-    }
   }, [location.search]);
 
-  // Hàm lọc sản phẩm dựa trên các tham số query
-  const filterProducts = () => {
-    let filtered = [...productData];
-    
-    // Lọc theo từ khóa
-    if (keyword) {
-      filtered = filtered.filter(product => 
-        product.title.toLowerCase().includes(keyword.toLowerCase())
-      );
-    }
-    
-    // Lọc theo thương hiệu
-    if (params.brand) {
-      const brands = params.brand.split(',');
-      filtered = filtered.filter(product => 
-        brands.includes(product.brand)       
-      );
-    }
-    
-    // Lọc theo màu sắc
-    if (params.color) {
-      const colors = params.color.split(',');
-      filtered = filtered.filter(product => 
-        colors.includes(product.color)
-      );
-    }
-    
-    // Lọc theo RAM
-    if (params.ram) {
-      const rams = params.ram.split(',');
-      filtered = filtered.filter(product => 
-        rams.includes(product.ram)
-      );
-    }
-    
-    // Lọc theo nhu cầu
-    if (params.demand) {
-      const demands = params.demand.split(',');
-      filtered = filtered.filter(product => 
-        demands.some(demand => product.demand.includes(demand))
-      );
-    }
-    
-    // Lọc theo giá
-    if (params.promotion_gte && params.promotion_lte) {
-      filtered = filtered.filter(product => 
-        product.promotion >= Number(params.promotion_gte) && 
-        product.promotion <= Number(params.promotion_lte)
-      );
-    }
-    
-    // Sắp xếp
-    if (params.sort) {
-      switch(params.sort) {
-        case "promotion":
-          filtered.sort((a, b) => a.promotion - b.promotion);
-          break;
-        case "promotion_desc":
-          filtered.sort((a, b) => b.promotion - a.promotion);
-          break;
-        case "newest":
-          // Giả sử id lớn hơn = mới hơn
-          filtered.sort((a, b) => Number(b.id) - Number(a.id));
-          break;
-        default:
-          filtered.sort((a, b) => a.promotion - b.promotion);
-      }
-    }
-    
-    // Phân trang
-    const itemsPerPage = queryParams.limit;
-    const totalPages = Math.ceil(filtered.length / itemsPerPage);
-    setTotalPageFilter(totalPages);
-    
-    const startIndex = (queryParams.page - 1) * itemsPerPage;
-    const paginatedProducts = filtered.slice(startIndex, startIndex + itemsPerPage);
-    
-    setFilteredProducts(paginatedProducts);
-  };
-
-  const initFilter = {
-    brand: params?.brand?.split(",") || [],
-    color: params?.color?.split(",") || [],
-    ram: params?.ram?.split(",") || [],
-    demand: params?.demand?.split(",") || [],
-  };
-
-  const [filter, setFilter] = useState(initFilter);
-
-  const filterSelect = (type, checked, item) => {
-    if (checked) {
-      switch (type) {
-        case "Brands":
-          setFilter({
-            ...filter,
-            brand: [...filter.brand, item.id],
-          });
-          break;
-        case "Colors":
-          setFilter({
-            ...filter,
-            color: [...filter.color, item.name],
-          });
-          break;
-        case "Rams":
-          setFilter({
-            ...filter,
-            ram: [...filter.ram, item.name],
-          });
-          break;
-        case "Demands":
-          setFilter({
-            ...filter,
-            demand: [...filter.demand, item.value],
-          });
-          break;
-        default:
-      }
-    } else {
-      switch (type) {
-        case "Brands":
-          const newBrands = filter.brand.filter((e) => e !== item.id);
-          setFilter({ ...filter, brand: newBrands });
-          break;
-        case "Colors":
-          const newColors = filter.color.filter((e) => e !== item.name);
-          setFilter({ ...filter, color: newColors });
-          break;
-        case "Rams":
-          const newRams = filter.ram.filter((e) => e !== item.name);
-          setFilter({ ...filter, ram: newRams });
-          break;
-        case "Demands":
-          const newDemands = filter.demand.filter((e) => e !== item.value);
-          setFilter({ ...filter, demand: newDemands });
-          break;
-        default:
-      }
-    }
-  };
+  // Sử dụng dữ liệu từ Redux store
+  const products = items.dataSource || [];
+  const totalItems = items.totalElements || 0;
+  const totalPages = items.totalPages || 0;
 
   const handlePageClick = (values) => {
     setPage(values);
@@ -213,47 +85,126 @@ const ProductFilterPage = () => {
   const handleClickSort = (values) => {
     setSort(values);
     setPage(1);
-  };
-
-  const handleChangePrice = (values) => {
-    const filters = { ...queryParams, ...values, page: 1 };
-    setPage(1);
+    const filters = {
+      ...queryParams,
+      sort: values,
+      page: 1,
+    };
     navigate({
       pathname: "/product",
       search: queryString.stringify(filters),
     });
   };
 
-  useEffect(() => {
-    if (
-      filter.brand.length !== 0 ||
-      filter.color.length !== 0 ||
-      filter.ram.length !== 0 ||
-      filter.demand.length !== 0
-    ) {
-      const filters = {
-        ...queryParams,
-        page: 1,
-        ...filter,
+  const handleChangePrice = (values) => {
+    // Kiểm tra giá trị hợp lệ trước khi cập nhật
+    if (values.promotion_gte !== undefined && values.promotion_lte !== undefined) {
+      const filters = { 
+        ...queryParams, 
+        promotion_gte: values.promotion_gte,
+        promotion_lte: values.promotion_lte,
+        page: 1 
       };
       setPage(1);
-      navigate({
-        pathname: "/product",
-        search: queryString.stringify(filters, {
-          arrayFormat: "comma",
-        }),
-      });
-    } else {
-      const filters = {
-        ...queryParams,
-        ...filter,
-      };
       navigate({
         pathname: "/product",
         search: queryString.stringify(filters),
       });
     }
-  }, [filter, queryParams]);
+  };
+
+  const initFilter = {
+    // brand: params?.brand?.split(",") || [],
+    // color: params?.color?.split(",") || [],
+    ram: params?.ram?.split(",") || [],
+    // demand: params?.demand?.split(",") || [],
+  };
+
+  const [filter, setFilter] = useState(initFilter);
+
+  const filterSelect = (type, checked, item) => {
+    if (checked) {
+      switch (type) {
+        // case "Brands":
+        //   setFilter({
+        //     ...filter,
+        //     brand: [...filter.brand, item.id],
+        //   });
+        //   break;
+        // case "Colors":
+        //   setFilter({
+        //     ...filter,
+        //     color: [...filter.color, item.name],
+        //   });
+        //   break;
+        case "Rams":
+          // Kiểm tra xem item.name đã tồn tại trong filter.ram chưa
+          if (!filter.ram.includes(item.name)) {
+            setFilter({
+              ...filter,
+              ram: [...filter.ram, item.name],
+            });
+          }
+          break;
+        // case "Demands":
+        //   setFilter({
+        //     ...filter,
+        //     demand: [...filter.demand, item.value],
+        //   });
+        //   break;
+        default:
+      }
+    } else {
+      switch (type) {
+        // case "Brands":
+        //   const newBrands = filter.brand.filter((e) => e !== item.id);
+        //   setFilter({ ...filter, brand: newBrands });
+        //   break;
+        // case "Colors":
+        //   const newColors = filter.color.filter((e) => e !== item.name);
+        //   setFilter({ ...filter, color: newColors });
+        //   break;
+        case "Rams":
+          const newRams = filter.ram.filter((e) => e !== item.name);
+          setFilter({ ...filter, ram: newRams });
+          break;
+        // case "Demands":
+        //   const newDemands = filter.demand.filter((e) => e !== item.value);
+        //   setFilter({ ...filter, demand: newDemands });
+        //   break;
+        default:
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Chỉ cập nhật URL khi filter thay đổi
+    const hasRamFilter = filter.ram.length !== 0;
+    
+    // Tạo đối tượng filters mới
+    let filters = { ...queryParams };
+    
+    // Chỉ thêm ram vào filters nếu có giá trị
+    if (hasRamFilter) {
+      filters = {
+        ...filters,
+        ram: filter.ram,
+        page: 1,
+      };
+      setPage(1);
+    } else {
+      // Nếu không có ram filter, xóa ram khỏi URL
+      delete filters.ram;
+    }
+    
+    // Cập nhật URL
+    navigate({
+      pathname: "/product",
+      search: queryString.stringify(filters, {
+        arrayFormat: 'comma'
+      }),
+    });
+  }, [filter, navigate]);
 
   return (
     <>
@@ -291,7 +242,7 @@ const ProductFilterPage = () => {
                 handleChangePrice={handleChangePrice}
                 queryParams={queryParams}
               />
-              <div className="flex flex-col m-4">
+              {/* <div className="flex flex-col m-4">
                 <Accordion title="Thương hiệu">
                   <Filter
                     data={brandData}
@@ -300,8 +251,8 @@ const ProductFilterPage = () => {
                     filter={filter}
                   />
                 </Accordion>
-              </div>
-              <div className="flex flex-col m-4">
+              </div> */}
+              {/* <div className="flex flex-col m-4">
                 <Accordion title="Màu sắc">
                   <Filter
                     data={colorData}
@@ -310,7 +261,7 @@ const ProductFilterPage = () => {
                     filter={filter}
                   />
                 </Accordion>
-              </div>
+              </div> */}
               <div className="flex flex-col m-4">
                 <Accordion title="RAM">
                   <Filter
@@ -321,7 +272,7 @@ const ProductFilterPage = () => {
                   />
                 </Accordion>
               </div>
-              <div className="flex flex-col m-4">
+              {/* <div className="flex flex-col m-4">
                 <Accordion title="Nhu cầu">
                   <Filter
                     data={demandData}
@@ -330,7 +281,7 @@ const ProductFilterPage = () => {
                     filter={filter}
                   />
                 </Accordion>
-              </div>
+              </div> */}
             </div>
 
             {/* product list */}
@@ -343,18 +294,36 @@ const ProductFilterPage = () => {
                   <FilterSort onChange={handleClickSort} />
                 </div>
               
+                {status === 'loading' && (
+                  <div className="flex justify-center items-center p-10">
+                    <p>Đang tải sản phẩm...</p>
+                  </div>
+                )}
+                
+                {status === 'failed' && (
+                  <div className="flex justify-center items-center p-10">
+                    <p>Có lỗi xảy ra khi tải sản phẩm</p>
+                  </div>
+                )}
+                
+                {status === 'succeeded' && products.length === 0 && (
+                  <div className="flex justify-center items-center p-10">
+                    <p>Không tìm thấy sản phẩm phù hợp</p>
+                  </div>
+                )}
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {filteredProducts.map((item) => (
+                  {products.map((item) => (
                     <FilterProduct key={item.id} data={item} />
                   ))}
                 </div>
               </div>
-              {totalPageFilter > 0 && (
+              {totalPages > 0 && (
                 <div className="flex items-center justify-center mt-10">
                   <Pagination
                     activePage={page}
-                    itemsCountPerPage={20}
-                    totalItemsCount={totalPageFilter * 20}
+                    itemsCountPerPage={queryParams.limit}
+                    totalItemsCount={totalItems}
                     pageRangeDisplayed={5}
                     onChange={handlePageClick}
                     nextPageText={">"}

@@ -32,8 +32,7 @@ const Navbar = () => {
     }
   };
 
-  const isLoggedIn =
-    loggedInUser === null ? null : loggedInUser.active === "active";
+  const isLoggedIn = loggedInUser !== null;
 
   const handleLogout = () => {
     Swal.fire({

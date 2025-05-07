@@ -1,13 +1,14 @@
 import React from "react";
 import { formatPrice } from "../../utils/formatPrice";
+import slugify from "slugify";
+import { useNavigate } from "react-router-dom";
+
 const ProductItem = ({
   product,
-  onClickItem,
   className = "",
-  addToCompare,
-  removeFromCompare,
   selected,
 }) => {
+  const navigate = useNavigate();
   // const handleRemove = (e, product) => {
   //   e.stopPropagation();
   //   removeFromCompare(product);
@@ -17,11 +18,17 @@ const ProductItem = ({
   //   e.stopPropagation();
   //   addToCompare(product);
   // };
+  
+  const handleClick = (item) => {
+    console.log(item);
+    const path = slugify(item.TenSP, { strict: true });
+    navigate(`/${path}/${item.MaSP}`);
+  };
 
   return (
     <div
       className={`flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer  ${className}`}
-      onClick={onClickItem}
+      onClick={() => handleClick(product)}
     >
       <img
         src={product?.ImgUrl || "https://via.placeholder.com/300"}
@@ -65,14 +72,6 @@ const ProductItem = ({
           </span>
         </div>
         <div></div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <span className="text-sm line-through text-slate-400">
-              {formatPrice(product?.price)}
-            </span>
-            <span className="text-blue text-sm"> - {product?.percent}%</span>
-          </div>
-        </div>
       </div>
     </div>
   );
