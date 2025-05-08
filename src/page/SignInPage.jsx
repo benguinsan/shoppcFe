@@ -19,21 +19,14 @@ import { auth } from "../config/firebase";
 import { async } from "@firebase/util";
 
 const schema = yup.object({
-  email: yup
+  username: yup
     .string()
-    .email("Vui lòng nhập đúng định dạng email")
-    .required("Vui lòng nhập email"),
+    .required("Vui lòng nhập tên tài khoản"),
   password: yup
     .string()
     .required("Vui lòng nhập mật khẩu")
     .min(8, "Tối thiểu 8 ký tự")
     .max(30, "Vượt quá 30 ký tự cho phép")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message: "Bắt buộc phải có chữ hoa, chữ thường, ký tự đặc biệt, số",
-      }
-    ),
 });
 
 const SignInPage = () => {
@@ -44,7 +37,7 @@ const SignInPage = () => {
     reset,
   } = useForm({
     mode: "onChange",
-    defaultValues: { email: "", password: "" },
+    defaultValues: { username: "", password: "" },
     resolver: yupResolver(schema),
   });
   const navigate = useNavigate();
@@ -66,21 +59,25 @@ const SignInPage = () => {
   const handleSignIn = async (values) => {
     if (!isValid) return;
     try {
-      const action = login(values);
+      const data = {
+        TenTK: values.username,
+        MatKhau: values.password,
+      };
+      const action = login(data);
       const resultAction = await dispatch(action);
       const user = unwrapResult(resultAction);
       if (user.active === "verify") {
         return navigate("/verify");
       }
-      if (user.active === "ban") {
-        toast.dismiss();
-        toast.warning("Tài khoản của bạn bị cấm. Vui lòng liên hệ admin");
-        return;
-      }
+      // if (user.active === "ban") {
+      //   toast.dismiss();
+      //   toast.warning("Tài khoản của bạn bị cấm. Vui lòng liên hệ admin");
+      //   return;
+      // }
       toast.dismiss();
       toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
       reset({
-        email: "",
+        username: "",
         password: "",
       });
       navigate("/");
@@ -123,16 +120,16 @@ const SignInPage = () => {
         onSubmit={handleSubmit(handleSignIn)}
       >
         <Field>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="username">Tên tài khoản</Label>
           <Input
-            type="email"
-            name="email"
-            placeholder="Mời bạn nhập email"
+            type="text"
+            name="username"
+            placeholder="Mời bạn nhập tên tài khoản"
             control={control}
           />
-          {errors.email && (
+          {errors.username && (
             <p className="text-red-500 text-base font-medium">
-              {errors.email?.message}
+              {errors.username?.message}
             </p>
           )}
         </Field>

@@ -10,22 +10,22 @@ const ProductCard = ({ data }) => {
   return (
     <div className="flex items-center justify-start gap-x-3">
       <img
-        src={data.product.images[0]}
+        src={data.product.ImgUrl}
         alt=""
         className="w-[100px] h-[100px] object-cover border-2 border-solid"
       />
       <div className="flex flex-col items-start flex-wrap gap-y-1">
         <span
           className="text-base font-medium hover:text-blue-800 cursor-pointer line-clamp-2"
-          title={data.product.title}
+          title={data.product.TenSP}
           onClick={handleClick}
         >
-          {data.product.title}
+          {data.product.TenSP}
         </span>
-        <span className="text-sm text-[#8e8db7]">SKU: {data.product.id}</span>
-        <span className="text-orange-500 text-sm font-medium">
+        <span className="text-sm text-[#8e8db7]">SKU: {data.product.MaLoaiSP}</span>
+        {/* <span className="text-orange-500 text-sm font-medium">
           Chỉ còn {data.product.inventory} sản phẩm{" "}
-        </span>
+        </span> */}
       </div>
     </div>
   );

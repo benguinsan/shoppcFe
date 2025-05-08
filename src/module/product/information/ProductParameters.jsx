@@ -6,25 +6,17 @@ const ProductParameters = ({ data }) => {
       <div className="text-2xl font-semibold mb-8">Thông tin chi tiết</div>
       <table className="table-product">
         <thead>
-          {/* <tr>
-            <td>Thương hiệu</td>
-            <td>{data?.brand?.name}</td>
-          </tr> */}
           <tr>
             <td>Bảo hành</td>
             <td>12</td>
           </tr>
-          {/* <tr>
-            <td>Màu sắc</td>
-            <td>{data?.color}</td>
-          </tr> */}
           <tr>
             <td>CPU</td>
             <td>{data?.CPU}</td>
           </tr>
           <tr>
-            <td>Chip đồ họa</td>
-            <td>{data?.GPU || "Không có"}</td>
+            <td>GPU</td>
+            <td>{data?.GPU}</td>
           </tr>
           <tr>
             <td>RAM</td>
@@ -35,21 +27,9 @@ const ProductParameters = ({ data }) => {
             <td>{data?.ManHinh}</td>
           </tr>
           <tr>
-            <td>Dung lượng</td>
-            <td>{data?.Storage} </td>
+            <td>Storage</td>
+            <td>{data?.Storage}</td>
           </tr>
-          {/* <tr>
-            <td>Hệ điều hành</td>
-            <td>{data?.os}</td>
-          </tr> */}
-          {/* <tr>
-            <td>Pin</td>
-            <td>{data?.battery}</td>
-          </tr> */}
-          {/* <tr>
-            <td>Khối lượng</td>
-            <td>{data?.weight} kg</td>
-          </tr> */}
         </thead>
       </table>
     </div>

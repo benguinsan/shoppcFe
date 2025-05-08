@@ -36,7 +36,6 @@ const items = [
   getItem("Nhà cung cấp", "supplier", <DesktopOutlined />, [
     getItem("Danh sách nhà cung cấp", "suppliers"),
     getItem("Thêm nhà cung cấp", "supplier/create"),
-    getItem("Cập nhật nhà cung cấp", "supplier/update"),
   ]),
   getItem("Nhập hàng", "imports", <DesktopOutlined />, [
     getItem("Danh sách phiếu nhập", "imports"),
@@ -52,11 +51,12 @@ const items = [
   ]),
   getItem("Tài khoản", "account", <DesktopOutlined />, [
     getItem("Danh sách tài khoản", "accounts"),
-    getItem("Thêm tài khoản", "account/create"),
-    getItem("Cập nhật quyền tài khoản", "account/update"),
   ]),
   getItem("Thống kê", "statistic", <DesktopOutlined />, [
     getItem("Thống kê", "statistics"),
+  ]),
+  getItem("Nhóm Quyền", "role", <DesktopOutlined />, [
+    getItem("Danh sách nhóm quyền", "roles"),
   ]),
 ];
 
@@ -86,7 +86,21 @@ const LayoutAdmin = () => {
 
   const path = location.pathname.replace("/admin/", "");
 
-  // Giả sử path là /admin/songs => lấy "songs"
+  // Hàm xử lý đăng xuất
+  const handleLogout = () => {
+    // Xóa token và thông tin người dùng từ localStorage
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("user");
+    
+    // Có thể thêm các xử lý khác nếu cần
+    // Ví dụ: dispatch action để reset state trong Redux
+    
+    // Chuyển hướng về trang chủ
+    navigate("/", { replace: true });
+    
+    // Tải lại trang để đảm bảo tất cả state được reset
+    window.location.href = "/";
+  };
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -110,8 +124,7 @@ const LayoutAdmin = () => {
           onOpenChange={onOpenChange}
           onClick={({ key }) => {
             if (key === "logout") {
-              localStorage.removeItem("token");
-              navigate("/login");
+              handleLogout(); // Gọi hàm xử lý đăng xuất
             } else {
               navigate(`/admin/${key}`);
             }

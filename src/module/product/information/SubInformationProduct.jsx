@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { addToCart } from "../../../redux/cart/cartSlice";
 import { formatPrice } from "../../../utils/formatPrice";
 const SubInformationProduct = ({ data }) => {
+  console.log("data",data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleAddCart = () => {
     const action = addToCart({
-      id: data._id,
+      id: data._id || data.MaSP,
       product: data,
       quantity: 1,
     });
@@ -16,7 +17,7 @@ const SubInformationProduct = ({ data }) => {
   };
   const handleBuy = () => {
     const action = addToCart({
-      id: data._id,
+      id: data._id || data.MaSP,
       product: data,
       quantity: 1,
     });
@@ -32,11 +33,11 @@ const SubInformationProduct = ({ data }) => {
         {data?.TenSP}
       </span>
       <div className="flex items-center justify-start gap-x-5 mb-4">
-        <span className="text-base text-slate-400">
-          Thương hiệu: {data?.MaLSP}
-        </span>
-        <span>|</span>
-        {/* <span className="text-base text-slate-400">SKU: {data?._id}</span> */}
+        {/* <span className="text-base text-slate-400">
+          Thương hiệu: {data?.brand?.name}
+        </span> */}
+        {/* <span>|</span> */}
+        <span className="text-base text-slate-400">SKU: {data?.MaLoaiSP}</span>
       </div>
       {/* {data?.inventory > 0 && data?.inventory < 5 && (
         <span className="text-orange-500 font-medium mb-4">
@@ -48,15 +49,11 @@ const SubInformationProduct = ({ data }) => {
           Sản phẩm hiện tại hết hàng
         </span>
       )} */}
-      <span className="text-2xl font-semibold text-blue-700 mb-2">
-        {formatPrice(data?.Gia)}
-      </span>
-      {/* <div className="flex items-center mb-6">
-        <span className="text-lg line-through text-slate-400 ">
-          {formatPrice(data?.price)}
+      <div className="flex items-center mb-6">
+        <span className="text-2xl font-semibold text-blue-700">
+          {formatPrice(data?.Gia)}
         </span>
-        <span className="text-blue text-lg"> - {data?.percent}%</span>
-      </div> */}
+      </div>
       <span className="w-full border-dotted border-2 mb-6"></span>
       {/* {data?.inventory > 0 && (
         <>
@@ -78,7 +75,27 @@ const SubInformationProduct = ({ data }) => {
           </div>
           <span className="w-full border-dotted border-2 my-6"></span>
         </>
-      )} */}
+      )}
+
+    <span className="w-full border-dotted border-2 mb-6"></span>
+      <div className="flex items-center justify-between px-10">
+        <button
+          className="px-8 py-3 bg-blue-800 text-white text-lg font-medium rounded-md w-[220px]"
+          type="button"
+          onClick={handleBuy}
+        >
+          MUA NGAY
+        </button>
+        <button
+          className="px-3 py-3 text-blue-700 text-lg font-medium rounded-md border-2 border-blue-700"
+          type="button"
+          onClick={handleAddCart}
+        >
+          THÊM VÀO GIỎ HÀNG
+        </button>
+      </div>
+      <span className="w-full border-dotted border-2 my-6"></span>
+      
     </div>
   );
 };

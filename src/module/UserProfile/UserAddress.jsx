@@ -1,322 +1,159 @@
 import React, { useEffect, useState } from "react";
 import DashboardHeading from "../dashboard/DashboardHeding";
-import ModalAdvanced from "../../components/Modal/ModalAdvanced";
 import Label from "../../components/label/Label";
 import Input from "../../components/input/Input";
 import { useForm } from "react-hook-form";
-import DropdownSelect from "../../components/dropdown/DropdownSelect";
-import axios from "axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "../../components/button/Button";
-import ListAddress from "./ListAddress";
-import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { addAddress } from "../../redux/auth/addressSlice";
+import { getUser, updateInfoUser } from "../../redux/auth/userSlice";
 import { useNavigate } from "react-router-dom";
+import Field from "../../components/field/Field";
+import { action_status } from "../../utils/constants/status";
+import Skeleton from "../../components/skeleton/Skeleton";
 
 const schema = yup.object({
-  fullname: yup
+  address: yup
     .string()
-    .required("Vui lòng nhập họ tên")
-    .min(3, "Tối thiểu phải có 3 ký tự")
-    .max(30, "Vượt quá 30 ký tự cho phép"),
-  sdt: yup
-    .string()
-    .required("Vui lòng nhập số điện thoại")
-    .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/, {
-      message: "Định dạng số điện thoại không đúng",
-    }),
-  address: yup.string().required("Vui lòng nhập địa chỉ nhà"),
-  province: yup.string().required("Vui lòng chọn Tỉnh/ Thành phố"),
-  dictrict: yup.string().required("Vui lòng chọn Quận/Huyện"),
-  ward: yup.string().required("Vui lòng chọn Phường/Xã"),
+    .required("Vui lòng nhập địa chỉ")
+    .min(5, "Địa chỉ quá ngắn"),
 });
+
 const UserAddress = () => {
   const {
     control,
     handleSubmit,
     formState: { isSubmitting, isValid, errors },
-    setValue,
-    getValues,
     reset,
+    setValue,
+    watch,
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: {
-      fullname: "",
-      sdt: "",
-      province: "",
-      dictrict: "",
-      ward: "",
       address: "",
-    },
+    }
   });
-  const [showModal, setShowModal] = useState(false);
-  const [province, setProvince] = useState([]);
-  const [provinceId, setProvinceId] = useState("");
-  const [district, setDistrict] = useState([]);
-  const [districtId, setDistrictId] = useState("");
-  const [ward, setWard] = useState([]);
-  const dispatch = useDispatch();
-  const { add } = useSelector((state) => state.address);
-  const { current } = useSelector((state) => state.user);
-  const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user, status, current, update } = useSelector((state) => state.user);
+  const watchAddress = watch("address");
+
+  // Kiểm tra đăng nhập
   useEffect(() => {
     if (current === null) {
       toast.dismiss();
       toast.warning("Vui lòng đăng nhập");
       navigate("/sign-in");
     }
-  }, [current]);
+  }, [current, navigate]);
 
-  const bodyStyle = document.body.style;
-  let isLocked = false;
-
-  const fetchProvince = async () => {
-    const { data } = await axios.get("https://provinces.open-api.vn/api/p");
-    setProvince(data);
-  };
-
-  const fetchDistrict = async () => {
-    const { data } = await axios.get(
-      `https://provinces.open-api.vn/api/p/${provinceId}?depth=2`
-    );
-    setDistrict(data.districts);
-  };
-
-  const fetchWard = async () => {
-    const { data } = await axios.get(
-      `https://provinces.open-api.vn/api/d/${districtId}?depth=2`
-    );
-    setWard(data.wards);
-  };
-
+  // Lấy thông tin user ban đầu
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-    fetchProvince();
-    fetchDistrict();
-    fetchWard();
-  }, [provinceId, districtId]);
+    dispatch(getUser());
+  }, [dispatch]);
 
+  // Cập nhật form khi có dữ liệu user
   useEffect(() => {
-    if (showModal === false) {
-      reset({
-        fullname: "",
-        sdt: "",
-        province: setValue("province", ""),
-        dictrict: setValue("dictrict", ""),
-        ward: setValue("ward", ""),
-        address: "",
-      });
-      enableBodyScroll(bodyStyle);
-      isLocked = false;
-    } else {
-      disableBodyScroll(bodyStyle);
-      isLocked = true;
+    if (user && user.nguoiDung) {
+      console.log("Setting address from user data:", user.nguoiDung.DiaChi);
+      setValue("address", user.nguoiDung.DiaChi || "");
     }
-  }, [showModal]);
+  }, [user, setValue]);
 
-  const handleSend = (values) => {
-    if (!isValid) return null;
-    const dataAddress = {
-      name: values.fullname,
-      phone: values.sdt,
-      detail: values.address,
-      province: getValues("province"),
-      district: getValues("dictrict"),
-      ward: getValues("ward"),
+  // Cập nhật lại dữ liệu sau khi update thành công
+  useEffect(() => {
+    if (update) {
+      console.log("Update successful, fetching new user data");
+      dispatch(getUser());
+    }
+  }, [update, dispatch]);
+
+  const handleUpdateAddress = (values) => {
+    if (!isValid) return;
+    
+    console.log("Updating address with:", values.address);
+    
+    // Tạo object với thông tin cần cập nhật
+    const updateData = {
+      ...user?.nguoiDung,
+      DiaChi: values.address
     };
-
+    
     try {
-      dispatch(addAddress(dataAddress));
+      dispatch(updateInfoUser(updateData));
       toast.dismiss();
-      toast.success("Thêm thành công địa chỉ");
-      setShowModal(false);
+      toast.success("Cập nhật địa chỉ thành công", { pauseOnHover: false });
     } catch (error) {
       toast.dismiss();
-      toast.error(error.message);
+      toast.error(error.message || "Có lỗi xảy ra khi cập nhật địa chỉ");
     }
-    reset({
-      fullname: "",
-      sdt: "",
-      province: "" && setValue("province", ""),
-      dictrict: "" && setValue("dictrict", ""),
-      ward: "" && setValue("ward", ""),
-      address: "",
-    });
   };
+
   return (
     <div>
       <DashboardHeading
-        title="Sổ địa chỉ"
+        title="Địa chỉ của tôi"
         className="px-5 py-5"
       ></DashboardHeading>
 
-      <button
-        className="w-full bg-white h-[80px] rounded-md border-2 border-dotted focus:border-solid"
-        onClick={() => setShowModal(true)}
-      >
-        <div className="flex items-center justify-center gap-5">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-5 h-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
-          <span className="text-base font-medium">Thêm địa chỉ mới </span>
-        </div>
-      </button>
-
-      <ModalAdvanced
-        visible={showModal}
-        onClose={() => {
-          setShowModal(false);
-        }}
-        bodyClassName="w-[750px] bg-white  rounded-lg relative z-10 content h-[650px]  overflow-x-hidden"
-      >
-        <div className="overflow-y-auto h-[650px] px-10 py-5 ">
-          <h3 className="text-lg font-semibold text-black text-left mb-3">
-            Thông tin người nhận hàng
-          </h3>
-          <form onSubmit={handleSubmit(handleSend)} autoComplete="off">
-            <div className="flex flex-col items-start gap-4 mb-5">
-              <Label htmlFor="fullname">* Họ tên</Label>
-              <Input
+      <div className="bg-white rounded-lg p-5">
+        {status === action_status.LOADING && (
+          <div className="pb-16">
+            <Field>
+              <Skeleton className="w-[100px] h-4 rounded-lg" />
+              <Skeleton className="w-full h-10 rounded-md" />
+            </Field>
+            <Skeleton className="w-[200px] h-[40px] rounded-lg mx-auto mt-10" />
+          </div>
+        )}
+        
+        {status === action_status.FAILED && (
+          <div className="text-center py-10">
+            <p className="text-red-500 mb-4">Đã xảy ra lỗi khi tải thông tin địa chỉ</p>
+            <Button 
+              kind="primary"
+              onClick={() => dispatch(getUser())}
+            >
+              Thử lại
+            </Button>
+          </div>
+        )}
+        
+        {status === action_status.SUCCEEDED && (
+          <form className="pb-16" onSubmit={handleSubmit(handleUpdateAddress)}>
+            <Field>
+              <Label htmlFor="address">Địa chỉ</Label>
+              <Input 
+                name="address" 
+                control={control} 
                 type="text"
-                name="fullname"
-                placeholder="Mời bạn nhập tên của bạn"
-                control={control}
+                placeholder="Nhập địa chỉ của bạn"
+                value={watchAddress}
               ></Input>
-              {errors.fullname && (
+              {errors.address && (
                 <p className="text-red-500 text-base font-medium">
-                  {errors.fullname?.message}
+                  {errors.address?.message}
                 </p>
               )}
-            </div>
+            </Field>
 
-            <div className="flex flex-col items-start gap-4 mb-5">
-              <Label htmlFor="sdt">* Số điện thoại</Label>
-              <Input
-                type="number"
-                name="sdt"
-                placeholder="Mời bạn nhập số điện thoại"
-                control={control}
-              ></Input>
-              {errors.sdt && (
-                <p className="text-red-500 text-base font-medium">
-                  {errors.sdt?.message}
-                </p>
-              )}
-            </div>
-
-            <h3 className="text-lg font-semibold text-black text-left mb-3">
-              Địa chỉ nhận hàng
-            </h3>
-
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col items-start gap-4 mb-5">
-                <Label htmlFor="province">* Tỉnh/Thành phố</Label>
-                <DropdownSelect
-                  control={control}
-                  name="province"
-                  dropdownLabel="Chọn"
-                  setValue={setValue}
-                  data={province}
-                  onClick={(id) => setProvinceId(id)}
-                ></DropdownSelect>
-                {errors.province && (
-                  <p className="text-red-500 text-base font-medium">
-                    {errors.province?.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col items-start gap-4 mb-5">
-                <Label htmlFor="district">* Quận/Huyện</Label>
-                <DropdownSelect
-                  control={control}
-                  name="dictrict"
-                  dropdownLabel="Chọn"
-                  setValue={setValue}
-                  data={district}
-                  onClick={(id) => setDistrictId(id)}
-                ></DropdownSelect>
-                {errors.dictrict && (
-                  <p className="text-red-500 text-base font-medium">
-                    {errors.dictrict?.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col items-start gap-4 mb-5">
-                <Label htmlFor="ward">* Phường/Xã</Label>
-                <DropdownSelect
-                  control={control}
-                  name="ward"
-                  dropdownLabel="Chọn"
-                  setValue={setValue}
-                  data={ward}
-                ></DropdownSelect>
-                {errors.ward && (
-                  <p className="text-red-500 text-base font-medium">
-                    {errors.ward?.message}
-                  </p>
-                )}
-              </div>
-              <div className="flex flex-col items-start gap-4 mb-5">
-                <Label htmlFor="address">* Địa chỉ cụ thể</Label>
-                <Input
-                  type="text"
-                  name="address"
-                  placeholder="Số nhà, ngõ, tên đường"
-                  style={{ width: "300px" }}
-                  control={control}
-                ></Input>
-                {errors.address && (
-                  <p className="text-red-500 text-base font-medium">
-                    {errors.address?.message}
-                  </p>
-                )}
-              </div>
-            </div>
-            <div className="flex items-center justify-end gap-x-4 mt-5">
-              <button
-                className="p-3 text-base font-medium bg-white text-[#316BFF] rounded-lg border border-solid border-[blue]"
-                type="button"
-                onClick={() => setShowModal(false)}
-              >
-                Hủy bỏ
-              </button>
-              <Button
-                height="50px"
-                type="submit"
-                isLoding={isSubmitting}
-                disable={isSubmitting}
-              >
-                Lưu địa chỉ
-              </Button>
-            </div>
+            <Button
+              kind="primary"
+              className="mx-auto w-[200px] mt-10"
+              type="submit"
+              disabled={isSubmitting}
+              isLoading={isSubmitting}
+              height="50px"
+            >
+              Cập nhật địa chỉ
+            </Button>
           </form>
-        </div>
-      </ModalAdvanced>
-
-      <ListAddress />
+        )}
+      </div>
     </div>
   );
 };

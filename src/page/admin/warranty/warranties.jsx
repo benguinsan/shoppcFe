@@ -134,7 +134,9 @@ const Warranties = () => {
   return (
     <div className="p-4">
       <Space style={{ marginBottom: 16 }}>
-        <Button onClick={clearAll}>Clear</Button>
+        <Button onClick={clearAll} className="clear-button" danger>
+          Clear
+        </Button>
       </Space>
       <AdminTable
         columns={columns}
@@ -187,6 +189,16 @@ const Warranties = () => {
           .detail-button:hover {
             background-color: #096dd9 !important;
             border-color: #096dd9 !important;
+          }
+          .clear-button {
+            background-color: #ff4d4f !important;
+            border-color: #ff4d4f !important;
+            color: white !important;
+          }
+
+          .clear-button:hover {
+            background-color: #d9363e !important;
+            border-color: #d9363e !important;
           }
         `}</style>
       </div>

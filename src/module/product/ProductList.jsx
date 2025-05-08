@@ -30,14 +30,9 @@ const ProductList = () => {
     );
   }, [dispatch, currentPage]);
 
-  useEffect(() => {
-    // console.log("Fetched products:", items);
-  }, [items]);
-
-  const handleClick = (product) => {
-    console.log("Clicked product:", product);
-    navigate(`/product/${product.MaSP}`);
-  };
+  // useEffect(() => {
+  //   console.log("Fetched products:", items);
+  // }, [items]);
 
   return (
     <div className="mt-20">
