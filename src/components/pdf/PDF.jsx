@@ -23,21 +23,21 @@ const PDF = ({ componentRef }) => {
             >
               <div className="flex items-center gap-x-3">
                 <img
-                  src={item?.product?.images[0]}
+                  src={item?.product?.ImgUrl}
                   alt=""
                   className="w-[120px] h-[120px] object-cover border-2"
                 />
                 <span className="text-lg font-medium line-clamp-2 w-[400px]">
-                  {item?.product?.title}
+                  {item?.product?.TenSP}
                 </span>
                 <span className="text-lg">x {item?.quantity}</span>
               </div>
               <div className="flex flex-col items-end">
-                <span className="text-lg text-blue-700 font-medium">
-                  {formatPrice(item?.product?.promotion)}
-                </span>
+                {/* <span className="text-lg text-blue-700 font-medium">
+                  {formatPrice(item?.product?.Gia)}
+                </span> */}
                 <span className="text-base line-through">
-                  {formatPrice(item?.product?.price)}
+                  {formatPrice(item?.product?.Gia)}
                 </span>
               </div>
             </div>

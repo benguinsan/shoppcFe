@@ -20,22 +20,11 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
 
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const addToCompare = (item) => {
-    setSelectedItems((selectedItems) => [...selectedItems, item]);
-  };
-
   useEffect(() => {
     if (selectedItems.length === 2) {
       setShowModal(true);
     }
   }, [selectedItems]);
-
-  const removeFromCompare = (item) => {
-    const filteredItems = selectedItems.filter(
-      (product) => product.id !== item.id
-    );
-    setSelectedItems((selectedItems) => filteredItems);
-  };
 
   useEffect(() => {
     if (showModal === true) {
@@ -47,9 +36,11 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
   }, [showModal]);
 
   const handleClick = (item) => {
-    const path = slugify(item.title, { strict: true });
-    navigate(`/${path}/${item._id}`);
+    console.log(item);
+    const path = slugify(item.TenSP, { strict: true });
+    navigate(`/${path}/${item.MaSP}`);
   };
+
   return (
     <div className={`${className}`}>
       <div
@@ -69,13 +60,11 @@ const ProductListHome = ({ data, bg = "", className = "" }) => {
         >
           {data.length > 0 &&
             data.map((item) => (
-              <SwiperSlide key={item.id}>
+              <SwiperSlide key={item.MaSP}>
                 <ProdictItem
                   product={item}
                   onClickItem={() => handleClick(item)}
                   selected={selectedItems}
-                  addToCompare={addToCompare}
-                  removeFromCompare={removeFromCompare}
                 />
               </SwiperSlide>
             ))}

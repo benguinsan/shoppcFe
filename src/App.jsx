@@ -2,6 +2,7 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import ChatStream from "./components/chat/ChatStream";
+import { AdminProtectedRoute, AuthRedirect } from "./components/routes/ProtectedRoutes";
 import Footer from "./components/footer/Footer";
 import Navbar from "./components/navbar/Navbar";
 import InformationDetailOrder from "./module/UserProfile/InformationDetailOrder";
@@ -25,6 +26,7 @@ import SignUpPage from "./page/SignUpPage";
 import VerifyPage from "./page/VerifyPage";
 import { key } from "./utils/constants/key";
 
+
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
 import Categories from "./page/admin/category/category";
@@ -38,6 +40,12 @@ import ProductCreate from "./page/admin/product/create";
 import ProductEdit from "./page/admin/product/edit";
 import Products from "./page/admin/product/products";
 import Warranties from "./page/admin/warranty/warranties";
+import Suppliers from "./page/admin/supplier/suppliers";
+import CreateSupplier from "./page/admin/supplier/create";
+import UpdateSupplier from "./page/admin/supplier/update";
+import Role from "./page/admin/role/role";   
+import Account from "./page/admin/account/account";
+import User from "./page/admin/user/user";
 
 function App() {
   return (
@@ -47,9 +55,18 @@ function App() {
           "client-id": key.ClientId,
         }}
       >
+        <AuthRedirect />
+        
         <Routes>
-          {/* Admin routes */}
-          <Route path="/admin/*" element={<AdminLayout />}>
+          {/* Route admin - được bảo vệ bởi AdminProtectedRoute */}
+          <Route 
+            path="/admin/*" 
+            element={
+              <AdminProtectedRoute>
+                <AdminLayout />
+              </AdminProtectedRoute>
+            }
+          >
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="products" element={<Products />} />
             <Route path="product/create" element={<ProductCreate />} />
@@ -62,6 +79,12 @@ function App() {
             <Route path="imports" element={<Navigate to="imports-list" replace />} />
             <Route path="imports-list" element={<Imports />} />
             <Route path="imports-create" element={<CreateImport />} />
+            <Route path="suppliers" element={<Suppliers />} />
+            <Route path="supplier/create" element={<CreateSupplier />} />
+            <Route path="supplier/update/:id" element={<UpdateSupplier />} />
+            <Route path="users" element={<User />} />
+            <Route path="roles" element={<Role />} />
+            <Route path="accounts" element={<Account />} />
           </Route>
 
           {/* Public and authenticated user routes */}
@@ -92,7 +115,6 @@ function App() {
                       element={<InformationDetailOrder />}
                     />
                     <Route path="/account/address" element={<UserAddress />} />
-                    <Route path="/account/chat" element={<ChatStream />} />
                     <Route
                       path="/account/reset-password"
                       element={<UpdatePassword />}

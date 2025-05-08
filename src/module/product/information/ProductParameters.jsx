@@ -7,48 +7,28 @@ const ProductParameters = ({ data }) => {
       <table className="table-product">
         <thead>
           <tr>
-            <td>Thương hiệu</td>
-            <td>{data?.brand?.name}</td>
-          </tr>
-          <tr>
             <td>Bảo hành</td>
             <td>12</td>
           </tr>
           <tr>
-            <td>Màu sắc</td>
-            <td>{data?.color}</td>
-          </tr>
-          <tr>
             <td>CPU</td>
-            <td>{data?.cpu}</td>
+            <td>{data?.CPU}</td>
           </tr>
           <tr>
-            <td>Chip đồ họa</td>
-            <td>{data?.graphicCard}</td>
+            <td>GPU</td>
+            <td>{data?.GPU}</td>
           </tr>
           <tr>
             <td>RAM</td>
-            <td>{data?.ram}</td>
+            <td>{data?.RAM}</td>
           </tr>
           <tr>
             <td>Màn hình</td>
-            <td>{data?.screen}</td>
+            <td>{data?.ManHinh}</td>
           </tr>
           <tr>
-            <td>Nhu cầu</td>
-            <td>{data?.demand} </td>
-          </tr>
-          <tr>
-            <td>Hệ điều hành</td>
-            <td>{data?.os}</td>
-          </tr>
-          <tr>
-            <td>Pin</td>
-            <td>{data?.battery}</td>
-          </tr>
-          <tr>
-            <td>Khối lượng</td>
-            <td>{data?.weight} kg</td>
+            <td>Storage</td>
+            <td>{data?.Storage}</td>
           </tr>
         </thead>
       </table>

@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import CartHidden from "./CartHidden";
 import { useReactToPrint } from "react-to-print";
 import { useRef } from "react";
-import PDF from "../../components/PDF/PDF";
+// import PDF from "../../components/PDF/PDF";
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -80,12 +80,12 @@ const CartPage = () => {
           <>
             <div className="flex items-center justify-between">
               <div className="text-xl font-bold mt-10">Giỏ hàng</div>
-              <button
+              {/* <button
                 className="text-sm font-medium mt-10 border-2 rounded-lg py-2 px-2 border-gray-600"
                 onClick={handlePrint}
               >
                 Tải báo giá
-              </button>
+              </button> */}
             </div>
 
             <div className="cart">
@@ -178,7 +178,7 @@ const CartPage = () => {
           <CartHidden />
         )}
       </div>
-      <PDF componentRef={componentRef} />
+      {/* <PDF componentRef={componentRef} /> */}
     </div>
   );
 };

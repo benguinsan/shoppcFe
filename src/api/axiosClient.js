@@ -1,6 +1,7 @@
 import axios from "axios";
 const axiosClient = axios.create({
   baseURL: "http://localhost/shoppc/api",
+  baseURL: "http://localhost/shoppc/",
   headers: {
     "Content-Type": "application/json",
   },
@@ -8,10 +9,12 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   function (config) {
-    const token = localStorage.getItem('token');
+    // Lấy token từ localStorage và thêm vào header Authorization nếu có
+    const token = localStorage.getItem("jwt");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   function (error) {
