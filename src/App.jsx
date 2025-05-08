@@ -1,10 +1,9 @@
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import ChatStream from "./components/chat/ChatStream";
-import { AdminProtectedRoute, AuthRedirect } from "./components/routes/ProtectedRoutes";
 import Footer from "./components/footer/Footer";
 import Navbar from "./components/navbar/Navbar";
+import { AdminProtectedRoute, AuthRedirect } from "./components/routes/ProtectedRoutes";
 import InformationDetailOrder from "./module/UserProfile/InformationDetailOrder";
 import UpdatePassword from "./module/UserProfile/UpdatePassword";
 import UserAccount from "./module/UserProfile/UserAccount";
@@ -29,6 +28,7 @@ import { key } from "./utils/constants/key";
 
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
+import Account from "./page/admin/account/account";
 import Categories from "./page/admin/category/category";
 import CreateCategory from "./page/admin/category/create";
 import EditCategory from "./page/admin/category/edit";
@@ -39,13 +39,12 @@ import Orders from "./page/admin/order/orders";
 import ProductCreate from "./page/admin/product/create";
 import ProductEdit from "./page/admin/product/edit";
 import Products from "./page/admin/product/products";
-import Warranties from "./page/admin/warranty/warranties";
-import Suppliers from "./page/admin/supplier/suppliers";
+import Role from "./page/admin/role/role";
 import CreateSupplier from "./page/admin/supplier/create";
+import Suppliers from "./page/admin/supplier/suppliers";
 import UpdateSupplier from "./page/admin/supplier/update";
-import Role from "./page/admin/role/role";   
-import Account from "./page/admin/account/account";
 import User from "./page/admin/user/user";
+import Warranties from "./page/admin/warranty/warranties";
 
 function App() {
   return (

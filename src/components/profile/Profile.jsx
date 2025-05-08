@@ -24,7 +24,7 @@ const ProfileStyles = styled.div`
   }
 `;
 const Profile = ({ data }) => {
-  // console.log("Profile data:", data);  
+  console.log("Profile data:", data);  
   
   // Sử dụng toán tử 3 ngôi để xác định tên hiển thị
   // Nếu data có thuộc tính nguoiDung, lấy TenTK từ nguoiDung

@@ -21,7 +21,8 @@ const ProductFilterPage = () => {
   const { items, status } = useSelector((state) => state.product);
 
   const params = queryString.parse(location.search);
-  console.log(params);
+
+  console.log(items);
 
   const keyword = localStorage.getItem("keyword");
 
@@ -111,7 +112,7 @@ const ProductFilterPage = () => {
         search: queryString.stringify(filters),
       });
     }
-  };
+  };  
 
   const initFilter = {
     // brand: params?.brand?.split(",") || [],
@@ -242,16 +243,16 @@ const ProductFilterPage = () => {
                 handleChangePrice={handleChangePrice}
                 queryParams={queryParams}
               />
-              {/* <div className="flex flex-col m-4">
-                <Accordion title="Thương hiệu">
+              <div className="flex flex-col m-4">
+                {/* <Accordion title="Thương hiệu">
                   <Filter
-                    data={brandData}
+                    data={items.TenLoaiSP}
                     type="Brands"
                     filterSelect={filterSelect}
                     filter={filter}
                   />
-                </Accordion>
-              </div> */}
+                </Accordion> */}
+              </div>
               {/* <div className="flex flex-col m-4">
                 <Accordion title="Màu sắc">
                   <Filter
@@ -314,7 +315,7 @@ const ProductFilterPage = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {products.map((item) => (
-                    <FilterProduct key={item.id} data={item} />
+                    <FilterProduct key={item.MaSP} data={item} />
                   ))}
                 </div>
               </div>

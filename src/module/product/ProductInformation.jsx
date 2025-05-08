@@ -22,6 +22,7 @@ const ProductInformation = () => {
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
 
+ 
   // Lấy thông tin sản phẩm theo ID
   useEffect(() => {
     setLoading(true);

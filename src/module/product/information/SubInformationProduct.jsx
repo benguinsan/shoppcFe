@@ -33,17 +33,17 @@ const SubInformationProduct = ({ data }) => {
         {data?.TenSP}
       </span>
       <div className="flex items-center justify-start gap-x-5 mb-4">
-        {/* <span className="text-base text-slate-400">
-          Thương hiệu: {data?.brand?.name}
-        </span> */}
-        {/* <span>|</span> */}
+        <span className="text-base text-slate-400">
+          Thương hiệu: {data?.TenLoaiSP}
+        </span> 
+        <span>|</span>
         <span className="text-base text-slate-400">SKU: {data?.MaLoaiSP}</span>
       </div>
       {/* {data?.inventory > 0 && data?.inventory < 5 && (
         <span className="text-orange-500 font-medium mb-4">
           Chỉ còn {data?.inventory} sản phẩm
         </span>
-      )} */}
+      )}
       {/* {data?.inventory === 0 && (
         <span className="text-orange-500 font-medium mb-4">
           Sản phẩm hiện tại hết hàng

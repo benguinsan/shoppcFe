@@ -1,22 +1,21 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import React, { useEffect } from "react";
+import GoogleButton from "react-google-button";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import * as yup from "yup";
 import Button from "../components/button/Button";
 import Field from "../components/field/Field";
 import Input from "../components/input/Input";
 import InputPasswordToggle from "../components/input/InputPasswordToggle";
 import Label from "../components/label/Label";
-import AuthenticationPage from "./AuthenticationPage";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { login, loginWithGoogle } from "../redux/auth/userSlice";
-import { unwrapResult } from "@reduxjs/toolkit";
-import GoogleButton from "react-google-button";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../config/firebase";
-import { async } from "@firebase/util";
+import { login, loginWithGoogle } from "../redux/auth/userSlice";
+import AuthenticationPage from "./AuthenticationPage";
 
 const schema = yup.object({
   username: yup
@@ -48,10 +47,11 @@ const SignInPage = () => {
       top: 0,
       behavior: "smooth",
     });
-    if (
-      localStorage.getItem("jwt") &&
-      JSON.parse(localStorage.getItem("user")).active === "verify"
-    ) {
+
+    const jwt = localStorage.getItem("jwt");
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+
+    if (jwt && user && user.active === "verify") {
       return navigate("/verify");
     }
   }, []);
