@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import InformationProduct from "./information/InformationProduct";
 import InformationService from "./information/InformationService";
 import ProductDescription from "./information/ProductDescription";
@@ -16,16 +16,16 @@ import ProductListHome from "../../module/product/ProductListHome";
 // fake data
 import { getProductById, getProductsByBrand } from "../../data/productData";
 
-const ProductInformation = () => {
+const ProductInformation = (product) => {
   const params = useParams();
+  const navigate = useNavigate(); // Add navigate
   // const { statusId, productId, statusProductBrand, productBrand } = useSelector(
   //   (state) => state.product
   // );
   // const dispatch = useDispatch();
-  const [productId, setProductId] = useState(null);
-  const [productBrand, setProductBrand] = useState([]);
-  const [notFound, setNotFound] = useState(false);
-
+  // const [productId, setProductId] = useState(null);
+  // const [productBrand, setProductBrand] = useState([]);
+  // const [notFound, setNotFound] = useState(false);
 
   // Lấy thông tin sản phẩm theo ID
   // useEffect(() => {
@@ -35,35 +35,37 @@ const ProductInformation = () => {
   //     console.log(error.message);
   //   }
   // }, [params.id]);
-  
-  // sử dụng fake data
-  useEffect(() => {
-    try {
-      const product = getProductById(params.id);
-      if (product) {
-        setProductId(product);
-        // Lấy sản phẩm cùng thương hiệu
-        if (product.brand?.id) {
-          const brandProducts = getProductsByBrand(product.brand.id);
-          setProductBrand(brandProducts);
-        }
-      } else {
-        setNotFound(true);
-      }
-    } catch (error) {
-      console.log(error.message);
-      setNotFound(true);
-    }
-  }, [params.id]);
+  if (!product) {
+    return <PageNotFound />;
+  }
 
+  // // sử dụng fake data
+  // useEffect(() => {
+  //   try {
+  //     const product = getProductById(params.id);
+  //     if (product) {
+  //       setProductId(product);
+  //       // Lấy sản phẩm cùng thương hiệu
+  //       if (product.brand?.id) {
+  //         const brandProducts = getProductsByBrand(product.brand.id);
+  //         setProductBrand(brandProducts);
+  //       }
+  //     } else {
+  //       setNotFound(true);
+  //     }
+  //   } catch (error) {
+  //     console.log(error.message);
+  //     setNotFound(true);
+  //   }
+  // }, [params.id]);
 
-  useEffect(() => {
-    try {
-      dispatch(getProductBrand(productId?.brand?.id));
-    } catch (error) {
-      console.log(error.message);
-    }
-  }, [productId?.brand]);
+  // useEffect(() => {
+  //   try {
+  //     dispatch(getProductBrand(productId?.brand?.id));
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // }, [productId?.brand]);
 
   useEffect(() => {
     window.scrollTo({
@@ -83,12 +85,12 @@ const ProductInformation = () => {
   }, []);
 
   // Hiển thị trang 404 nếu không tìm thấy sản phẩm
-  if (notFound) {
+  if (!product || !product.MaSP) {
     return <PageNotFound />;
   }
 
   // Hiển thị nội dung chính khi có dữ liệu sản phẩm
-  if (productId) {
+  if (product.MaSP) {
     return (
       <div className="mt-10">
         <div className="container">
@@ -114,20 +116,20 @@ const ProductInformation = () => {
               </svg>
             </Link>
             <span className="text-base text-[#a8b4c9] font-medium">
-              {productId?.title}
+              {product?.TenSP}
             </span>
           </div>
           <div className="ProductDetail">
-            <InformationProduct data={productId} />
+            <InformationProduct data={product.MaSP} />
             <InformationService />
           </div>
           <div className="ProductDescription">
-            <ProductDescription data={productId} />
-            <ProductParameters data={productId} />
+            <ProductDescription data={product} />
+            <ProductParameters data={product} />
           </div>
         </div>
 
-        {productBrand.length > 0 && (
+        {/* {productBrand.length > 0 && (
           <div className="container">
             <div className="mt-10 w-full bg-white rounded-lg p-5">
               <div className=" text-xl font-semibold">
@@ -136,7 +138,7 @@ const ProductInformation = () => {
               <ProductListHome data={productBrand} />
             </div>
           </div>
-        )}
+        )} */}
       </div>
     );
   }

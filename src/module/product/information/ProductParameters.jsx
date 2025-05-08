@@ -6,50 +6,50 @@ const ProductParameters = ({ data }) => {
       <div className="text-2xl font-semibold mb-8">Thông tin chi tiết</div>
       <table className="table-product">
         <thead>
-          <tr>
+          {/* <tr>
             <td>Thương hiệu</td>
             <td>{data?.brand?.name}</td>
-          </tr>
+          </tr> */}
           <tr>
             <td>Bảo hành</td>
             <td>12</td>
           </tr>
-          <tr>
+          {/* <tr>
             <td>Màu sắc</td>
             <td>{data?.color}</td>
-          </tr>
+          </tr> */}
           <tr>
             <td>CPU</td>
-            <td>{data?.cpu}</td>
+            <td>{data?.CPU}</td>
           </tr>
           <tr>
             <td>Chip đồ họa</td>
-            <td>{data?.graphicCard}</td>
+            <td>{data?.GPU || "Không có"}</td>
           </tr>
           <tr>
             <td>RAM</td>
-            <td>{data?.ram}</td>
+            <td>{data?.RAM}</td>
           </tr>
           <tr>
             <td>Màn hình</td>
-            <td>{data?.screen}</td>
+            <td>{data?.ManHinh}</td>
           </tr>
           <tr>
-            <td>Nhu cầu</td>
-            <td>{data?.demand} </td>
+            <td>Dung lượng</td>
+            <td>{data?.Storage} </td>
           </tr>
-          <tr>
+          {/* <tr>
             <td>Hệ điều hành</td>
             <td>{data?.os}</td>
-          </tr>
-          <tr>
+          </tr> */}
+          {/* <tr>
             <td>Pin</td>
             <td>{data?.battery}</td>
-          </tr>
-          <tr>
+          </tr> */}
+          {/* <tr>
             <td>Khối lượng</td>
             <td>{data?.weight} kg</td>
-          </tr>
+          </tr> */}
         </thead>
       </table>
     </div>

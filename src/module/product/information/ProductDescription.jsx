@@ -1,7 +1,7 @@
 import React from "react";
 
 const ProductDescription = ({ data }) => {
-  const html = data?.description;
+  const html = data?.MoTa;
   return (
     <div className="product-description">
       <div className="text-2xl font-semibold mb-8">Mô tả sản phẩm</div>

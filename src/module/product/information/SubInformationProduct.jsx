@@ -27,38 +27,38 @@ const SubInformationProduct = ({ data }) => {
     <div className="product-info flex flex-col p-6">
       <span
         className="text-xl font-semibold mb-2 line-clamp-2 cursor-pointer"
-        title={data?.title}
+        title={data?.TenSP}
       >
-        {data?.title}
+        {data?.TenSP}
       </span>
       <div className="flex items-center justify-start gap-x-5 mb-4">
         <span className="text-base text-slate-400">
-          Thương hiệu: {data?.brand?.name}
+          Thương hiệu: {data?.MaLSP}
         </span>
         <span>|</span>
-        <span className="text-base text-slate-400">SKU: {data?._id}</span>
+        {/* <span className="text-base text-slate-400">SKU: {data?._id}</span> */}
       </div>
-      {data?.inventory > 0 && data?.inventory < 5 && (
+      {/* {data?.inventory > 0 && data?.inventory < 5 && (
         <span className="text-orange-500 font-medium mb-4">
           Chỉ còn {data?.inventory} sản phẩm
         </span>
-      )}
-      {data?.inventory === 0 && (
+      )} */}
+      {/* {data?.inventory === 0 && (
         <span className="text-orange-500 font-medium mb-4">
           Sản phẩm hiện tại hết hàng
         </span>
-      )}
+      )} */}
       <span className="text-2xl font-semibold text-blue-700 mb-2">
-        {formatPrice(data?.promotion)}
+        {formatPrice(data?.Gia)}
       </span>
-      <div className="flex items-center mb-6">
+      {/* <div className="flex items-center mb-6">
         <span className="text-lg line-through text-slate-400 ">
           {formatPrice(data?.price)}
         </span>
         <span className="text-blue text-lg"> - {data?.percent}%</span>
-      </div>
+      </div> */}
       <span className="w-full border-dotted border-2 mb-6"></span>
-      {data?.inventory > 0 && (
+      {/* {data?.inventory > 0 && (
         <>
           <div className="flex items-center justify-between px-10">
             <button
@@ -78,7 +78,7 @@ const SubInformationProduct = ({ data }) => {
           </div>
           <span className="w-full border-dotted border-2 my-6"></span>
         </>
-      )}
+      )} */}
     </div>
   );
 };

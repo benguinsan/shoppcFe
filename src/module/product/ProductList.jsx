@@ -31,8 +31,13 @@ const ProductList = () => {
   }, [dispatch, currentPage]);
 
   useEffect(() => {
-    console.log("Fetched products:", items);
+    // console.log("Fetched products:", items);
   }, [items]);
+
+  const handleClick = (product) => {
+    console.log("Clicked product:", product);
+    navigate(`/product/${product.MaSP}`);
+  };
 
   return (
     <div className="mt-20">
@@ -62,7 +67,7 @@ const ProductList = () => {
             </svg>
           </div>
         </div>
-        <div className="grid-cols-5 grid gap-y-2 pb-10 items-stretch">
+        <div className="grid-cols-5 grid gap-y-2 pb-10 items-stretch min-h-[650px]">
           {status === "loading" ? (
             <div>Loading...</div>
           ) : status === "failed" ? (
@@ -74,6 +79,7 @@ const ProductList = () => {
                 product={item}
                 className="border-2 border-solid border-[#f6f6f6]"
                 selected={selectedItems}
+                onClickItem={() => handleClick(item)}
               />
             ))
           )}

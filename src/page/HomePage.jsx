@@ -12,6 +12,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const { items, status } = useSelector((state) => state.product);
   const [page, setPage] = useState(1);
+  const [bannerProducts, setBannerProducts] = useState([]);
 
   useEffect(() => {
     // Verify account check
@@ -23,6 +24,25 @@ const HomePage = () => {
       toast.warning("Vui lòng xác thực tài khoản", { pauseOnHover: false });
       return navigate("/verify");
     }
+  }, []);
+
+  useEffect(() => {
+    // Fetch banner products
+    const fetchBannerProducts = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost/shoppc/api/sanpham/banner"
+        );
+        const data = await response.json();
+        console.log("Banner products:", data);
+        setBannerProducts(data);
+      } catch (error) {
+        console.error("Error fetching banner products:", error);
+        toast.error("Không thể tải sản phẩm banner");
+      }
+    };
+
+    fetchBannerProducts();
   }, []);
 
   useEffect(() => {
@@ -47,12 +67,12 @@ const HomePage = () => {
     <>
       <Banner />
       <ProductListHome
-        data={items?.dataSource || []}
+        data={bannerProducts?.data || []}
         bg="bg1"
         className="pt-20"
       />
       <ProductListHome
-        data={items?.dataSource || []}
+        data={bannerProducts?.data || []}
         bg="bg2"
         className="pt-20"
       />
