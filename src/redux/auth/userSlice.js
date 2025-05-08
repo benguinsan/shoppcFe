@@ -24,7 +24,6 @@ export const register = createAsyncThunk(
   "user/register",
   async (data, { rejectWithValue }) => {
     try {
-      console.log("Register data:", data);
       const response = await userApi.register(data);
 
       // Kiểm tra response
@@ -205,7 +204,10 @@ const userSlice = createSlice({
     status: action_status.IDLE,
     user: {},
     update: false,
+    registerSuccess: false,
+    registerMessage: "",
   },
+
   reducers: {
     logout(state) {
       // Xóa token JWT
@@ -224,11 +226,20 @@ const userSlice = createSlice({
     refresh: (state, action) => {
       state.update = false;
     },
+    clearRegisterStatus: (state) => {
+      state.registerSuccess = false;
+      state.registerMessage = "";
+    },
   },
 
   extraReducers: {
     [register.fulfilled]: (state, action) => {
-      state.current = action.payload;
+      state.registerSuccess = action.payload.success;
+      state.registerMessage = action.payload.message;
+    },
+    [register.rejected]: (state, action) => {
+      state.registerSuccess = false;
+      state.registerMessage = action.payload || "Đăng ký thất bại";
     },
     [login.fulfilled]: (state, action) => {
       state.current = action.payload;
@@ -332,5 +343,5 @@ const userSlice = createSlice({
 });
 
 const { actions, reducer } = userSlice;
-export const { logout, refresh } = actions;
+export const { logout, refresh, clearRegisterStatus } = actions;
 export default reducer;
