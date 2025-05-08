@@ -1,9 +1,11 @@
-import { message as antdMessage, Button, DatePicker, Form, InputNumber, Modal, Select, Space, Table } from "antd";
+import { MinusOutlined, PlusOutlined, RollbackOutlined, SaveOutlined } from "@ant-design/icons";
+import { message as antdMessage, Button, Card, Col, DatePicker, Form, Input, InputNumber, Modal, Row, Select, Space, Table, Typography } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
 
 const { Option } = Select;
+const { Title } = Typography;
 
 const CreateImport = () => {
   const [form] = Form.useForm();
@@ -14,22 +16,78 @@ const CreateImport = () => {
     { MaSP: undefined, SoLuong: 0, DonGia: 0, ThanhTien: 0 },
   ]);
   const [loading, setLoading] = useState(false);
+  const [productSearch, setProductSearch] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [debug, setDebug] = useState({
+    apiResponse: null,
+    suppliersState: null
+  });
 
   // Lấy danh sách sản phẩm, nhà cung cấp, nhân viên
   useEffect(() => {
-    // Lấy danh sách sản phẩm
-    axiosClient.get("/sanpham").then((res) => {
-      if (res && res.data) setProducts(res.data);
-    });
-    // Lấy danh sách nhà cung cấp
-    axiosClient.get("/nhacungcap").then((res) => {
-      if (res && res.data) setSuppliers(res.data);
-    });
-    // Lấy danh sách nhân viên
-    axiosClient.get("/nhanvien").then((res) => {
-      if (res && res.data) setUsers(res.data);
-    });
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Dùng axiosClient đúng cách - lưu ý axiosClient đã trả về response.data luôn
+        const suppliersData = await axiosClient.get("api/nhacungcap");
+        console.log("API nhà cung cấp trả về:", suppliersData);
+        
+        // Lưu response để debug
+        setDebug(prev => ({...prev, apiResponse: suppliersData}));
+        
+        // Kiểm tra và set dữ liệu - suppliersData là data chứ không phải response.data
+        if (suppliersData && suppliersData.data && Array.isArray(suppliersData.data)) {
+          setSuppliers(suppliersData.data);
+          // Lưu state để debug
+          setDebug(prev => ({...prev, suppliersState: suppliersData.data}));
+          console.log("Đã set suppliers state với:", suppliersData.data);
+        } else {
+          console.error("Cấu trúc dữ liệu không đúng:", suppliersData);
+          antdMessage.error("Không thể tải danh sách nhà cung cấp - sai cấu trúc dữ liệu");
+        }
+        
+        // Tiếp tục tải các dữ liệu khác - axiosClient trả về data luôn
+        const [productsData, usersData] = await Promise.all([
+          axiosClient.get("sanpham"),
+          axiosClient.get("api/nhanvien")
+        ]);
+
+        if (productsData) {
+          setProducts(productsData);
+          setFilteredProducts(productsData);
+        }
+        
+        if (usersData && usersData.status === "success" && Array.isArray(usersData.data)) {
+          setUsers(usersData.data);
+          console.log("Đã tải danh sách nhân viên:", usersData.data);
+        } else {
+          console.error("Cấu trúc dữ liệu nhân viên không đúng:", usersData);
+          antdMessage.error("Không thể tải danh sách nhân viên - sai cấu trúc dữ liệu");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        antdMessage.error("Có lỗi xảy ra khi tải dữ liệu!");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
   }, []);
+
+  // Filter products based on search
+  useEffect(() => {
+    if (productSearch) {
+      const filtered = products.filter(p => 
+        p.TenSP.toLowerCase().includes(productSearch.toLowerCase()) ||
+        p.MaSP.toLowerCase().includes(productSearch.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(products);
+    }
+  }, [productSearch, products]);
 
   // Tính lại thành tiền khi thay đổi số lượng hoặc đơn giá
   const updateRow = (index, key, value) => {
@@ -54,15 +112,26 @@ const CreateImport = () => {
     setRows(rows.filter((_, i) => i !== index));
   };
 
+  // Tính tổng tiền
+  const calculateTotal = () => {
+    return rows.reduce((total, row) => total + (row.ThanhTien || 0), 0);
+  };
+
   // Xử lý submit
   const onFinish = async (values) => {
     if (rows.some(row => !row.MaSP || !row.SoLuong || !row.DonGia)) {
       antdMessage.error("Vui lòng nhập đầy đủ thông tin sản phẩm!");
       return;
     }
+
     Modal.confirm({
       title: "Xác nhận lưu phiếu nhập?",
-      content: "Bạn có chắc chắn muốn lưu phiếu nhập này không?",
+      content: (
+        <div>
+          <p>Bạn có chắc chắn muốn lưu phiếu nhập này không?</p>
+          <p>Tổng tiền: {calculateTotal().toLocaleString()} VND</p>
+        </div>
+      ),
       okText: "Lưu",
       cancelText: "Hủy",
       onOk: async () => {
@@ -103,10 +172,18 @@ const CreateImport = () => {
           placeholder="Chọn sản phẩm"
           value={value}
           onChange={val => updateRow(idx, "MaSP", val)}
-          style={{ width: 180 }}
+          style={{ width: 250 }}
+          filterOption={false}
+          onSearch={setProductSearch}
+          notFoundContent={loading ? "Đang tải..." : "Không tìm thấy sản phẩm"}
         >
-          {products.map(sp => (
-            <Option key={sp.MaSP} value={sp.MaSP}>{sp.TenSP}</Option>
+          {filteredProducts.map(sp => (
+            <Option key={sp.MaSP} value={sp.MaSP}>
+              <div>
+                <div>{sp.TenSP}</div>
+                <small style={{ color: '#999' }}>Mã: {sp.MaSP}</small>
+              </div>
+            </Option>
           ))}
         </Select>
       ),
@@ -133,6 +210,7 @@ const CreateImport = () => {
           onChange={val => updateRow(idx, "DonGia", val)}
           style={{ width: 120 }}
           formatter={val => `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          parser={val => val.replace(/\$\s?|(,*)/g, '')}
         />
       ),
     },
@@ -147,56 +225,164 @@ const CreateImport = () => {
       title: "Thao tác",
       dataIndex: "actions",
       render: (_, __, idx) => (
-        <Button danger onClick={() => removeRow(idx)} disabled={rows.length === 1}>Xóa</Button>
+        <Button 
+          danger 
+          icon={<MinusOutlined />}
+          onClick={() => removeRow(idx)} 
+          disabled={rows.length === 1}
+        >
+          Xóa
+        </Button>
       ),
     },
   ];
 
-  return (
-    <div style={{ maxWidth: 900, margin: "0 auto", background: "#fff", padding: 24, borderRadius: 8 }}>
-      <h2 style={{ marginBottom: 24 }}>Tạo phiếu nhập hàng</h2>
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish}
-        initialValues={{ NgayNhap: moment() }}
+  // Sửa lại phần dropdown nhà cung cấp
+  const renderSupplierDropdown = () => {
+    console.log("Rendering supplier dropdown with:", suppliers);
+    
+    return (
+      <Form.Item 
+        name="MaNCC" 
+        label="Nhà cung cấp" 
+        rules={[{ required: true, message: "Chọn nhà cung cấp!" }]}
       >
-        <Space style={{ marginBottom: 16, flexWrap: "wrap" }}>
-          <Form.Item name="MaNCC" label="Nhà cung cấp" rules={[{ required: true, message: "Chọn nhà cung cấp!" }]}
-            style={{ minWidth: 220 }}>
-            <Select showSearch placeholder="Chọn nhà cung cấp">
-              {suppliers.map(ncc => (
-                <Option key={ncc.MaNCC} value={ncc.MaNCC}>{ncc.TenNCC}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item name="MaNhanVien" label="Nhân viên nhập" rules={[{ required: true, message: "Chọn nhân viên!" }]}
-            style={{ minWidth: 220 }}>
-            <Select showSearch placeholder="Chọn nhân viên">
-              {users.map(u => (
-                <Option key={u.MaNguoiDung} value={u.MaNguoiDung}>{u.HoTen}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item name="NgayNhap" label="Ngày nhập" rules={[{ required: true, message: "Chọn ngày nhập!" }]}
-            style={{ minWidth: 180 }}>
-            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: "100%" }} />
-          </Form.Item>
-        </Space>
-        <Table
-          columns={columns}
-          dataSource={rows}
-          pagination={false}
-          rowKey={(_, idx) => idx}
-          footer={() => (
-            <Button type="dashed" onClick={addRow} style={{ width: "100%" }}>+ Thêm sản phẩm</Button>
+        <Select 
+          showSearch 
+          placeholder={loading ? "Đang tải..." : "Chọn nhà cung cấp"}
+          optionFilterProp="children"
+          loading={loading}
+          style={{ width: '100%' }}
+        >
+          {suppliers && suppliers.length > 0 ? (
+            suppliers.map((ncc) => (
+              <Select.Option key={ncc.MaNCC} value={ncc.MaNCC}>
+                {ncc.TenNCC}
+              </Select.Option>
+            ))
+          ) : (
+            <Select.Option value="" disabled>
+              Không có dữ liệu nhà cung cấp
+            </Select.Option>
           )}
-        />
-        <div style={{ textAlign: "right", marginTop: 24 }}>
-          <Button type="primary" htmlType="submit" loading={loading} style={{ marginRight: 8 }}>Lưu</Button>
-          <Button htmlType="button" onClick={() => form.resetFields()}>Hủy</Button>
-        </div>
-      </Form>
+        </Select>
+      </Form.Item>
+    );
+  };
+
+  // Thêm debug panel ở cuối component (trước return cuối cùng)
+  return (
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: 24 }}>
+      <Card>
+        <Title level={2} style={{ marginBottom: 24 }}>Tạo phiếu nhập hàng</Title>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={{ NgayNhap: moment() }}
+        >
+          <Row gutter={16}>
+            <Col span={8}>
+              {renderSupplierDropdown()}
+            </Col>
+            <Col span={8}>
+              <Form.Item 
+                name="MaNhanVien" 
+                label="Nhân viên nhập" 
+                rules={[{ required: true, message: "Chọn nhân viên!" }]}
+              >
+                <Select 
+                  showSearch 
+                  placeholder="Chọn nhân viên"
+                  optionFilterProp="children"
+                  loading={loading}
+                >
+                  {users && users.length > 0 ? (
+                    users.map(u => (
+                      <Option key={u.MaNguoiDung} value={u.MaNguoiDung}>{u.HoTen}</Option>
+                    ))
+                  ) : (
+                    <Option value="" disabled>
+                      Không có dữ liệu nhân viên
+                    </Option>
+                  )}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item 
+                name="NgayNhap" 
+                label="Ngày nhập" 
+                rules={[{ required: true, message: "Chọn ngày nhập!" }]}
+              >
+                <DatePicker 
+                  showTime 
+                  format="YYYY-MM-DD HH:mm:ss" 
+                  style={{ width: "100%" }} 
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item name="GhiChu" label="Ghi chú">
+            <Input.TextArea rows={2} placeholder="Nhập ghi chú (nếu có)" />
+          </Form.Item>
+
+          <Card 
+            title="Chi tiết sản phẩm" 
+            extra={
+              <Button 
+                type="dashed" 
+                icon={<PlusOutlined />} 
+                onClick={addRow}
+              >
+                Thêm sản phẩm
+              </Button>
+            }
+            style={{ marginBottom: 24 }}
+          >
+            <Table
+              columns={columns}
+              dataSource={rows}
+              pagination={false}
+              rowKey={(_, idx) => idx}
+              summary={() => (
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0} colSpan={3}>
+                    <strong>Tổng tiền:</strong>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                    <strong>{calculateTotal().toLocaleString()} VND</strong>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2} />
+                </Table.Summary.Row>
+              )}
+            />
+          </Card>
+
+          <div style={{ textAlign: "right" }}>
+            <Space>
+              <Button 
+                icon={<RollbackOutlined />}
+                onClick={() => {
+                  form.resetFields();
+                  setRows([{ MaSP: undefined, SoLuong: 0, DonGia: 0, ThanhTien: 0 }]);
+                }}
+              >
+                Hủy
+              </Button>
+              <Button 
+                type="primary" 
+                icon={<SaveOutlined />}
+                htmlType="submit" 
+                loading={loading}
+              >
+                Lưu phiếu nhập
+              </Button>
+            </Space>
+          </div>
+        </Form>
+      </Card>
     </div>
   );
 };

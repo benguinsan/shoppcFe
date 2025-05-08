@@ -1,8 +1,13 @@
-import { EyeOutlined } from "@ant-design/icons";
-import { Button, Input, Modal, Pagination, Space, Table, message as antdMessage } from "antd";
+import { EyeOutlined, FileExcelOutlined, FilePdfOutlined, ReloadOutlined } from "@ant-design/icons";
+import { message as antdMessage, Button, Card, Col, DatePicker, Input, Modal, Pagination, Row, Space, Statistic, Table } from "antd";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
+import * as XLSX from 'xlsx';
 import importApi from "../../../api/importApi";
-import AdminTable from "../../../components/admin/ui/table";
+
+const { RangePicker } = DatePicker;
 
 const Imports = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -12,12 +17,26 @@ const Imports = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
+  const [dateRange, setDateRange] = useState(null);
+  const [statistics, setStatistics] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    fetchImports();
+    fetchStatistics();
+  }, [currentPage, search, dateRange]);
+
     const fetchImports = async () => {
       try {
-        const response = await importApi.getImports(currentPage, search);
-        if (response && response.data && response.pagination) {
+      setLoading(true);
+      const params = {
+        page: currentPage,
+        search: search,
+        from_date: dateRange?.[0]?.format('YYYY-MM-DD'),
+        to_date: dateRange?.[1]?.format('YYYY-MM-DD')
+      };
+      const response = await importApi.getImports(params);
+        if (response && response.status === 'success' && response.data) {
           setImports(response.data);
           setTotalPages(response.pagination.last_page);
         } else {
@@ -29,13 +48,33 @@ const Imports = () => {
         setImports([]);
         setTotalPages(0);
         antdMessage.error(error.message || "Có lỗi xảy ra khi tải danh sách phiếu nhập");
+    } finally {
+      setLoading(false);
       }
     };
-    fetchImports();
-  }, [currentPage, search]);
+
+  const fetchStatistics = async () => {
+    try {
+      const params = {
+        from_date: dateRange?.[0]?.format('YYYY-MM-DD'),
+        to_date: dateRange?.[1]?.format('YYYY-MM-DD')
+      };
+      const response = await importApi.getStatistics(params);
+      if (response && response.status === 'success') {
+        setStatistics(response.data);
+      }
+    } catch (error) {
+      antdMessage.error(error.message || "Có lỗi xảy ra khi tải thống kê");
+    }
+  };
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleDateRangeChange = (dates) => {
+    setDateRange(dates);
     setCurrentPage(1);
   };
 
@@ -43,15 +82,73 @@ const Imports = () => {
     try {
       setSelectedImportId(importId);
       setIsModalVisible(true);
-      const response = await importApi.getImportDetails(importId);
-      setImportDetails(response.data.chiTiet);
+      const response = await fetch(`http://localhost/shoppc/api/chitietphieunhap/${importId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      const result = await response.json();
+      
+      if (result && result.status === 'success') {
+        setImportDetails(result.data);
+      } else {
+        setImportDetails([]);
+        antdMessage.error(result.message || "Không có dữ liệu chi tiết phiếu nhập");
+      }
     } catch (error) {
+      setImportDetails([]);
       antdMessage.error(error.message || "Có lỗi xảy ra khi tải chi tiết phiếu nhập");
     }
   };
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+  };
+
+  const exportToExcel = () => {
+    const data = imports.map(item => ({
+      'Mã Phiếu Nhập': item.MaPN,
+      'Nhà Cung Cấp': item.TenNhaCungCap,
+      'Ngày Nhập': moment(item.NgayNhap).format('DD/MM/YYYY'),
+      'Tổng Tiền': item.TongTien.toLocaleString() + ' VND',
+      'Trạng Thái': item.TrangThaiText
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Phiếu Nhập");
+    XLSX.writeFile(wb, "phieu_nhap.xlsx");
+  };
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    
+    // Add title
+    doc.setFontSize(16);
+    doc.text('Danh Sách Phiếu Nhập', 14, 15);
+    
+    // Add date range if selected
+    if (dateRange) {
+      doc.setFontSize(10);
+      doc.text(`Từ ${dateRange[0].format('DD/MM/YYYY')} đến ${dateRange[1].format('DD/MM/YYYY')}`, 14, 22);
+    }
+
+    // Add table
+    autoTable(doc, {
+      startY: 30,
+      head: [['Mã PN', 'Nhà Cung Cấp', 'Ngày Nhập', 'Tổng Tiền', 'Trạng Thái']],
+      body: imports.map(item => [
+        item.MaPN,
+        item.TenNhaCungCap,
+        moment(item.NgayNhap).format('DD/MM/YYYY'),
+        item.TongTien.toLocaleString() + ' VND',
+        item.TrangThaiText
+      ])
+    });
+
+    doc.save('phieu_nhap.pdf');
   };
 
   const columns = [
@@ -69,7 +166,7 @@ const Imports = () => {
       title: "Ngày Nhập",
       dataIndex: "NgayNhap",
       key: "NgayNhap",
-      render: (date) => new Date(date).toLocaleDateString("vi-VN"),
+      render: (date) => moment(date).format('DD/MM/YYYY'),
     },
     {
       title: "Tổng Tiền",
@@ -106,13 +203,18 @@ const Imports = () => {
     },
     {
       title: "Mã phiếu nhập",
-      dataIndex: "MaPN",
-      key: "MaPN",
+      dataIndex: "MaPhieuNhap",
+      key: "MaPhieuNhap",
     },
     {
       title: "Mã sản phẩm",
       dataIndex: "MaSP",
       key: "MaSP",
+    },
+    {
+      title: "Tên sản phẩm",
+      dataIndex: "TenSP",
+      key: "TenSP",
     },
     {
       title: "Số lượng",
@@ -123,65 +225,117 @@ const Imports = () => {
       title: "Đơn giá",
       dataIndex: "DonGia",
       key: "DonGia",
-      render: (price) => `${price.toLocaleString()} VND`,
+      render: (price) => `${Number(price).toLocaleString()} VND`,
     },
     {
       title: "Thành tiền",
       dataIndex: "ThanhTien",
       key: "ThanhTien",
-      render: (price) => `${price.toLocaleString()} VND`,
+      render: (price) => `${Number(price).toLocaleString()} VND`,
+    },
+    {
+      title: "Ngày nhập",
+      dataIndex: "NgayNhap",
+      key: "NgayNhap",
+      render: (date) => moment(date).format('DD/MM/YYYY HH:mm'),
     },
   ];
 
   return (
-    <div className="p-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Space style={{ marginBottom: 16 }}>
-        <Input
-          placeholder="Tìm kiếm phiếu nhập, nhà cung cấp..."
-          value={search}
-          onChange={handleSearchChange}
-          style={{ width: 300 }}
-          allowClear
-        />
-      </Space>
-      <div style={{ width: '100%', maxWidth: 1100 }}>
-        <AdminTable
+    <div className="p-4">
+      {statistics && (
+        <Row gutter={16} style={{ marginBottom: 24 }}>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Tổng số phiếu nhập"
+                value={statistics.TongSoPhieu}
+                valueStyle={{ color: '#3f8600' }}
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Tổng tiền nhập"
+                value={statistics.TongTienNhap}
+                precision={0}
+                valueStyle={{ color: '#cf1322' }}
+                suffix="VND"
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Trung bình tiền nhập"
+                value={statistics.TrungBinhTienNhap}
+                precision={0}
+                valueStyle={{ color: '#1890ff' }}
+                suffix="VND"
+              />
+            </Card>
+          </Col>
+        </Row>
+      )}
+
+      <Card>
+        <Space style={{ marginBottom: 16 }} size="middle">
+          <Input
+            placeholder="Tìm kiếm theo mã phiếu nhập hoặc nhà cung cấp"
+            value={search}
+            onChange={handleSearchChange}
+            style={{ width: 300 }}
+          />
+          <RangePicker onChange={handleDateRangeChange} />
+          <Button icon={<ReloadOutlined />} onClick={() => {
+            setSearch("");
+            setDateRange(null);
+            setCurrentPage(1);
+          }}>
+            Đặt lại
+          </Button>
+          <Button icon={<FileExcelOutlined />} onClick={exportToExcel}>
+            Xuất Excel
+          </Button>
+          <Button icon={<FilePdfOutlined />} onClick={exportToPDF}>
+            Xuất PDF
+          </Button>
+        </Space>
+
+        <Table
           columns={columns}
           dataSource={imports}
+          loading={loading}
           rowKey="MaPN"
-          handleChange={() => {}}
-          pageNo={currentPage}
-          pageSize={10}
-          totalElements={imports.length}
+          pagination={false}
         />
-        <Pagination
-          current={currentPage}
-          total={totalPages * 10}
-          pageSize={10}
-          onChange={setCurrentPage}
-          style={{ marginTop: 16, textAlign: 'center' }}
-        />
-      </div>
+
+        {totalPages > 0 && (
+          <div style={{ marginTop: 16, textAlign: 'right' }}>
+            <Pagination
+              current={currentPage}
+              total={totalPages * 10}
+              onChange={(page) => setCurrentPage(page)}
+              showSizeChanger={false}
+            />
+          </div>
+        )}
+      </Card>
+
       <Modal
-        title={`Chi tiết phiếu nhập - Mã phiếu nhập: ${selectedImportId}`}
-        open={isModalVisible}
+        title={`Chi tiết phiếu nhập #${selectedImportId}`}
+        visible={isModalVisible}
         onCancel={handleCloseModal}
         width={1000}
-        footer={[
-          <Button key="close" type="primary" onClick={handleCloseModal}>
-            Đóng
-          </Button>,
-        ]}
+        footer={null}
       >
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Table
-            dataSource={importDetails}
-            columns={detailColumns}
-            rowKey="MaCTPN"
-            pagination={false}
-            style={{ width: '100%', maxWidth: 900 }}
-          />
-        </div>
+        <Table
+          columns={detailColumns}
+          dataSource={importDetails}
+          rowKey="MaCTPN"
+          pagination={false}
+        />
       </Modal>
     </div>
   );
