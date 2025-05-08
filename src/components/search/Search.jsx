@@ -8,29 +8,19 @@ import { useEffect } from "react";
 // import { getProductSearch } from "../../redux/product/productSlice";
 import Skeleton from "../skeleton/Skeleton";
 
-const Search = ({ onClickItem, keyword }) => {
-  const { productSearch, statusSearch } = useSelector((state) => state.product);
-
+const Search = ({ onClickItem }) => {
+  const { searchResults, searchStatus } = useSelector((state) => state.product);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const handleClick = (item) => {
-    const path = slugify(item.title, { strict: true });
-    navigate(`/${path}/${item._id}`);
+    const path = slugify(item.TenSP, { strict: true });
+    navigate(`/product/${item.MaSP}`);
     onClickItem();
   };
 
-  useEffect(() => {
-    try {
-      dispatch(getProductSearch(keyword));
-    } catch (error) {
-      console.log(error.message);
-    }
-  }, [keyword]);
-
   return (
     <div className="absolute top-14 left-0 w-full rounded-lg h-[350px] z-10 bg-white shadow-lg overflow-hidden overflow-y-auto">
-      {statusSearch === action_status.LOADING && (
+      {searchStatus === "loading" && (
         <>
           <div className="flex flex-col items-start gap-y-10 p-5">
             <div className="flex items-start  border-solid border-b-gray-200 w-full border-b-2 gap-x-5">
@@ -63,44 +53,34 @@ const Search = ({ onClickItem, keyword }) => {
           </div>
         </>
       )}
-      {statusSearch === action_status.SUCCEEDED && (
+      {searchStatus === "succeeded" && (
         <div className="flex flex-col items-start">
-          {productSearch.length > 0 &&
-            productSearch.map((item) => (
+          {searchResults?.dataSource?.length > 0 ? (
+            searchResults.dataSource.map((item) => (
               <div
-                className="flex items-start  border-solid border-b-gray-200 w-full border-b-2 text-black hover:bg-gray-100 cursor-pointer"
+                className="flex items-start border-solid border-b-gray-200 w-full border-b-2 text-black hover:bg-gray-100 cursor-pointer"
                 onClick={() => handleClick(item)}
-                key={item._id}
+                key={item.MaSP}
               >
                 <img
-                  src={item?.images[0]}
+                  src={item?.ImgUrl}
                   alt=""
                   className="w-[100px] h-[100px]"
                 />
-                <div className="flex flex-col  justify-start p-5">
+                <div className="flex flex-col justify-start p-5">
                   <span
                     className="font-medium line-clamp-1 text-base"
-                    title={item?.title}
+                    title={item?.TenSP}
                   >
-                    {item?.title}
+                    {item?.TenSP}
                   </span>
                   <div className="font-medium text-base text-blue-700">
-                    {formatPrice(item?.promotion)}
-                  </div>
-                  <div className="flex items-center">
-                    <span className="line-through font-medium text-gray-400 text-sm">
-                      {" "}
-                      {formatPrice(item?.price)}
-                    </span>
-                    <span className="text-sm font-normal">
-                      {" "}
-                      - {item?.percent}%
-                    </span>
+                    {formatPrice(item?.Gia)}
                   </div>
                 </div>
               </div>
-            ))}
-          {productSearch.length === 0 && (
+            ))
+          ) : (
             <div className="flex flex-col items-center justify-center h-[300px] w-full gap-y-5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

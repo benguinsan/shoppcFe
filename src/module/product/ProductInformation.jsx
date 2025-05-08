@@ -71,9 +71,9 @@ const ProductInformation = () => {
   }, []);
 
   // Hiển thị trang 404 nếu không tìm thấy sản phẩm
-  if (!product || !product.MaSP) {
-    return <PageNotFound />;
-  }
+  // if (!product || !product.MaSP) {
+  //   return <PageNotFound />;
+  // }
 
   // Hiển thị nội dung chính khi có dữ liệu sản phẩm
   if (product) {

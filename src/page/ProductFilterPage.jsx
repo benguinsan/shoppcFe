@@ -13,12 +13,12 @@ import Filter from "../components/filter/Filter";
 import { ramData } from "../api/ramData";
 // import { demandData } from "../api/demandData";
 // import { productData, brandData } from "../data/productData";
-import { fetchProducts } from "../redux/product/productSlice";
+import { fetchSearch } from "../redux/product/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const ProductFilterPage = () => {
   const dispatch = useDispatch();
-  const { items, status } = useSelector((state) => state.product);
+  const { searchResults, searchStatus } = useSelector((state) => state.product);
 
   const params = queryString.parse(location.search);
   console.log(params);
@@ -29,10 +29,10 @@ const ProductFilterPage = () => {
     return {
       ...params,
       page: Number.parseInt(params.page) || 1,
-      limit: 20,
-      sort: params.sort || "promotion",
-      promotion_gte: params.promotion_gte || 0,
-      promotion_lte: params.promotion_lte || 100000000,
+      limit: 8,
+      min_price: params.min_price || 0,
+      max_price: params.max_price || 50000,
+      RAM: params.RAM || "",
     };
   }, [location.search]);
 
@@ -45,14 +45,13 @@ const ProductFilterPage = () => {
   useEffect(() => {
     // Fetch initial products with query params
     dispatch(
-      fetchProducts({
-        page: queryParams.page - 1, // Chuyển đổi từ page UI (bắt đầu từ 1) sang page API (bắt đầu từ 0)
+      fetchSearch({
+        page: queryParams.page, // page bắt đầu từ 1
         limit: queryParams.limit,
-        sort: queryParams.sort,
-        promotion_gte: queryParams.promotion_gte || undefined,
-        promotion_lte: queryParams.promotion_lte || undefined,
-        ram: params.ram || undefined,
-        keyword: keyword || undefined
+        TenSP: keyword || undefined,
+        min_price: queryParams.min_price,
+        max_price: queryParams.max_price,
+        RAM: queryParams.RAM,
       })
     );
   }, [dispatch, location.search, queryParams]);
@@ -66,9 +65,9 @@ const ProductFilterPage = () => {
   }, [location.search]);
 
   // Sử dụng dữ liệu từ Redux store
-  const products = items.dataSource || [];
-  const totalItems = items.totalElements || 0;
-  const totalPages = items.totalPages || 0;
+  const products = searchResults?.dataSource || [];
+  const totalItems = searchResults?.totalElements || 0;
+  const totalPages = Math.ceil(totalItems / queryParams.limit); // Sửa lại công thức tính số trang
 
   const handlePageClick = (values) => {
     setPage(values);
@@ -76,6 +75,16 @@ const ProductFilterPage = () => {
       ...queryParams,
       page: values,
     };
+    dispatch(
+      fetchSearch({
+        ...filters,
+        page: values, // page bắt đầu từ 1
+        TenSP: keyword || "",
+        min_price: filters.min_price,
+        max_price: filters.max_price,
+        RAM: filters.RAM,
+      })
+    );
     navigate({
       pathname: "/product",
       search: queryString.stringify(filters),
@@ -98,12 +107,12 @@ const ProductFilterPage = () => {
 
   const handleChangePrice = (values) => {
     // Kiểm tra giá trị hợp lệ trước khi cập nhật
-    if (values.promotion_gte !== undefined && values.promotion_lte !== undefined) {
-      const filters = { 
-        ...queryParams, 
-        promotion_gte: values.promotion_gte,
-        promotion_lte: values.promotion_lte,
-        page: 1 
+    if (values.min_price !== undefined && values.max_price !== undefined) {
+      const filters = {
+        ...queryParams,
+        min_price: values.min_price,
+        max_price: values.max_price,
+        page: 1,
       };
       setPage(1);
       navigate({
@@ -114,10 +123,7 @@ const ProductFilterPage = () => {
   };
 
   const initFilter = {
-    // brand: params?.brand?.split(",") || [],
-    // color: params?.color?.split(",") || [],
-    ram: params?.ram?.split(",") || [],
-    // demand: params?.demand?.split(",") || [],
+    RAM: params?.RAM?.split(",") || [],
   };
 
   const [filter, setFilter] = useState(initFilter);
@@ -125,53 +131,22 @@ const ProductFilterPage = () => {
   const filterSelect = (type, checked, item) => {
     if (checked) {
       switch (type) {
-        // case "Brands":
-        //   setFilter({
-        //     ...filter,
-        //     brand: [...filter.brand, item.id],
-        //   });
-        //   break;
-        // case "Colors":
-        //   setFilter({
-        //     ...filter,
-        //     color: [...filter.color, item.name],
-        //   });
-        //   break;
         case "Rams":
-          // Kiểm tra xem item.name đã tồn tại trong filter.ram chưa
-          if (!filter.ram.includes(item.name)) {
+          if (!filter.RAM.includes(item.name)) {
             setFilter({
               ...filter,
-              ram: [...filter.ram, item.name],
+              RAM: [...filter.RAM, item.name],
             });
           }
           break;
-        // case "Demands":
-        //   setFilter({
-        //     ...filter,
-        //     demand: [...filter.demand, item.value],
-        //   });
-        //   break;
         default:
       }
     } else {
       switch (type) {
-        // case "Brands":
-        //   const newBrands = filter.brand.filter((e) => e !== item.id);
-        //   setFilter({ ...filter, brand: newBrands });
-        //   break;
-        // case "Colors":
-        //   const newColors = filter.color.filter((e) => e !== item.name);
-        //   setFilter({ ...filter, color: newColors });
-        //   break;
         case "Rams":
-          const newRams = filter.ram.filter((e) => e !== item.name);
-          setFilter({ ...filter, ram: newRams });
+          const newRams = filter.RAM.filter((e) => e !== item.name);
+          setFilter({ ...filter, RAM: newRams });
           break;
-        // case "Demands":
-        //   const newDemands = filter.demand.filter((e) => e !== item.value);
-        //   setFilter({ ...filter, demand: newDemands });
-        //   break;
         default:
       }
     }
@@ -179,29 +154,22 @@ const ProductFilterPage = () => {
 
   useEffect(() => {
     // Chỉ cập nhật URL khi filter thay đổi
-    const hasRamFilter = filter.ram.length !== 0;
-    
-    // Tạo đối tượng filters mới
+    const hasRamFilter = filter.RAM.length !== 0;
     let filters = { ...queryParams };
-    
-    // Chỉ thêm ram vào filters nếu có giá trị
     if (hasRamFilter) {
       filters = {
         ...filters,
-        ram: filter.ram,
+        RAM: filter.RAM.join(","),
         page: 1,
       };
       setPage(1);
     } else {
-      // Nếu không có ram filter, xóa ram khỏi URL
-      delete filters.ram;
+      delete filters.RAM;
     }
-    
-    // Cập nhật URL
     navigate({
       pathname: "/product",
       search: queryString.stringify(filters, {
-        arrayFormat: 'comma'
+        arrayFormat: "comma",
       }),
     });
   }, [filter, navigate]);
@@ -288,33 +256,34 @@ const ProductFilterPage = () => {
             <div className="product-list">
               <div className="flex flex-col container rounded-lg bg-white ">
                 <div className="flex items-center p-5 gap-x-5 ">
-                  <span className="font-medium text-base ">
-                    Sắp xếp theo
-                  </span>
+                  <span className="font-medium text-base ">Sắp xếp theo</span>
                   <FilterSort onChange={handleClickSort} />
                 </div>
-              
-                {status === 'loading' && (
+
+                {searchStatus === "loading" && (
                   <div className="flex justify-center items-center p-10">
                     <p>Đang tải sản phẩm...</p>
                   </div>
                 )}
-                
-                {status === 'failed' && (
+
+                {searchStatus === "failed" && (
                   <div className="flex justify-center items-center p-10">
                     <p>Có lỗi xảy ra khi tải sản phẩm</p>
                   </div>
                 )}
-                
-                {status === 'succeeded' && products.length === 0 && (
+
+                {searchStatus === "succeeded" && products.length === 0 && (
                   <div className="flex justify-center items-center p-10">
                     <p>Không tìm thấy sản phẩm phù hợp</p>
                   </div>
                 )}
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+
+                <div
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                  style={{ minHeight: "700px" }}
+                >
                   {products.map((item) => (
-                    <FilterProduct key={item.id} data={item} />
+                    <FilterProduct key={item.MaSP} data={item} />
                   ))}
                 </div>
               </div>

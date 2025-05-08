@@ -12,6 +12,7 @@ import CartHollow from "../cart/CartHollow";
 import Search from "../search/Search";
 import useClickOutSide from "../../hooks/useClickOutSide";
 import useDebounce from "../../hooks/useDebounce";
+import { fetchSearch } from "../../redux/product/productSlice";
 
 const Navbar = () => {
   const loggedInUser = useSelector((state) => state.user.current);
@@ -76,18 +77,41 @@ const Navbar = () => {
 
   useEffect(() => {
     setKeyWord("");
-    localStorage.setItem("keyword", keyword);
+    if (keyword) {
+      dispatch(fetchSearch({ TenSP: keyword }));
+    }
   }, [location.search]);
 
   const handleClickSearch = () => {
-    if (keyword === "") return;
+    if (keyword.trim() === "") {
+      dispatch(
+        fetchSearch({
+          TenSP: "",
+          page: 1,
+          limit: 8,
+        })
+      );
+    }
+
     localStorage.setItem("keyword", keyword);
-    navigate(`/product/?keyword=${keyword}`);
+
+    // Dispatch search action với đúng tham số
+    dispatch(
+      fetchSearch({
+        TenSP: keyword.trim(),
+        page: 1,
+        limit: 8,
+      })
+    );
+
+    // Navigate với keyword parameter
+    navigate(`/product/?keyword=${keyword.trim()}`);
     setShow(false);
   };
 
   const handleChange = (e) => {
     setKeyWord(e.target.value);
+    dispatch(fetchSearch({ TenSP: e.target.value })); // Thêm dòng này để fetch khi người dùng nhập
   };
 
   const search = useDebounce(keyword, 500);

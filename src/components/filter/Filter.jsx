@@ -2,7 +2,7 @@ import React from "react";
 
 const Filter = ({ data, type, filterSelect, filter }) => {
   if (!data || !Array.isArray(data)) return null;
-  
+
   return (
     <div className="flex flex-col gap-y-2">
       {data.map((item, index) => (
@@ -10,13 +10,13 @@ const Filter = ({ data, type, filterSelect, filter }) => {
           <input
             type="checkbox"
             checked={
-              type === "Brands" 
-                ? filter.brand.includes(item.id) 
+              type === "Brands"
+                ? filter.brand && filter.brand.includes(item.id)
                 : type === "Colors"
-                ? filter.color.includes(item.name)
+                ? filter.color && filter.color.includes(item.name)
                 : type === "Rams"
-                ? filter.ram.includes(item.name)
-                : filter.demand.includes(item.value)
+                ? filter.RAM && filter.RAM.includes(item.name)
+                : filter.demand && filter.demand.includes(item.value)
             }
             onChange={(e) => filterSelect(type, e.target.checked, item)}
           />
