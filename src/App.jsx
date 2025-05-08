@@ -1,40 +1,42 @@
-import { Routes, Route } from "react-router-dom";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import ChatStream from "./components/chat/ChatStream";
 import Footer from "./components/footer/Footer";
+import Navbar from "./components/navbar/Navbar";
+import InformationDetailOrder from "./module/UserProfile/InformationDetailOrder";
+import UpdatePassword from "./module/UserProfile/UpdatePassword";
+import UserAccount from "./module/UserProfile/UserAccount";
+import UserAddress from "./module/UserProfile/UserAddress";
+import UserOrder from "./module/UserProfile/UserOrder";
+import CartPage from "./module/cart/CartPage";
+import DashboardLayout from "./module/dashboard/DashboardLayout";
+import PaymentBank from "./module/payment/PaymentBank";
+import PaymentCash from "./module/payment/PaymentCash";
+import PaymentPage from "./module/payment/PaymentPage";
+import ForgotPasswordPage from "./page/ForgotPasswordPage";
 import HomePage from "./page/HomePage";
 import NotFoundPage from "./page/NotFoundPage";
+import ProductDetail from "./page/ProductDetail";
+import ProductFilterPage from "./page/ProductFilterPage";
+import ResetPasswordPage from "./page/ResetPasswordPage";
 import SignInPage from "./page/SignInPage";
 import SignUpPage from "./page/SignUpPage";
 import VerifyPage from "./page/VerifyPage";
-import ResetPasswordPage from "./page/ResetPasswordPage";
-import ForgotPasswordPage from "./page/ForgotPasswordPage";
-import UserAccount from "./module/UserProfile/UserAccount";
-import UserOrder from "./module/UserProfile/UserOrder";
-import UserAddress from "./module/UserProfile/UserAddress";
-import DashboardLayout from "./module/dashboard/DashboardLayout";
-import ProductDetail from "./page/ProductDetail";
-import UpdatePassword from "./module/UserProfile/UpdatePassword";
-import CartPage from "./module/cart/CartPage";
-import PaymentPage from "./module/payment/PaymentPage";
-import ProductFilterPage from "./page/ProductFilterPage";
-import PaymentCash from "./module/payment/PaymentCash";
-import PaymentBank from "./module/payment/PaymentBank";
-import InformationDetailOrder from "./module/UserProfile/InformationDetailOrder";
-import Navbar from "./components/navbar/Navbar";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { key } from "./utils/constants/key";
-import ChatStream from "./components/chat/ChatStream";
 
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
-import Dashboard from "./page/admin/dashboard";
-import Products from "./page/admin/product/products";
-import ProductCreate from "./page/admin/product/create";
-import ProductEdit from "./page/admin/product/edit";
 import Categories from "./page/admin/category/category";
 import CreateCategory from "./page/admin/category/create";
 import EditCategory from "./page/admin/category/edit";
+import Dashboard from "./page/admin/dashboard";
+import CreateImport from "./page/admin/imports/create";
+import Imports from "./page/admin/imports/imports";
 import Orders from "./page/admin/order/orders";
+import ProductCreate from "./page/admin/product/create";
+import ProductEdit from "./page/admin/product/edit";
+import Products from "./page/admin/product/products";
 import Warranties from "./page/admin/warranty/warranties";
 
 function App() {
@@ -57,6 +59,9 @@ function App() {
             <Route path="category/update" element={<EditCategory />} />
             <Route path="orders" element={<Orders />} />
             <Route path="warranties" element={<Warranties />} />
+            <Route path="imports" element={<Navigate to="imports-list" replace />} />
+            <Route path="imports-list" element={<Imports />} />
+            <Route path="imports-create" element={<CreateImport />} />
           </Route>
 
           {/* Public and authenticated user routes */}

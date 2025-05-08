@@ -1,6 +1,6 @@
-import React, { useState } from "react";
 import { DesktopOutlined, PieChartOutlined } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
+import React, { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -39,8 +39,8 @@ const items = [
     getItem("Cập nhật nhà cung cấp", "supplier/update"),
   ]),
   getItem("Nhập hàng", "imports", <DesktopOutlined />, [
-    getItem("Danh sách phiếu nhập", "imports"),
-    getItem("Nhập hàng", "imports/create"),
+    getItem("Danh sách phiếu nhập", "imports-list"),
+    getItem("Nhập hàng", "imports-create"),
   ]),
   getItem("Khuyến mãi", "sale", <DesktopOutlined />, [
     getItem("Danh sách khuyến mãi", "sales"),
