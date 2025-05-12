@@ -8,8 +8,8 @@ function buildQuery(params = {}) {
     .join('&');
 }
 
-const API_URL = "api/phieunhap";
-const DETAIL_API_URL = "api/chitietphieunhap";
+const API_URL = "/api/phieunhap";
+const DETAIL_API_URL = "/api/chitietphieunhap";
 
 const importApi = {
   getImports: (params = {}) => {
@@ -31,6 +31,15 @@ const importApi = {
     if (query) url += `?${query}`;
     return axiosClient.get(url);
   },
+  createImport: (data) => {
+    return axiosClient.post(`${API_URL}`, data);
+  },
+  createImportDetail: (data) => {
+    return axiosClient.post(`/shoppc/api/chitietphieunhap/create/`, data);
+  },
+  createSeri: (data) => {
+    return axiosClient.post("/shoppc/api/seri/create", data);
+  }
 };
 
-export default importApi; 
+export default importApi;

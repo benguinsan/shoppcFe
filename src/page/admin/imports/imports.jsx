@@ -64,7 +64,7 @@ const Imports = () => {
         setStatistics(response.data);
       }
     } catch (error) {
-      antdMessage.error(error.message || "Có lỗi xảy ra khi tải thống kê");
+      // antdMessage.error(error.message || "Có lỗi xảy ra khi tải thống kê");
     }
   };
 

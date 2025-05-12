@@ -1,5 +1,5 @@
 import { MinusOutlined, PlusOutlined, RollbackOutlined, SaveOutlined } from "@ant-design/icons";
-import { message as antdMessage, Button, Card, Col, DatePicker, Form, Input, InputNumber, Modal, Row, Select, Space, Table, Typography } from "antd";
+import { message as antdMessage, Button, Card, Col, DatePicker, Form, InputNumber, Modal, Row, Select, Space, Table, Typography } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
@@ -29,7 +29,7 @@ const CreateImport = () => {
       try {
         setLoading(true);
         
-        // Dùng axiosClient đúng cách - lưu ý axiosClient đã trả về response.data luôn
+        // Lấy nhà cung cấp
         const suppliersData = await axiosClient.get("api/nhacungcap");
         console.log("API nhà cung cấp trả về:", suppliersData);
         
@@ -47,24 +47,36 @@ const CreateImport = () => {
           antdMessage.error("Không thể tải danh sách nhà cung cấp - sai cấu trúc dữ liệu");
         }
         
-        // Tiếp tục tải các dữ liệu khác - axiosClient trả về data luôn
-        const [productsData, usersData] = await Promise.all([
-          axiosClient.get("sanpham"),
-          axiosClient.get("api/nhanvien")
-        ]);
+        // Lấy sản phẩm (có thể lỗi nhưng không ảnh hưởng nhân viên)
+        let productsData = [];
+        try {
+          productsData = await axiosClient.get("api/sanpham");
+          if (productsData && Array.isArray(productsData.dataSource)) {
+            setProducts(productsData.dataSource);
+            setFilteredProducts(productsData.dataSource);
+          } else {
+            setProducts([]);
+            setFilteredProducts([]);
+          }
+        } catch (err) {
+          setProducts([]);
+          setFilteredProducts([]);
+          antdMessage.error("Không thể tải danh sách sản phẩm!");
+        }
 
-        if (productsData) {
-          setProducts(productsData);
-          setFilteredProducts(productsData);
+        // Lấy nhân viên (luôn chạy riêng)
+        let usersData = {};
+        try {
+          usersData = await axiosClient.get("api/phieunhap/nhanvien");
+          if (usersData && Array.isArray(usersData.data)) {
+            setUsers(usersData.data);
+          } else {
+            antdMessage.error("Không thể tải danh sách nhân viên!");
+          }
+        } catch (err) {
+          antdMessage.error("Không thể tải danh sách nhân viên!");
         }
-        
-        if (usersData && usersData.status === "success" && Array.isArray(usersData.data)) {
-          setUsers(usersData.data);
-          console.log("Đã tải danh sách nhân viên:", usersData.data);
-        } else {
-          console.error("Cấu trúc dữ liệu nhân viên không đúng:", usersData);
-          antdMessage.error("Không thể tải danh sách nhân viên - sai cấu trúc dữ liệu");
-        }
+
       } catch (error) {
         console.error("Error fetching data:", error);
         antdMessage.error("Có lỗi xảy ra khi tải dữ liệu!");
@@ -141,14 +153,48 @@ const CreateImport = () => {
             MaNCC: values.MaNCC,
             MaNhanVien: values.MaNhanVien,
             NgayNhap: values.NgayNhap.format("YYYY-MM-DD HH:mm:ss"),
+            TongTien: calculateTotal(),
             ChiTiet: rows.map(row => ({
               MaSP: row.MaSP,
               SoLuong: row.SoLuong,
-              DonGia: row.DonGia
-            })),
-            GhiChu: values.GhiChu || ""
+              DonGia: row.DonGia,
+              ThanhTien: row.ThanhTien
+            }))
           };
-          await axiosClient.post("/phieunhap", payload);
+          console.log("Chạy được");
+
+          const res = await axiosClient.post("/api/phieunhap", payload);
+          console.log("Response:", res);
+          const status = res.status;
+          console.log("Status:", status);
+          const maPhieuNhap = res.MaPhieuNhap;
+          console.log("Ma phieu nhap:", maPhieuNhap);
+          if (status != "success" || !maPhieuNhap) {
+            antdMessage.error(res.data?.message || "Tạo phiếu nhập thất bại!");
+            setLoading(false);
+            return;
+          }
+
+          // Tạo chi tiết phiếu nhập song song
+          await Promise.all(rows.map(row =>
+            axiosClient.post("/api/chitietphieunhap/create/", {
+              MaPhieuNhap: maPhieuNhap,
+              MaSP: row.MaSP,
+              SoLuong: row.SoLuong,
+              DonGia: row.DonGia,
+              ThanhTien: row.ThanhTien
+            })
+          ));
+
+          // Tạo seri song song
+          await Promise.all(rows.flatMap(row =>
+            Array.from({ length: row.SoLuong }).map(() =>
+              axiosClient.post("/api/seri/create", {
+                MaSP: row.MaSP
+              })
+            )
+          ));
+
           antdMessage.success("Tạo phiếu nhập thành công!");
           form.resetFields();
           setRows([{ MaSP: undefined, SoLuong: 0, DonGia: 0, ThanhTien: 0 }]);
@@ -172,16 +218,16 @@ const CreateImport = () => {
           placeholder="Chọn sản phẩm"
           value={value}
           onChange={val => updateRow(idx, "MaSP", val)}
-          style={{ width: 250 }}
+          style={{ width: 350, fontSize: 16, height: 48 }}
           filterOption={false}
           onSearch={setProductSearch}
           notFoundContent={loading ? "Đang tải..." : "Không tìm thấy sản phẩm"}
         >
-          {filteredProducts.map(sp => (
+          {Array.isArray(filteredProducts) && filteredProducts.map(sp => (
             <Option key={sp.MaSP} value={sp.MaSP}>
-              <div>
-                <div>{sp.TenSP}</div>
-                <small style={{ color: '#999' }}>Mã: {sp.MaSP}</small>
+              <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.3, padding: '4px 0' }}>
+                <span style={{ fontWeight: 600, fontSize: 15 }}>{sp.TenSP}</span>
+                <span style={{ color: '#888', fontSize: 12, marginTop: 2 }}>Mã: {sp.MaSP}</span>
               </div>
             </Option>
           ))}
@@ -323,10 +369,6 @@ const CreateImport = () => {
               </Form.Item>
             </Col>
           </Row>
-
-          <Form.Item name="GhiChu" label="Ghi chú">
-            <Input.TextArea rows={2} placeholder="Nhập ghi chú (nếu có)" />
-          </Form.Item>
 
           <Card 
             title="Chi tiết sản phẩm" 
