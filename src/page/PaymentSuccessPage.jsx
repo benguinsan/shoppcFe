@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import paymentApi from "../api/paymentApi";
 
 const PaymentSuccessPage = () => {
   const navigate = useNavigate();
@@ -13,8 +14,7 @@ const PaymentSuccessPage = () => {
         // Lấy thông tin user và cart từ localStorage
         const user = JSON.parse(localStorage.getItem("user"));
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const token = localStorage.getItem("token");
-        if (!user || !cart.length || !token) {
+        if (!user || !cart.length) {
           setMessage("Không đủ thông tin để tạo hóa đơn!");
           setLoading(false);
           return;
@@ -31,23 +31,15 @@ const PaymentSuccessPage = () => {
         console.log("Tổng tiền đơn hàng:", tongTien);
         
         // Tạo hóa đơn - KHÔNG gửi TongTien để server tự tính
-        console.log("Token tạo hóa đơn:", token);
-        const resOrder = await fetch("http://localhost/shoppc/api/hoadon", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            MaNguoiDung: user.nguoiDung?.MaNguoiDung || user.MaNguoiDung,
-            MaNhanVien: "ND67f7ba8fe415b", // Có thể lấy động nếu có
-            NgayLap: new Date().toISOString().slice(0, 19).replace("T", " "),
-            // Không gửi TongTien, để server tự tính từ các chi tiết
-            TrangThai: 1,
-          }),
-        });
+        const orderData = {
+          MaNguoiDung: user.nguoiDung?.MaNguoiDung || user.MaNguoiDung,
+          MaNhanVien: "ND67f7ba8fe415b", // Có thể lấy động nếu có
+          NgayLap: new Date().toISOString().slice(0, 19).replace("T", " "),
+          // Không gửi TongTien, để server tự tính từ các chi tiết
+          TrangThai: 1,
+        };
         
-        const dataOrder = await resOrder.json();
+        const dataOrder = await paymentApi.createOrder(orderData);
         console.log("Kết quả tạo hóa đơn:", dataOrder);
         
         if (dataOrder.status !== "success") {
@@ -60,7 +52,6 @@ const PaymentSuccessPage = () => {
         console.log("Mã hóa đơn đã tạo:", MaHD);
         
         // Tạo chi tiết hóa đơn cho từng sản phẩm
-        console.log("Token tạo chi tiết hóa đơn:", token);
         for (const item of cart) {
           const maSP = item.product.id || item.product.MaSP || item.product._id;
           // Chỉ gửi đơn giá gốc, không nhân với số lượng
@@ -72,24 +63,16 @@ const PaymentSuccessPage = () => {
             continue;
           }
           
-          const bodyDetail = {
+          const orderDetailData = {
             MaHD: MaHD,
             MaSP: maSP,
             DonGia: donGia,
             SoLuong: soLuong
           };
           
-          console.log("Body gửi tới chitiethoadon:", bodyDetail);
-          const resDetail = await fetch("http://localhost/shoppc/api/chitiethoadon", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(bodyDetail),
-          });
+          console.log("Body gửi tới chitiethoadon:", orderDetailData);
           
-          const dataDetail = await resDetail.json();
+          const dataDetail = await paymentApi.createOrderDetail(orderDetailData);
           console.log("Kết quả tạo chi tiết hóa đơn:", dataDetail);
           
           if (dataDetail.status !== "success") {
@@ -102,17 +85,8 @@ const PaymentSuccessPage = () => {
         
         // Cập nhật lại tổng tiền chính xác nếu cần
         try {
-          const resUpdateTotal = await fetch(`http://localhost/shoppc/api/hoadon/${MaHD}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              TongTien: tongTien
-            }),
-          });
-          const dataUpdateTotal = await resUpdateTotal.json();
+          const totalData = { TongTien: tongTien };
+          const dataUpdateTotal = await paymentApi.updateOrderTotal(MaHD, totalData);
           console.log("Kết quả cập nhật tổng tiền:", dataUpdateTotal);
         } catch (error) {
           console.log("Không thể cập nhật lại tổng tiền:", error);
