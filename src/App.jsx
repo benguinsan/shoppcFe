@@ -24,6 +24,7 @@ import Navbar from "./components/navbar/Navbar";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { key } from "./utils/constants/key";
 import ChatStream from "./components/chat/ChatStream";
+import PaymentSuccessPage from "./page/PaymentSuccessPage";
 
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
@@ -100,6 +101,7 @@ function App() {
                   <Route path="/product" element={<ProductFilterPage />} />
                   <Route path="/payment-cash" element={<PaymentCash />} />
                   <Route path="/payment-bank" element={<PaymentBank />} />
+                  <Route path="/payment/success" element={<PaymentSuccessPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
                 <Footer />
