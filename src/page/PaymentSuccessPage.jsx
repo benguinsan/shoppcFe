@@ -32,8 +32,7 @@ const PaymentSuccessPage = () => {
         
         // Tạo hóa đơn - KHÔNG gửi TongTien để server tự tính
         const orderData = {
-          MaNguoiDung: user.nguoiDung?.MaNguoiDung || user.MaNguoiDung,
-          MaNhanVien: "ND67f7ba8fe415b", // Có thể lấy động nếu có
+          MaTK: user.MaTK,
           NgayLap: new Date().toISOString().slice(0, 19).replace("T", " "),
           // Không gửi TongTien, để server tự tính từ các chi tiết
           TrangThai: 1,
