@@ -34,7 +34,7 @@ import Warranties from "./page/admin/warranty/warranties";
 import Suppliers from "./page/admin/supplier/suppliers";
 import CreateSupplier from "./page/admin/supplier/create";
 import UpdateSupplier from "./page/admin/supplier/update";
-
+import Statistics from "./page/admin/statistics/statistics";
 function App() {
   return (
     <>
@@ -53,6 +53,7 @@ function App() {
             <Route path="suppliers" element={<Suppliers />} />
             <Route path="supplier/create" element={<CreateSupplier />} />
             <Route path="supplier/update/:id" element={<UpdateSupplier />} />
+            <Route path="statistics" element={<Statistics />} />
           </Route>
 
           {/* Public and authenticated user routes */}

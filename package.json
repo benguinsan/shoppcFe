@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/plots": "^2.4.0",
     "@hookform/resolvers": "^2.9.8",
     "@iconify/react": "^4.0.1",
     "@paypal/react-paypal-js": "^7.8.1",
@@ -33,6 +34,7 @@
     "react-to-print": "^2.14.10",
     "react-toastify": "^9.0.8",
     "react-transition-group": "^4.4.5",
+    "recharts": "^2.15.3",
     "sass": "^1.55.0",
     "slick-carousel": "^1.8.1",
     "slugify": "^1.6.5",
