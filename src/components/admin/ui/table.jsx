@@ -19,7 +19,7 @@ const AdminTable = ({
         current: pageNo + 1,
         pageSize: pageSize,
         total: totalElements,
-        showSizeChanger: true,
+        hideOnSinglePage: true,
       }}
       onChange={handleChange} // Hàm xử lý khi thay đổi trang
     />
