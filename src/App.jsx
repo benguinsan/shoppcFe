@@ -1,48 +1,50 @@
-import { Routes, Route } from "react-router-dom";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import React from "react";
-import { AdminProtectedRoute, AuthRedirect } from "./components/routes/ProtectedRoutes";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Footer from "./components/footer/Footer";
+import Navbar from "./components/navbar/Navbar";
+import { AdminProtectedRoute, AuthRedirect } from "./components/routes/ProtectedRoutes";
+import InformationDetailOrder from "./module/UserProfile/InformationDetailOrder";
+import UpdatePassword from "./module/UserProfile/UpdatePassword";
+import UserAccount from "./module/UserProfile/UserAccount";
+import UserAddress from "./module/UserProfile/UserAddress";
+import UserOrder from "./module/UserProfile/UserOrder";
+import CartPage from "./module/cart/CartPage";
+import DashboardLayout from "./module/dashboard/DashboardLayout";
+import PaymentBank from "./module/payment/PaymentBank";
+import PaymentCash from "./module/payment/PaymentCash";
+import PaymentPage from "./module/payment/PaymentPage";
+import ForgotPasswordPage from "./page/ForgotPasswordPage";
 import HomePage from "./page/HomePage";
 import NotFoundPage from "./page/NotFoundPage";
+import ProductDetail from "./page/ProductDetail";
+import ProductFilterPage from "./page/ProductFilterPage";
+import ResetPasswordPage from "./page/ResetPasswordPage";
 import SignInPage from "./page/SignInPage";
 import SignUpPage from "./page/SignUpPage";
 import VerifyPage from "./page/VerifyPage";
-import ResetPasswordPage from "./page/ResetPasswordPage";
-import ForgotPasswordPage from "./page/ForgotPasswordPage";
-import UserAccount from "./module/UserProfile/UserAccount";
-import UserOrder from "./module/UserProfile/UserOrder";
-import UserAddress from "./module/UserProfile/UserAddress";
-import DashboardLayout from "./module/dashboard/DashboardLayout";
-import ProductDetail from "./page/ProductDetail";
-import UpdatePassword from "./module/UserProfile/UpdatePassword";
-import CartPage from "./module/cart/CartPage";
-import PaymentPage from "./module/payment/PaymentPage";
-import ProductFilterPage from "./page/ProductFilterPage";
-import PaymentCash from "./module/payment/PaymentCash";
-import PaymentBank from "./module/payment/PaymentBank";
-import InformationDetailOrder from "./module/UserProfile/InformationDetailOrder";
-import Navbar from "./components/navbar/Navbar";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { key } from "./utils/constants/key";
 
 
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
-import Dashboard from "./page/admin/dashboard";
-import Products from "./page/admin/product/products";
-import ProductCreate from "./page/admin/product/create";
-import ProductEdit from "./page/admin/product/edit";
+import Account from "./page/admin/account/account";
 import Categories from "./page/admin/category/category";
 import CreateCategory from "./page/admin/category/create";
 import EditCategory from "./page/admin/category/edit";
+import Dashboard from "./page/admin/dashboard";
+import CreateImport from "./page/admin/imports/create";
+import Imports from "./page/admin/imports/imports";
 import Orders from "./page/admin/order/orders";
-import Warranties from "./page/admin/warranty/warranties";
-import Suppliers from "./page/admin/supplier/suppliers";
+import ProductCreate from "./page/admin/product/create";
+import ProductEdit from "./page/admin/product/edit";
+import Products from "./page/admin/product/products";
+import Role from "./page/admin/role/role";
 import CreateSupplier from "./page/admin/supplier/create";
+import Suppliers from "./page/admin/supplier/suppliers";
 import UpdateSupplier from "./page/admin/supplier/update";
-import Role from "./page/admin/role/role";   
-import Account from "./page/admin/account/account";
 import User from "./page/admin/user/user";
+import Warranties from "./page/admin/warranty/warranties";
 
 import Statistics from "./page/admin/statistics/statistics";
 function App() {
@@ -74,6 +76,9 @@ function App() {
             <Route path="category/update" element={<EditCategory />} />
             <Route path="orders" element={<Orders />} />
             <Route path="warranties" element={<Warranties />} />
+            <Route path="imports" element={<Navigate to="imports-list" replace />} />
+            <Route path="imports-list" element={<Imports />} />
+            <Route path="imports-create" element={<CreateImport />} />
             <Route path="suppliers" element={<Suppliers />} />
             <Route path="supplier/create" element={<CreateSupplier />} />
             <Route path="supplier/update/:id" element={<UpdateSupplier />} />

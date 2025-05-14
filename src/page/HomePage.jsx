@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Banner from "../components/banner/Banner";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import ProductListHome from "../module/product/ProductListHome";
-import ProductList from "../module/product/ProductList";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Banner from "../components/banner/Banner";
+import ProductList from "../module/product/ProductList";
+import ProductListHome from "../module/product/ProductListHome";
 import { fetchProducts } from "../redux/product/productSlice";
 
 const HomePage = () => {
@@ -15,10 +15,10 @@ const HomePage = () => {
 
   useEffect(() => {
     // Verify account check
-    if (
-      localStorage.getItem("jwt") &&
-      JSON.parse(localStorage.getItem("user")).active === "verify"
-    ) {
+    const jwt = localStorage.getItem("jwt");
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+
+    if (jwt && user && user.active === "verify") {
       toast.dismiss();
       toast.warning("Vui lòng xác thực tài khoản", { pauseOnHover: false });
       return navigate("/verify");
