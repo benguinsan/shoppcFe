@@ -49,6 +49,7 @@ const items = [
   ]),
   getItem("Bảo hành", "guarantee", <DesktopOutlined />, [
     getItem("Danh sách bảo hành", "warranties"),
+    getItem("Tạo bảo hành", "warranty/create"),
   ]),
   getItem("Tài khoản", "account", <DesktopOutlined />, [
     getItem("Danh sách tài khoản", "accounts"),

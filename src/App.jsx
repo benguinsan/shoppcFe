@@ -37,6 +37,7 @@ import CreateCategory from "./page/admin/category/create";
 import EditCategory from "./page/admin/category/edit";
 import Orders from "./page/admin/order/orders";
 import Warranties from "./page/admin/warranty/warranties";
+import CreateWarranty from "./page/admin/warranty/createWarranty";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
             <Route path="category/update" element={<EditCategory />} />
             <Route path="orders" element={<Orders />} />
             <Route path="warranties" element={<Warranties />} />
+            <Route path="warranty/create" element={<CreateWarranty />} />
           </Route>
 
           {/* Public and authenticated user routes */}

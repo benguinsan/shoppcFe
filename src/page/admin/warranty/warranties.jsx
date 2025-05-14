@@ -1,75 +1,182 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Table, Button, Modal, Space, Card } from "antd";
+import { Table, Button, Modal, Space, Card, message, Pagination, Input } from "antd";
+import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import AdminTable from "../../../components/admin/ui/table";
-import { EyeOutlined } from "@ant-design/icons";
+import axiosClient from "../../../api/axiosClient";
 
 const Warranties = () => {
-  const [sortedInfo, setSortedInfo] = useState({});
+  const [warranties, setWarranties] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedWarrantyId, setSelectedWarrantyId] = useState(null);
+  const [warrantyDetails, setWarrantyDetails] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 10;
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Mock data cho chi tiết bảo hành
-  const mockWarrantyDetails = [
-    {
-      warrantyDetailId: "WD001",
-      warrantyId: "WAR001",
-      warrantyDate: "2025-06-15T10:30:00",
-      completionDate: "2025-06-18T14:20:00",
-      status: "Đã hoàn thành",
-      details: "Thay thế màn hình bị lỗi",
-    },
-    {
-      warrantyDetailId: "WD002",
-      warrantyId: "WAR001",
-      warrantyDate: "2025-07-22T09:15:00",
-      completionDate: "2025-07-25T16:30:00",
-      status: "Đã hoàn thành",
-      details: "Sửa bản lề màn hình",
-    },
-  ];
+  // Hàm tải danh sách bảo hành
+  const fetchWarranties = async (page = 1, search = "") => {
+    try {
+      setLoading(true);
+      let url = `/api/baohanh?page=${page}&limit=${pageSize}`;
+      
+      if (search) {
+        url += `&search=${search}`;
+      }
+      
+      const response = await axiosClient.get(url);
+      
+      if (response && response.data) {
+        setWarranties(response.data);
+        if (response.pagination) {
+          setTotalPages(response.pagination.last_page);
+          setTotalItems(response.pagination.total);
+          setCurrentPage(response.pagination.current_page);
+        }
+      } else {
+        message.error("Không thể tải danh sách bảo hành");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách bảo hành:", error);
+      message.error("Lỗi khi tải danh sách bảo hành: " + (error.message || "Lỗi không xác định"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Hàm tải chi tiết bảo hành
+  const fetchWarrantyDetails = async (warrantyId) => {
+    try {
+      // API cho chi tiết bảo hành - thay thế khi có API thực tế
+      const response = await axiosClient.get(`/api/baohanh/${warrantyId}`);
+      
+      if (response && response.data) {
+        setWarrantyDetails([response.data]);
+      } else {
+        setWarrantyDetails([]);
+        message.error("Không thể tải chi tiết bảo hành");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải chi tiết bảo hành:", error);
+      setWarrantyDetails([]);
+      message.error("Lỗi khi tải chi tiết bảo hành: " + (error.message || "Lỗi không xác định"));
+    }
+  };
+
+  // Load danh sách bảo hành khi component mount hoặc khi trang thay đổi
+  useEffect(() => {
+    fetchWarranties(currentPage, searchQuery);
+  }, [currentPage]);
+
+  const handleSearch = () => {
+    setCurrentPage(1); // Reset về trang 1 khi tìm kiếm
+    fetchWarranties(1, searchQuery);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleShowDetails = (warrantyId) => {
+    setSelectedWarrantyId(warrantyId);
+    setIsModalVisible(true);
+    fetchWarrantyDetails(warrantyId);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
+  // Xác định trạng thái CSS dựa trên TrangThai
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 1:
+        return { color: '#faad14', backgroundColor: '#fffbe6' }; // Chờ xử lý
+      case 2:
+        return { color: '#52c41a', backgroundColor: '#f6ffed' }; // Đang xử lý
+      case 3:
+        return { color: '#1890ff', backgroundColor: '#e6f7ff' }; // Hoàn thành
+      case 4:
+        return { color: '#f5222d', backgroundColor: '#fff1f0' }; // Hủy
+      default:
+        return { color: '#000000', backgroundColor: '#f0f0f0' }; // Mặc định
+    }
+  };
 
   const columns = [
     {
       title: "Mã Bảo Hành",
-      dataIndex: "warrantyId",
-      key: "warrantyId",
+      dataIndex: "MaBH",
+      key: "MaBH",
+      width: 120,
     },
     {
       title: "Mã Hoá Đơn",
-      dataIndex: "orderId",
-      key: "orderId",
+      dataIndex: "MaHD",
+      key: "MaHD",
+      width: 120,
     },
     {
       title: "Mã Seri",
-      dataIndex: "serialId",
-      key: "serialId",
+      dataIndex: "MaSeri",
+      key: "MaSeri",
+      width: 120,
     },
     {
-      title: "Ngày Mua",
-      dataIndex: "purchaseDate",
-      key: "purchaseDate",
-      render: (date) => new Date(date).toLocaleDateString("vi-VN"),
+      title: "Nhân viên xử lý",
+      dataIndex: "TenNhanVien",
+      key: "TenNhanVien",
+      width: 150,
     },
     {
-      title: "Hạn Bảo Hành",
-      dataIndex: "expiryDate",
-      key: "expiryDate",
-      render: (date) => new Date(date).toLocaleDateString("vi-VN"),
+      title: "Ngày Gửi Bảo Hành",
+      dataIndex: "NgayGuiBaoHanh",
+      key: "NgayGuiBaoHanh",
+      width: 150,
+      render: (date) => (date ? new Date(date).toLocaleDateString("vi-VN") : "N/A"),
+    },
+    {
+      title: "Ngày Trả Bảo Hành",
+      dataIndex: "NgayTraBaoHanh",
+      key: "NgayTraBaoHanh",
+      width: 150,
+      render: (date) => (date ? new Date(date).toLocaleDateString("vi-VN") : "Chưa trả"),
     },
     {
       title: "Mô Tả",
-      dataIndex: "description",
-      key: "description",
+      dataIndex: "MoTa",
+      key: "MoTa",
+      ellipsis: true,
+    },
+    {
+      title: "Trạng Thái",
+      dataIndex: "TrangThaiText",
+      key: "TrangThaiText",
+      width: 120,
+      render: (text, record) => (
+        <div 
+          style={{
+            display: 'inline-block',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            ...getStatusStyle(record.TrangThai)
+          }}
+        >
+          {text}
+        </div>
+      ),
     },
     {
       title: "Thao tác",
       key: "actions",
+      width: 100,
       render: (_, record) => (
         <Button
           type="primary"
           icon={<EyeOutlined />}
-          onClick={() => showWarrantyDetails(record.warrantyId)}
+          onClick={() => handleShowDetails(record.MaBH)}
           className="detail-button"
         >
           Chi tiết
@@ -80,80 +187,100 @@ const Warranties = () => {
 
   const detailColumns = [
     {
-      title: "Mã chi tiết bảo hành",
-      dataIndex: "warrantyDetailId",
-      key: "warrantyDetailId",
-    },
-    {
       title: "Mã Bảo Hành",
-      dataIndex: "warrantyId",
-      key: "warrantyId",
+      dataIndex: "MaBH",
+      key: "MaBH",
     },
     {
-      title: "Ngày Bảo Hành",
-      dataIndex: "warrantyDate",
-      key: "warrantyDate",
-      render: (date) => new Date(date).toLocaleDateString("vi-VN"),
+      title: "Mã Hoá Đơn",
+      dataIndex: "MaHD",
+      key: "MaHD",
     },
     {
-      title: "Ngày Hoàn Thành",
-      dataIndex: "completionDate",
-      key: "completionDate",
-      render: (date) => new Date(date).toLocaleDateString("vi-VN"),
+      title: "Mã Seri",
+      dataIndex: "MaSeri",
+      key: "MaSeri",
     },
     {
-      title: "Tình Trạng",
-      dataIndex: "status",
-      key: "status",
+      title: "Ngày Gửi Bảo Hành",
+      dataIndex: "NgayGuiBaoHanh",
+      key: "NgayGuiBaoHanh",
+      render: (date) => (date ? new Date(date).toLocaleDateString("vi-VN") : "N/A"),
     },
     {
-      title: "Chi Tiết",
-      dataIndex: "details",
-      key: "details",
+      title: "Ngày Trả Bảo Hành",
+      dataIndex: "NgayTraBaoHanh",
+      key: "NgayTraBaoHanh",
+      render: (date) => (date ? new Date(date).toLocaleDateString("vi-VN") : "Chưa trả"),
+    },
+    {
+      title: "Mô Tả",
+      dataIndex: "MoTa",
+      key: "MoTa",
+    },
+    {
+      title: "Trạng Thái",
+      dataIndex: "TrangThaiText",
+      key: "TrangThaiText",
+      render: (text, record) => (
+        <div 
+          style={{
+            display: 'inline-block',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            ...getStatusStyle(record.TrangThai)
+          }}
+        >
+          {text}
+        </div>
+      ),
     },
   ];
 
-  const handleStatusChange = (warrantyId) => {
-    // Logic to change warranty status
-    console.log(`Changed status of warranty: ${warrantyId}`);
-  };
-
-  const showWarrantyDetails = (warrantyId) => {
-    setSelectedWarrantyId(warrantyId);
-    setIsModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-  };
-
-  const clearAll = () => {
-    setSortedInfo({});
-  };
-
   return (
     <div className="p-4">
-      <Space style={{ marginBottom: 16 }}>
-        <Button onClick={clearAll}>Clear</Button>
-      </Space>
-      <AdminTable
-        columns={columns}
-        dataSource={[
-          {
-            warrantyId: "WAR001",
-            orderId: "ORD001",
-            serialId: "SER123456",
-            purchaseDate: "2025-03-15T09:30:00",
-            expiryDate: "2026-03-15T09:30:00",
-            description: "Bảo hành tiêu chuẩn 12 tháng",
-          },
-        ]}
-        rowKey="warrantyId"
-        handleChange={() => {}}
-        pageNo={0}
-        pageSize={10}
-        totalElements={1}
-      />
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Danh sách bảo hành</h2>
+        <Space>
+          <Input 
+            placeholder="Tìm kiếm bảo hành..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ width: 250 }}
+            onPressEnter={handleSearch}
+          />
+          <Button 
+            type="primary" 
+            icon={<SearchOutlined />}
+            onClick={handleSearch}
+          >
+            Tìm kiếm
+          </Button>
+        </Space>
+      </div>
+
+      <Card>
+        <Table
+          columns={columns}
+          dataSource={warranties}
+          rowKey="MaBH"
+          loading={loading}
+          pagination={false}
+          scroll={{ x: 1200 }}
+        />
+        
+        <div className="flex justify-end mt-4">
+          <Pagination
+            current={currentPage}
+            total={totalItems}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showTotal={(total, range) => `${range[0]}-${range[1]} của ${total} mục`}
+            showSizeChanger={false}
+          />
+        </div>
+      </Card>
+
       <Modal
         title={`Chi tiết bảo hành - Mã bảo hành: ${selectedWarrantyId}`}
         open={isModalVisible}
@@ -166,30 +293,25 @@ const Warranties = () => {
         ]}
       >
         <Table
-          dataSource={mockWarrantyDetails.filter(
-            (item) => item.warrantyId === selectedWarrantyId
-          )}
+          dataSource={warrantyDetails}
           columns={detailColumns}
-          rowKey="warrantyDetailId"
+          rowKey="MaBH"
           pagination={false}
         />
       </Modal>
-      <div className="p-4">
-        {/* Code hiện tại */}
 
-        <style jsx global>{`
-          .detail-button {
-            background-color: #1890ff !important;
-            border-color: #1890ff !important;
-            color: white !important;
-          }
+      <style jsx="true" global="true">{`
+        .detail-button {
+          background-color: #1890ff !important;
+          border-color: #1890ff !important;
+          color: white !important;
+        }
 
-          .detail-button:hover {
-            background-color: #096dd9 !important;
-            border-color: #096dd9 !important;
-          }
-        `}</style>
-      </div>
+        .detail-button:hover {
+          background-color: #096dd9 !important;
+          border-color: #096dd9 !important;
+        }
+      `}</style>
     </div>
   );
 };
