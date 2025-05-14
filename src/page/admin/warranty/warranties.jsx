@@ -17,7 +17,7 @@ import {
 import { EditOutlined, SearchOutlined } from "@ant-design/icons";
 import moment from 'moment';
 import AdminTable from "../../../components/admin/ui/table";
-import axiosClient from "../../../api/axiosClient";
+import warrantyApi from "../../../api/warrantyApi";
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -39,13 +39,7 @@ const Warranties = () => {
   const fetchWarranties = async (page = 1, search = "") => {
     try {
       setLoading(true);
-      let url = `/api/baohanh?page=${page}&limit=${pageSize}`;
-      
-      if (search) {
-        url += `&search=${search}`;
-      }
-      
-      const response = await axiosClient.get(url);
+      const response = await warrantyApi.getWarranties(page, pageSize, search);
       
       if (response && response.data) {
         setWarranties(response.data);
@@ -78,7 +72,7 @@ const Warranties = () => {
         NgayTraBaoHanh: values.NgayTraBaoHanh ? values.NgayTraBaoHanh.format('YYYY-MM-DD') : null
       };
       
-      const response = await axiosClient.put(`/api/baohanh/${selectedWarranty.MaBH}/status`, formattedData);
+      const response = await warrantyApi.updateWarrantyStatus(selectedWarranty.MaBH, formattedData);
       
       if (response) {
         message.success("Cập nhật trạng thái bảo hành thành công");

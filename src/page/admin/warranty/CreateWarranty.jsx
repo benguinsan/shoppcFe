@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, DatePicker, Select, message, Card, Row, Col, Typography, Divider } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import axiosClient from '../../../api/axiosClient';
 import moment from 'moment';
 import { SearchOutlined } from '@ant-design/icons';
 import locale from 'antd/es/date-picker/locale/vi_VN';
+import warrantyApi from '../../../api/warrantyApi';
 
 const { Option } = Select;
 const { Title, Text } = Typography;
@@ -32,7 +32,7 @@ const CreateWarranty = () => {
 
     try {
       setLoadingDetails(true);
-      const response = await axiosClient.get(`/api/hoadon/${orderId}/chitiet`);
+      const response = await warrantyApi.getOrderDetails(orderId);
       if (response.status === 'success' && response.data && response.data.length > 0) {
         setOrderDetails(response.data);
         message.success('Đã tải thông tin chi tiết hóa đơn');
@@ -96,7 +96,7 @@ const CreateWarranty = () => {
 
       console.log('Dữ liệu gửi đi:', warrantyData);
 
-      const response = await axiosClient.post('/api/baohanh', warrantyData);
+      const response = await warrantyApi.createWarranty(warrantyData);
       
       // Cách xử lý phản hồi được cải thiện
       console.log('Phản hồi từ API:', response);
