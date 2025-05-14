@@ -15,7 +15,7 @@ import {
   message
 } from 'antd';
 import { SearchOutlined, CheckCircleOutlined, CloseCircleOutlined, HistoryOutlined } from '@ant-design/icons';
-import warrantyApi from '../../../api/warrantyApi';
+import warrantyApi from '../api/warrantyApi';
 
 const { Title, Paragraph, Text } = Typography;
 

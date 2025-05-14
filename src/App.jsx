@@ -25,7 +25,7 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { key } from "./utils/constants/key";
 import ChatStream from "./components/chat/ChatStream";
 import PaymentSuccessPage from "./page/PaymentSuccessPage";
-import WarrantyCheck from "./page/user/warranty/WarrantyCheck";
+import WarrantyCheck from "./page/WarrantyCheck";
 
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
