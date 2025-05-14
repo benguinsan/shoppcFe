@@ -3,8 +3,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "../../../redux/cart/cartSlice";
 import { formatPrice } from "../../../utils/formatPrice";
+import { useState, useEffect } from "react";
+import brandApi from "../../../api/Brandapi";
 const SubInformationProduct = ({ data }) => {
-  console.log("data",data);
+  const [brandName, setBrandName] = useState("");
+  console.log("data", data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleAddCart = () => {
@@ -24,6 +27,21 @@ const SubInformationProduct = ({ data }) => {
     dispatch(action);
     navigate("/cart");
   };
+  useEffect(() => {
+    const fetchBrandData = async () => {
+      try {
+        if (data?.MaLoaiSP) {
+          const response = await brandApi.getBrandById(data.MaLoaiSP);
+          // console.log("Brand data:", response);
+          // Update to access TenLoaiSP directly from response.data
+          setBrandName(response?.data?.TenLoaiSP || "");
+        }
+      } catch (error) {
+        console.error("Error fetching brand:", error);
+      }
+    };
+    fetchBrandData();
+  }, [data?.MaLoaiSP]);
   return (
     <div className="product-info flex flex-col p-6">
       <span
@@ -33,11 +51,13 @@ const SubInformationProduct = ({ data }) => {
         {data?.TenSP}
       </span>
       <div className="flex items-center justify-start gap-x-5 mb-4">
+        {/* <span className="text-base text-slate-400">
+          Thương hiệu: {data?.brand?.name}
+        </span> */}
+        {/* <span>|</span> */}
         <span className="text-base text-slate-400">
-          Thương hiệu: {data?.TenLoaiSP}
-        </span> 
-        <span>|</span>
-        <span className="text-base text-slate-400">SKU: {data?.MaLoaiSP}</span>
+          Thương hiệu: {brandName}
+        </span>
       </div>
       {/* {data?.inventory > 0 && data?.inventory < 5 && (
         <span className="text-orange-500 font-medium mb-4">
@@ -55,7 +75,7 @@ const SubInformationProduct = ({ data }) => {
         </span>
       </div>
       <span className="w-full border-dotted border-2 mb-6"></span>
-      {data?.inventory > 0 && (
+      {/* /* {data?.inventory > 0 && (
         <>
           <div className="flex items-center justify-between px-10">
             <button
@@ -75,9 +95,9 @@ const SubInformationProduct = ({ data }) => {
           </div>
           <span className="w-full border-dotted border-2 my-6"></span>
         </>
-      )}
+      )} */}
 
-    <span className="w-full border-dotted border-2 mb-6"></span>
+      <span className="w-full border-dotted border-2 mb-6"></span>
       <div className="flex items-center justify-between px-10">
         <button
           className="px-8 py-3 bg-blue-800 text-white text-lg font-medium rounded-md w-[220px]"
@@ -95,7 +115,6 @@ const SubInformationProduct = ({ data }) => {
         </button>
       </div>
       <span className="w-full border-dotted border-2 my-6"></span>
-      
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import InformationProduct from "./information/InformationProduct";
 import InformationService from "./information/InformationService";
 import ProductDescription from "./information/ProductDescription";
@@ -17,7 +17,7 @@ import productApi from "../../api/productApi";
 const ProductInformation = () => {
   const params = useParams();
   console.log("URL Params:", params);
-  
+
   const [product, setProduct] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -27,8 +27,9 @@ const ProductInformation = () => {
   useEffect(() => {
     setLoading(true);
     try {
-      productApi.getSanPhamById(params.id)
-        .then(response => {
+      productApi
+        .getSanPhamById(params.id)
+        .then((response) => {
           const productData = response.data;
           console.log("Product data received in component:", productData);
           if (productData) {
@@ -40,7 +41,7 @@ const ProductInformation = () => {
             setLoading(false);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error fetching product:", error);
           setNotFound(true);
           setLoading(false);
@@ -71,9 +72,9 @@ const ProductInformation = () => {
   }, []);
 
   // Hiển thị trang 404 nếu không tìm thấy sản phẩm
-  if (notFound) {
-    return <PageNotFound />;
-  }
+  // if (!product || !product.MaSP) {
+  //   return <PageNotFound />;
+  // }
 
   // Hiển thị nội dung chính khi có dữ liệu sản phẩm
   if (product) {

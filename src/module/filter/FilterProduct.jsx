@@ -18,8 +18,9 @@ const FilterProduct = ({ data }) => {
   // const [showModal, setShowModal] = useState(false);
 
   const handleClick = () => {
-    const path = slugify(data.title, { strict: true });
-    navigate(`/${path}/${data._id}`);
+    if (!data || typeof data.TenSP !== "string") return;
+    const path = slugify(data.TenSP, { strict: true });
+    navigate(`/${path}/${data.MaSP}`);
   };
 
   // Bỏ useEffect liên quan đến modal
@@ -52,21 +53,21 @@ const FilterProduct = ({ data }) => {
   if (!data) {
     return (
       <div className="h-[300px] bg-white flex items-center justify-center flex-col gap-y-6">
-        <span className="text-xl font-medium">
-          Không tìm thấy sản phẩm
-        </span>
+        <span className="text-xl font-medium">Không tìm thấy sản phẩm</span>
       </div>
     );
   }
 
   return (
-    <div className="product-card bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+    <div
+      className="product-card bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+      onClick={handleClick}
+    >
       <div className="product-image relative">
-        <img 
-          src={data.ImgUrl} 
-          alt={data.TenSP} 
+        <img
+          src={data.ImgUrl}
+          alt={data.TenSP}
           className="w-full h-[200px] object-contain mb-4"
-          onClick={handleClick}
         />
         {data.inventory === 0 && (
           <span className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 text-xs rounded">
@@ -74,26 +75,23 @@ const FilterProduct = ({ data }) => {
           </span>
         )}
       </div>
-      
-      <h3 
-        className="text-lg font-medium mb-2 line-clamp-2 h-[56px] cursor-pointer" 
-        onClick={handleClick}
-      >
+
+      <h3 className="text-lg font-medium mb-2 line-clamp-2 h-[56px]">
         {data.TenSP}
       </h3>
-      
+
       <div className="flex items-center gap-2 mb-2">
         <span className="text-blue-600 font-medium text-lg">
-          {data.Gia.toLocaleString('vi-VN')}đ
+          {data.Gia.toLocaleString("vi-VN")}đ
         </span>
       </div>
-      
+
       <div className="flex flex-col gap-1 text-sm text-gray-600 mb-4">
         <p>CPU: {data.CPU}</p>
         <p>RAM: {data.RAM}GB</p>
         <p>Bộ nhớ: {data.Storage}</p>
       </div>
-      
+
       {/* Bỏ toàn bộ phần modal so sánh */}
       {/* {selectedItems.length === 2 && (
         <div>
@@ -111,7 +109,6 @@ const FilterProduct = ({ data }) => {
       )} */}
     </div>
   );
-  
 };
 
 export default FilterProduct;

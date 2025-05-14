@@ -3,11 +3,7 @@ import { formatPrice } from "../../utils/formatPrice";
 import slugify from "slugify";
 import { useNavigate } from "react-router-dom";
 
-const ProductItem = ({
-  product,
-  className = "",
-  selected,
-}) => {
+const ProductItem = ({ product, className = "", selected }) => {
   const navigate = useNavigate();
   // const handleRemove = (e, product) => {
   //   e.stopPropagation();
@@ -18,7 +14,7 @@ const ProductItem = ({
   //   e.stopPropagation();
   //   addToCompare(product);
   // };
-  
+
   const handleClick = (item) => {
     console.log(item);
     const path = slugify(item.TenSP, { strict: true });
@@ -27,7 +23,7 @@ const ProductItem = ({
 
   return (
     <div
-      className={`flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer  ${className}`}
+      className={`flex flex-col rounded-lg p-3 bg-white h-[55%] mx-2 cursor-pointer  ${className}`}
       onClick={() => handleClick(product)}
     >
       <img

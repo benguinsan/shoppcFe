@@ -25,7 +25,6 @@ import SignUpPage from "./page/SignUpPage";
 import VerifyPage from "./page/VerifyPage";
 import { key } from "./utils/constants/key";
 
-
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
 import Account from "./page/admin/account/account";
@@ -43,6 +42,8 @@ import Role from "./page/admin/role/role";
 import CreateSupplier from "./page/admin/supplier/create";
 import Suppliers from "./page/admin/supplier/suppliers";
 import UpdateSupplier from "./page/admin/supplier/update";
+import Role from "./page/admin/role/role";
+import Account from "./page/admin/account/account";
 import User from "./page/admin/user/user";
 import Warranties from "./page/admin/warranty/warranties";
 import CreateWarranty from "./page/admin/warranty/createWarranty";
@@ -57,11 +58,11 @@ function App() {
         }}
       >
         <AuthRedirect />
-        
+
         <Routes>
           {/* Route admin - được bảo vệ bởi AdminProtectedRoute */}
-          <Route 
-            path="/admin/*" 
+          <Route
+            path="/admin/*"
             element={
               <AdminProtectedRoute>
                 <AdminLayout />

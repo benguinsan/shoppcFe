@@ -4,13 +4,13 @@ import RangeSlider from "../../components/RangeSlider";
 import queryString from "query-string";
 import { debounce } from "lodash";
 
-const FilterPrice = ({ onChange }) => {
+const FilterPrice = ({ handleChangePrice, queryParams }) => {
   const location = useLocation();
   const params = queryString.parse(location.search);
 
   const handleChange = (values) => {
-    if (!onChange) return;
-    onChange(values);
+    if (!handleChangePrice) return;
+    handleChangePrice(values);
   };
 
   const debounce1 = debounce(handleChange, 500);
@@ -21,8 +21,8 @@ const FilterPrice = ({ onChange }) => {
         Chọn khoảng giá (nghìn đồng)
       </span>
       <RangeSlider
-        initialMin={Math.min(params.promotion_gte || 0, 50000)}
-        initialMax={Math.min(params.promotion_lte || 50000, 50000)}
+        initialMin={parseInt(queryParams.min_price || 0)}
+        initialMax={parseInt(queryParams.max_price || 50000)}
         step={1000}
         min={0}
         max={50000}

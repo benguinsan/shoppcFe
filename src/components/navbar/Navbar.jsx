@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Profile from "../profile/Profile";
 import Swal from "sweetalert2";
 import userApi from "../../api/userApi";
+import productApi from "../../api/productApi";
 import { logout } from "../../redux/auth/userSlice";
 import Cart from "../cart/Cart";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
@@ -65,6 +66,8 @@ const Navbar = () => {
 
   //search
   const [keyword, setKeyWord] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
+  const [searchStatus, setSearchStatus] = useState("idle"); // idle, loading, succeeded, failed
   const location = useLocation();
   const { show, setShow, nodeRef } = useClickOutSide();
   const handleClick = () => {
@@ -75,22 +78,230 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    setKeyWord("");
-    localStorage.setItem("keyword", keyword);
+    // Nếu có từ khóa từ URL, thiết lập giá trị cho ô tìm kiếm
+    const params = new URLSearchParams(location.search);
+    const keywordFromUrl = params.get("keyword");
+
+    if (keywordFromUrl) {
+      console.log("Keyword từ URL trong Navbar:", keywordFromUrl);
+      setKeyWord(keywordFromUrl);
+
+      // Gọi API tìm kiếm sản phẩm với từ khóa đã chuẩn hóa
+      const fetchProducts = async () => {
+        try {
+          setSearchStatus("loading");
+          const normalizedKeyword = decodeURIComponent(keywordFromUrl).trim();
+          console.log("Keyword đã chuẩn hóa trong Navbar:", normalizedKeyword);
+
+          // Chuẩn bị tham số API
+          const apiParams = {
+            TenSP: normalizedKeyword,
+            page: 0,
+            limit: 15,
+          };
+
+          // Danh sách các filter có thể có từ ProductFilterPage
+          const possibleFilters = ["MaLoaiSP", "RAM", "min_price", "max_price"];
+
+          // Áp dụng các filter từ ProductFilterPage
+          possibleFilters.forEach((filter) => {
+            const value = params.get(filter);
+            if (value) {
+              console.log(
+                `Hiển thị kết quả với filter ${filter}=${value} từ ProductFilterPage`
+              );
+              // Chuyển đổi giá trị sang số cho min_price và max_price
+              if (filter === "min_price" || filter === "max_price") {
+                apiParams[filter] = parseInt(value);
+              } else {
+                apiParams[filter] = value;
+              }
+            }
+          });
+
+          console.log("Tham số API từ URL với tất cả filter:", apiParams);
+
+          const result = await productApi.getSanPhamFilter(apiParams);
+
+          console.log(
+            "Kết quả tìm kiếm từ URL:",
+            result?.dataSource?.length || 0,
+            "sản phẩm"
+          );
+          setSearchResults(result);
+          setSearchStatus("succeeded");
+        } catch (error) {
+          console.error("Lỗi khi tìm kiếm sản phẩm từ Navbar:", error);
+          setSearchStatus("failed");
+        }
+      };
+
+      fetchProducts();
+    } else {
+      // Reset keyword khi không có từ khóa trong URL
+      setKeyWord("");
+    }
   }, [location.search]);
 
-  const handleClickSearch = () => {
-    if (keyword === "") return;
+  const handleClickSearch = async () => {
+    if (keyword.trim() === "") {
+      return;
+    }
+
+    console.log("Keyword từ Navbar trước khi chuyển hướng:", keyword.trim());
     localStorage.setItem("keyword", keyword);
-    navigate(`/product/?keyword=${keyword}`);
-    setShow(false);
+
+    try {
+      setSearchStatus("loading");
+
+      // Lấy các filter hiện tại từ URL (đã được thiết lập từ ProductFilterPage)
+      const currentParams = new URLSearchParams(location.search);
+      const apiParams = {
+        TenSP: keyword.trim(),
+        page: 0,
+        limit: 15,
+      };
+
+      // Danh sách các filter có thể có từ ProductFilterPage
+      const possibleFilters = ["MaLoaiSP", "RAM", "min_price", "max_price"];
+
+      // Đưa các filter từ URL vào tham số API
+      possibleFilters.forEach((filter) => {
+        const value = currentParams.get(filter);
+        if (value) {
+          console.log(`Áp dụng filter ${filter}=${value} từ ProductFilterPage`);
+
+          // Đảm bảo min_price và max_price là số
+          if (filter === "min_price" || filter === "max_price") {
+            apiParams[filter] = parseInt(value);
+          } else {
+            apiParams[filter] = value;
+          }
+        }
+      });
+
+      console.log(
+        "Tham số cuối cùng kết hợp với filter từ ProductFilterPage:",
+        apiParams
+      );
+
+      const result = await productApi.getSanPhamFilter(apiParams);
+      setSearchResults(result);
+      setSearchStatus("succeeded");
+
+      // Tạo URL mới, giữ lại các filter hiện tại và thêm/cập nhật keyword
+      const searchParams = new URLSearchParams();
+
+      // Thêm keyword mới
+      searchParams.set("keyword", keyword.trim());
+
+      // Giữ lại tất cả các filter từ ProductFilterPage
+      possibleFilters.forEach((filter) => {
+        const value = currentParams.get(filter);
+        if (value) {
+          searchParams.set(filter, value);
+        }
+      });
+
+      // Chuyển hướng với URL bao gồm keyword mới và các filter cũ
+      navigate(`/product/?${searchParams.toString()}`);
+      setShow(false);
+    } catch (error) {
+      console.error("Lỗi khi gọi API từ handleClickSearch:", error);
+      setSearchStatus("failed");
+
+      // Tạo URL mới khi có lỗi, vẫn giữ lại các filter
+      const currentParams = new URLSearchParams(location.search);
+      const searchParams = new URLSearchParams();
+
+      // Thêm keyword mới
+      searchParams.set("keyword", keyword.trim());
+
+      // Giữ lại các filter từ ProductFilterPage
+      const possibleFilters = ["MaLoaiSP", "RAM", "min_price", "max_price"];
+      possibleFilters.forEach((filter) => {
+        const value = currentParams.get(filter);
+        if (value) {
+          searchParams.set(filter, value);
+        }
+      });
+
+      navigate(`/product/?${searchParams.toString()}`);
+      setShow(false);
+    }
   };
 
   const handleChange = (e) => {
-    setKeyWord(e.target.value);
+    const newKeyword = e.target.value;
+    console.log("handleChange được gọi với giá trị:", newKeyword);
+    setKeyWord(newKeyword);
   };
 
   const search = useDebounce(keyword, 500);
+
+  // Thêm useEffect để tự động tìm kiếm khi nhập
+  useEffect(() => {
+    // Chỉ gọi API khi có từ khóa và từ khóa đủ dài (ít nhất 2 ký tự)
+    if (search && search.length >= 2) {
+      console.log("Tự động tìm kiếm với từ khóa:", search);
+
+      const autoSearch = async () => {
+        try {
+          setSearchStatus("loading");
+
+          // Lấy các filter hiện tại từ URL (đã thiết lập từ ProductFilterPage)
+          const currentParams = new URLSearchParams(location.search);
+          const apiParams = {
+            TenSP: search,
+            page: 0,
+            limit: 5, // Giới hạn số lượng kết quả hiển thị trong dropdown
+          };
+
+          // Danh sách các filter có thể có
+          const possibleFilters = ["MaLoaiSP", "RAM", "min_price", "max_price"];
+
+          // Áp dụng các filter từ ProductFilterPage vào tìm kiếm tự động
+          possibleFilters.forEach((filter) => {
+            const value = currentParams.get(filter);
+            if (value) {
+              console.log(
+                `Tìm kiếm tự động với filter ${filter}=${value} từ ProductFilterPage`
+              );
+
+              // Đảm bảo min_price và max_price là số
+              if (filter === "min_price" || filter === "max_price") {
+                apiParams[filter] = parseInt(value);
+                console.log(
+                  `Chuyển đổi ${filter} thành số:`,
+                  apiParams[filter]
+                );
+              }
+              // RAM đã có định dạng GB từ ramData, không cần xử lý
+              else {
+                apiParams[filter] = value;
+              }
+            }
+          });
+
+          console.log(
+            "Tham số tìm kiếm tự động kết hợp với filter:",
+            apiParams
+          );
+
+          const result = await productApi.getSanPhamFilter(apiParams);
+
+          console.log("Kết quả tìm kiếm tự động:", result);
+          setSearchResults(result);
+          setSearchStatus("succeeded");
+        } catch (error) {
+          console.error("Lỗi khi tự động tìm kiếm:", error);
+          setSearchStatus("failed");
+        }
+      };
+
+      autoSearch();
+    }
+  }, [search, location.search]);
 
   useEffect(() => {
     if (show === true) {
@@ -169,7 +380,12 @@ const Navbar = () => {
             </svg>
           </div>
           {keyword && show === true && (
-            <Search onClickItem={handleClose} keyword={search} />
+            <Search
+              onClickItem={handleClose}
+              keyword={search}
+              results={searchResults}
+              status={searchStatus}
+            />
           )}
         </div>
 

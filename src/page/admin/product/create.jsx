@@ -81,16 +81,20 @@ const ProductCreate = () => {
         }
       }
 
+      // Bảo toàn định dạng xuống dòng trong mô tả
+      const formattedDescription = values.description?.trim() || "";
+
       const productData = {
         MaLoaiSP: values.categoryCode,
         TenSP: values.name,
-        MoTa: values.description,
+        MoTa: formattedDescription,
         CPU: values.cpu || "",
         RAM: values.ram || "",
         GPU: values.gpu || "",
         Storage: values.storage || "",
         ManHinh: values.screen || "",
         Gia: values.price,
+        tg_baohanh: values.tg_baohanh,
         ImgUrl: imgUrl,
         TrangThai: true,
       };
@@ -102,7 +106,6 @@ const ProductCreate = () => {
 
       if (result.success) {
         message.success("Tạo sản phẩm thành công!");
-        dispatch(fetchProducts({ page: 0, limit: 3 }));
         form.resetFields();
       } else {
         throw new Error(result.message || "Tạo sản phẩm thất bại");
@@ -164,7 +167,12 @@ const ProductCreate = () => {
         name="description"
         rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
       >
-        <TextArea rows={3} placeholder="Nhập mô tả sản phẩm" />
+        <TextArea
+          placeholder="Nhập mô tả sản phẩm"
+          autoSize={{ minRows: 4, maxRows: 100 }}
+          showCount={false}
+          style={{ whiteSpace: "pre-wrap" }}
+        />
       </Form.Item>
 
       <Form.Item label="CPU" name="cpu">
@@ -196,6 +204,21 @@ const ProductCreate = () => {
           min={0}
           style={{ width: "100%" }}
           placeholder="Nhập giá sản phẩm"
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Thời gian bảo hành"
+        name="tg_baohanh"
+        rules={[
+          { required: true, message: "Vui lòng nhập thời gian bảo hành" },
+        ]}
+      >
+        <InputNumber
+          min={12}
+          max={24}
+          style={{ width: "100%" }}
+          placeholder="Nhập giá thời gian bảo hành"
         />
       </Form.Item>
 

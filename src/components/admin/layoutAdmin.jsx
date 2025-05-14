@@ -2,6 +2,8 @@ import { DesktopOutlined, PieChartOutlined } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import React, { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchProducts } from "../../redux/product/productAdminSlice";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -79,6 +81,7 @@ const LayoutAdmin = () => {
   } = theme.useToken();
 
   const [openKeys, setOpenKeys] = useState([]);
+  const dispatch = useDispatch();
   const onOpenChange = (keys) => {
     // Nếu user mở nhiều menu thì chỉ giữ cái cuối cùng
     setOpenKeys(keys.length ? [keys[keys.length - 1]] : []);
@@ -93,15 +96,28 @@ const LayoutAdmin = () => {
     // Xóa token và thông tin người dùng từ localStorage
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
-    
+
     // Có thể thêm các xử lý khác nếu cần
     // Ví dụ: dispatch action để reset state trong Redux
-    
+
     // Chuyển hướng về trang chủ
     navigate("/", { replace: true });
-    
+
     // Tải lại trang để đảm bảo tất cả state được reset
     window.location.href = "/";
+  };
+
+  // Xử lý khi click vào menu item
+  const handleMenuClick = ({ key }) => {
+    if (key === "logout") {
+      handleLogout();
+    } else if (key === "products") {
+      // Khi click vào danh sách sản phẩm, đảm bảo limit là 3
+      dispatch(fetchProducts({ page: 0, limit: 3 }));
+      navigate(`/admin/${key}`);
+    } else {
+      navigate(`/admin/${key}`);
+    }
   };
 
   return (
@@ -124,13 +140,7 @@ const LayoutAdmin = () => {
           selectedKeys={[path]} // path là key hiện tại, ví dụ: "album/create"
           openKeys={openKeys}
           onOpenChange={onOpenChange}
-          onClick={({ key }) => {
-            if (key === "logout") {
-              handleLogout(); // Gọi hàm xử lý đăng xuất
-            } else {
-              navigate(`/admin/${key}`);
-            }
-          }}
+          onClick={handleMenuClick}
           items={items}
         />
       </Sider>
