@@ -62,23 +62,26 @@ const PaymentSuccessPage = () => {
             continue;
           }
           
-          const orderDetailData = {
-            MaHD: MaHD,
-            MaSP: maSP,
-            DonGia: donGia,
-            SoLuong: soLuong
-          };
-          
-          console.log("Body gửi tới chitiethoadon:", orderDetailData);
-          
-          const dataDetail = await paymentApi.createOrderDetail(orderDetailData);
-          console.log("Kết quả tạo chi tiết hóa đơn:", dataDetail);
-          
-          if (dataDetail.status !== "success") {
-            console.error("Lỗi tạo chi tiết hóa đơn:", dataDetail);
-            setMessage("Tạo chi tiết hóa đơn thất bại: " + (dataDetail.message || ''));
-            setLoading(false);
-            return;
+          // Tạo nhiều chi tiết hóa đơn dựa trên số lượng thay vì một chi tiết với số lượng > 1
+          for (let i = 0; i < soLuong; i++) {
+            const orderDetailData = {
+              MaHD: MaHD,
+              MaSP: maSP,
+              DonGia: donGia,
+              SoLuong: 1 // Luôn đặt số lượng là 1 cho mỗi chi tiết hóa đơn
+            };
+            
+            console.log(`Tạo chi tiết hóa đơn thứ ${i+1} cho sản phẩm ${maSP}:`, orderDetailData);
+            
+            const dataDetail = await paymentApi.createOrderDetail(orderDetailData);
+            console.log(`Kết quả tạo chi tiết hóa đơn thứ ${i+1}:`, dataDetail);
+            
+            if (dataDetail.status !== "success") {
+              console.error(`Lỗi tạo chi tiết hóa đơn thứ ${i+1}:`, dataDetail);
+              setMessage(`Tạo chi tiết hóa đơn thứ ${i+1} thất bại: ` + (dataDetail.message || ''));
+              setLoading(false);
+              return;
+            }
           }
         }
         
