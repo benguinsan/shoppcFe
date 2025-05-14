@@ -3,27 +3,30 @@ import { useLocation } from "react-router-dom";
 import RangeSlider from "../../components/RangeSlider";
 import queryString from "query-string";
 import { debounce } from "lodash";
-const FilterPrice = ({ onChange }) => {
+
+const FilterPrice = ({ handleChangePrice, queryParams }) => {
   const location = useLocation();
   const params = queryString.parse(location.search);
 
   const handleChange = (values) => {
-    if (!onChange) return;
-    onChange(values);
+    if (!handleChangePrice) return;
+    handleChangePrice(values);
   };
 
   const debounce1 = debounce(handleChange, 500);
 
   return (
     <div className="flex flex-col p-5">
-      <span className=" font-semibold mb-4 text-base">Chọn khoảng giá</span>
+      <span className="font-semibold mb-4 text-base">
+        Chọn khoảng giá (nghìn đồng)
+      </span>
       <RangeSlider
-        initialMin={params.promotion_gte || 0}
-        initialMax={params.promotion_lte || 100000000}
-        step={500000}
+        initialMin={parseInt(queryParams.min_price || 0)}
+        initialMax={parseInt(queryParams.max_price || 50000)}
+        step={1000}
         min={0}
-        max={100000000}
-        priceCap={10000000}
+        max={50000}
+        priceCap={1000}
         onChange={debounce1}
       />
     </div>

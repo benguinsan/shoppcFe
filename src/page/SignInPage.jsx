@@ -1,39 +1,31 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import React, { useEffect } from "react";
+import GoogleButton from "react-google-button";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import * as yup from "yup";
 import Button from "../components/button/Button";
 import Field from "../components/field/Field";
 import Input from "../components/input/Input";
 import InputPasswordToggle from "../components/input/InputPasswordToggle";
 import Label from "../components/label/Label";
-import AuthenticationPage from "./AuthenticationPage";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { login, loginWithGoogle } from "../redux/auth/userSlice";
-import { unwrapResult } from "@reduxjs/toolkit";
-import GoogleButton from "react-google-button";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../config/firebase";
-import { async } from "@firebase/util";
+import { login, loginWithGoogle } from "../redux/auth/userSlice";
+import AuthenticationPage from "./AuthenticationPage";
 
 const schema = yup.object({
-  email: yup
+  username: yup
     .string()
-    .email("Vui lòng nhập đúng định dạng email")
-    .required("Vui lòng nhập email"),
+    .required("Vui lòng nhập tên tài khoản"),
   password: yup
     .string()
     .required("Vui lòng nhập mật khẩu")
     .min(8, "Tối thiểu 8 ký tự")
     .max(30, "Vượt quá 30 ký tự cho phép")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message: "Bắt buộc phải có chữ hoa, chữ thường, ký tự đặc biệt, số",
-      }
-    ),
 });
 
 const SignInPage = () => {
@@ -44,7 +36,7 @@ const SignInPage = () => {
     reset,
   } = useForm({
     mode: "onChange",
-    defaultValues: { email: "", password: "" },
+    defaultValues: { username: "", password: "" },
     resolver: yupResolver(schema),
   });
   const navigate = useNavigate();
@@ -55,10 +47,11 @@ const SignInPage = () => {
       top: 0,
       behavior: "smooth",
     });
-    if (
-      localStorage.getItem("jwt") &&
-      JSON.parse(localStorage.getItem("user")).active === "verify"
-    ) {
+
+    const jwt = localStorage.getItem("jwt");
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+
+    if (jwt && user && user.active === "verify") {
       return navigate("/verify");
     }
   }, []);
@@ -66,21 +59,25 @@ const SignInPage = () => {
   const handleSignIn = async (values) => {
     if (!isValid) return;
     try {
-      const action = login(values);
+      const data = {
+        TenTK: values.username,
+        MatKhau: values.password,
+      };
+      const action = login(data);
       const resultAction = await dispatch(action);
       const user = unwrapResult(resultAction);
       if (user.active === "verify") {
         return navigate("/verify");
       }
-      if (user.active === "ban") {
-        toast.dismiss();
-        toast.warning("Tài khoản của bạn bị cấm. Vui lòng liên hệ admin");
-        return;
-      }
+      // if (user.active === "ban") {
+      //   toast.dismiss();
+      //   toast.warning("Tài khoản của bạn bị cấm. Vui lòng liên hệ admin");
+      //   return;
+      // }
       toast.dismiss();
       toast.success("Chào mừng bạn đến với HC.VN", { pauseOnHover: false });
       reset({
-        email: "",
+        username: "",
         password: "",
       });
       navigate("/");
@@ -123,16 +120,16 @@ const SignInPage = () => {
         onSubmit={handleSubmit(handleSignIn)}
       >
         <Field>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="username">Tên tài khoản</Label>
           <Input
-            type="email"
-            name="email"
-            placeholder="Mời bạn nhập email"
+            type="text"
+            name="username"
+            placeholder="Mời bạn nhập tên tài khoản"
             control={control}
           />
-          {errors.email && (
+          {errors.username && (
             <p className="text-red-500 text-base font-medium">
-              {errors.email?.message}
+              {errors.username?.message}
             </p>
           )}
         </Field>

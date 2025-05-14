@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import CartHidden from "./CartHidden";
 import { useReactToPrint } from "react-to-print";
 import { useRef } from "react";
-import PDF from "../../components/PDF/PDF";
+// import PDF from "../../components/PDF/PDF";
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -49,6 +49,38 @@ const CartPage = () => {
   const handleCheckout = () => {
     navigate("/checkout");
   };
+  const handleVnpayPayment = async () => {
+    const cartLocal = JSON.parse(localStorage.getItem('cart')) || [];
+    const amount = cartLocal.reduce((sum, item) => {
+      const price = item.product.promotion || item.product.price;
+      return sum + price * item.quantity;
+    }, 0);
+    const orderId = 'ORDER' + Date.now();
+    try {
+      const response = await fetch('http://localhost/shoppc/api/payment/vnpay/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: amount,
+          orderId: orderId,
+          orderInfo: 'Thanh toán đơn hàng HC.VN',
+          returnUrl: 'http://localhost:5173/payment/success'
+        })
+      });
+      const data = await response.json();
+      if (data.paymentUrl) {
+        window.location.href = data.paymentUrl;
+      } else {
+        alert('Không nhận được URL thanh toán!');
+        console.error('Không nhận được URL thanh toán:', data);
+      }
+    } catch (error) {
+      alert('Có lỗi khi tạo thanh toán!');
+      console.error('Lỗi:', error);
+    }
+  };
   return (
     <div className="mt-10">
       <div className="container">
@@ -80,12 +112,12 @@ const CartPage = () => {
           <>
             <div className="flex items-center justify-between">
               <div className="text-xl font-bold mt-10">Giỏ hàng</div>
-              <button
+              {/* <button
                 className="text-sm font-medium mt-10 border-2 rounded-lg py-2 px-2 border-gray-600"
                 onClick={handlePrint}
               >
                 Tải báo giá
-              </button>
+              </button> */}
             </div>
 
             <div className="cart">
@@ -166,7 +198,7 @@ const CartPage = () => {
                 ) : (
                   <button
                     className=" bg-blue-700 text-white rounded-lg mx-auto py-2 mt-4 w-full"
-                    onClick={handleCheckout}
+                    onClick={handleVnpayPayment}
                   >
                     <span className="font-medium text-base ">TIẾP TỤC</span>
                   </button>
@@ -178,7 +210,7 @@ const CartPage = () => {
           <CartHidden />
         )}
       </div>
-      <PDF componentRef={componentRef} />
+      {/* <PDF componentRef={componentRef} /> */}
     </div>
   );
 };

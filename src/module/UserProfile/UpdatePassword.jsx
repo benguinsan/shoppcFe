@@ -14,32 +14,20 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const schema = yup.object({
-  passwordCurrent: yup
+  MatKhauCu: yup
     .string()
     .required("Vui lòng nhập mật khẩu")
     .min(8, "Tối thiểu 8 ký tự")
-    .max(30, "Vượt quá 30 ký tự cho phép")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message: "Bắt buộc phải có chữ hoa, chữ thường, ký tự đặc biệt, số",
-      }
-    ),
-  password: yup
+    .max(30, "Vượt quá 30 ký tự cho phép"),
+  MatKhau: yup
     .string()
     .required("Vui lòng nhập mật khẩu")
     .min(8, "Tối thiểu 8 ký tự")
-    .max(30, "Vượt quá 30 ký tự cho phép")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message: "Bắt buộc phải có chữ hoa, chữ thường, ký tự đặc biệt, số",
-      }
-    ),
+    .max(30, "Vượt quá 30 ký tự cho phép"),
   passwordConfirm: yup
     .string()
-    .required("Vui lòng nhập lại mật khẩu")
-    .oneOf([yup.ref("password")], "Xác nhận mật khẩu chưa đúng"),
+    .required("Vui lòng xác nhận mật khẩu")
+    .oneOf([yup.ref("MatKhau"), null], "Mật khẩu không khớp"),
 });
 
 const UpdatePassword = () => {
@@ -59,24 +47,32 @@ const UpdatePassword = () => {
       toast.warning("Vui lòng đăng nhập");
       navigate("/sign-in");
     }
-  }, [current]);
+  }, [current, navigate]);
 
   const handleReset = async (values) => {
     if (!isValid) return;
     try {
-      const response = await userApi.updatePassword(values);
+      const passwordData = {
+        MatKhauCu: values.MatKhauCu,
+        MatKhau: values.MatKhau
+      };
+      
+      console.log("Updating password with:", passwordData);
+      
+      const response = await userApi.updatePassword(passwordData);
       toast.dismiss();
       toast.success("Đổi mật khẩu thành công");
       reset({
         passwordConfirm: "",
-        password: "",
-        passwordCurrent: "",
+        MatKhau: "",
+        MatKhauCu: "",
       });
     } catch (error) {
       toast.dismiss();
-      toast.error(error.message);
+      toast.error(error.message || "Có lỗi xảy ra khi đổi mật khẩu");
     }
   };
+  
   return (
     <div className="bg-white rounded-lg">
       <DashboardHeading
@@ -85,27 +81,27 @@ const UpdatePassword = () => {
       ></DashboardHeading>
       <form className="pb-16" onSubmit={handleSubmit(handleReset)}>
         <Field>
-          <Label htmlFor="passwordCurrent">Mật khẩu hiện tại</Label>
+          <Label htmlFor="MatKhauCu">Mật khẩu hiện tại</Label>
           <InputPasswordToggle
             control={control}
-            name="passwordCurrent"
+            name="MatKhauCu"
           ></InputPasswordToggle>
-          {errors.passwordCurrent && (
+          {errors.MatKhauCu && (
             <p className="text-red-500 text-base font-medium">
-              {errors.passwordCurrent?.message}
+              {errors.MatKhauCu?.message}
             </p>
           )}
         </Field>
 
         <Field>
-          <Label htmlFor="password">Mật khẩu mới</Label>
+          <Label htmlFor="MatKhau">Mật khẩu mới</Label>
           <InputPasswordToggle
             control={control}
-            name="password"
+            name="MatKhau"
           ></InputPasswordToggle>
-          {errors.password && (
+          {errors.MatKhau && (
             <p className="text-red-500 text-base font-medium">
-              {errors.password?.message}
+              {errors.MatKhau?.message}
             </p>
           )}
         </Field>
