@@ -1,18 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, Space, Card, message, Pagination, Input } from "antd";
-import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import { 
+  Table, 
+  Button, 
+  Modal, 
+  Space, 
+  Card, 
+  message, 
+  Pagination, 
+  Input, 
+  Form,
+  Select,
+  DatePicker,
+  Spin,
+  Typography
+} from "antd";
+import { EditOutlined, SearchOutlined } from "@ant-design/icons";
+import moment from 'moment';
 import AdminTable from "../../../components/admin/ui/table";
 import axiosClient from "../../../api/axiosClient";
+
+const { TextArea } = Input;
+const { Title } = Typography;
 
 const Warranties = () => {
   const [warranties, setWarranties] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedWarrantyId, setSelectedWarrantyId] = useState(null);
-  const [warrantyDetails, setWarrantyDetails] = useState([]);
+  const [selectedWarranty, setSelectedWarranty] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
+  const [savingWarranty, setSavingWarranty] = useState(false);
+  const [form] = Form.useForm();
   const pageSize = 10;
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -46,22 +65,33 @@ const Warranties = () => {
     }
   };
 
-  // Hàm tải chi tiết bảo hành
-  const fetchWarrantyDetails = async (warrantyId) => {
+  // Hàm cập nhật trạng thái bảo hành
+  const updateWarrantyStatus = async (values) => {
+    if (!selectedWarranty || !selectedWarranty.MaBH) return;
+    
     try {
-      // API cho chi tiết bảo hành - thay thế khi có API thực tế
-      const response = await axiosClient.get(`/api/baohanh/${warrantyId}`);
+      setSavingWarranty(true);
       
-      if (response && response.data) {
-        setWarrantyDetails([response.data]);
+      const formattedData = {
+        TrangThai: values.TrangThai,
+        MoTa: values.MoTa,
+        NgayTraBaoHanh: values.NgayTraBaoHanh ? values.NgayTraBaoHanh.format('YYYY-MM-DD') : null
+      };
+      
+      const response = await axiosClient.put(`/api/baohanh/${selectedWarranty.MaBH}/status`, formattedData);
+      
+      if (response) {
+        message.success("Cập nhật trạng thái bảo hành thành công");
+        setIsModalVisible(false);
+        fetchWarranties(currentPage, searchQuery); // Refresh list
       } else {
-        setWarrantyDetails([]);
-        message.error("Không thể tải chi tiết bảo hành");
+        message.error("Không thể cập nhật trạng thái bảo hành");
       }
     } catch (error) {
-      console.error("Lỗi khi tải chi tiết bảo hành:", error);
-      setWarrantyDetails([]);
-      message.error("Lỗi khi tải chi tiết bảo hành: " + (error.message || "Lỗi không xác định"));
+      console.error("Lỗi khi cập nhật trạng thái bảo hành:", error);
+      message.error("Lỗi khi cập nhật trạng thái bảo hành: " + (error.message || "Lỗi không xác định"));
+    } finally {
+      setSavingWarranty(false);
     }
   };
 
@@ -79,14 +109,31 @@ const Warranties = () => {
     setCurrentPage(page);
   };
 
-  const handleShowDetails = (warrantyId) => {
-    setSelectedWarrantyId(warrantyId);
+  const handleEdit = (warranty) => {
+    setSelectedWarranty(warranty);
     setIsModalVisible(true);
-    fetchWarrantyDetails(warrantyId);
+    
+    // Đặt giá trị mặc định cho form
+    form.setFieldsValue({
+      TrangThai: warranty.TrangThai,
+      MoTa: warranty.MoTa,
+      NgayTraBaoHanh: warranty.NgayTraBaoHanh ? moment(warranty.NgayTraBaoHanh) : null
+    });
   };
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+    form.resetFields();
+  };
+
+  const handleSaveWarranty = () => {
+    form.validateFields()
+      .then(values => {
+        updateWarrantyStatus(values);
+      })
+      .catch(info => {
+        console.log('Validate Failed:', info);
+      });
   };
 
   // Xác định trạng thái CSS dựa trên TrangThai
@@ -175,64 +222,12 @@ const Warranties = () => {
       render: (_, record) => (
         <Button
           type="primary"
-          icon={<EyeOutlined />}
-          onClick={() => handleShowDetails(record.MaBH)}
-          className="detail-button"
+          icon={<EditOutlined />}
+          onClick={() => handleEdit(record)}
+          className="edit-button"
         >
-          Chi tiết
+          Sửa
         </Button>
-      ),
-    },
-  ];
-
-  const detailColumns = [
-    {
-      title: "Mã Bảo Hành",
-      dataIndex: "MaBH",
-      key: "MaBH",
-    },
-    {
-      title: "Mã Hoá Đơn",
-      dataIndex: "MaHD",
-      key: "MaHD",
-    },
-    {
-      title: "Mã Seri",
-      dataIndex: "MaSeri",
-      key: "MaSeri",
-    },
-    {
-      title: "Ngày Gửi Bảo Hành",
-      dataIndex: "NgayGuiBaoHanh",
-      key: "NgayGuiBaoHanh",
-      render: (date) => (date ? new Date(date).toLocaleDateString("vi-VN") : "N/A"),
-    },
-    {
-      title: "Ngày Trả Bảo Hành",
-      dataIndex: "NgayTraBaoHanh",
-      key: "NgayTraBaoHanh",
-      render: (date) => (date ? new Date(date).toLocaleDateString("vi-VN") : "Chưa trả"),
-    },
-    {
-      title: "Mô Tả",
-      dataIndex: "MoTa",
-      key: "MoTa",
-    },
-    {
-      title: "Trạng Thái",
-      dataIndex: "TrangThaiText",
-      key: "TrangThaiText",
-      render: (text, record) => (
-        <div 
-          style={{
-            display: 'inline-block',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            ...getStatusStyle(record.TrangThai)
-          }}
-        >
-          {text}
-        </div>
       ),
     },
   ];
@@ -282,32 +277,118 @@ const Warranties = () => {
       </Card>
 
       <Modal
-        title={`Chi tiết bảo hành - Mã bảo hành: ${selectedWarrantyId}`}
+        title={`Cập nhật bảo hành - Mã bảo hành: ${selectedWarranty?.MaBH}`}
         open={isModalVisible}
         onCancel={handleCloseModal}
-        width={1000}
+        width={700}
         footer={[
-          <Button key="close" type="primary" onClick={handleCloseModal}>
-            Đóng
+          <Button key="cancel" onClick={handleCloseModal}>
+            Hủy
+          </Button>,
+          <Button 
+            key="save" 
+            type="primary" 
+            onClick={handleSaveWarranty}
+            loading={savingWarranty}
+            className="save-button"
+          >
+            Lưu
           </Button>,
         ]}
       >
-        <Table
-          dataSource={warrantyDetails}
-          columns={detailColumns}
-          rowKey="MaBH"
-          pagination={false}
-        />
+        {selectedWarranty ? (
+          <div className="warranty-detail">
+            <div className="warranty-info mb-4">
+              <Title level={5}>Thông tin bảo hành</Title>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p><strong>Mã bảo hành:</strong> {selectedWarranty.MaBH}</p>
+                  <p><strong>Mã hóa đơn:</strong> {selectedWarranty.MaHD}</p>
+                  <p><strong>Mã seri:</strong> {selectedWarranty.MaSeri}</p>
+                </div>
+                <div>
+                  <p><strong>Nhân viên xử lý:</strong> {selectedWarranty.TenNhanVien || 'N/A'}</p>
+                  <p><strong>Ngày gửi:</strong> {selectedWarranty.NgayGuiBaoHanh ? new Date(selectedWarranty.NgayGuiBaoHanh).toLocaleDateString("vi-VN") : 'N/A'}</p>
+                </div>
+              </div>
+            </div>
+            
+            <Form
+              form={form}
+              layout="vertical"
+              initialValues={{
+                TrangThai: selectedWarranty.TrangThai,
+                MoTa: selectedWarranty.MoTa,
+                NgayTraBaoHanh: selectedWarranty.NgayTraBaoHanh ? moment(selectedWarranty.NgayTraBaoHanh) : null
+              }}
+            >
+              <Form.Item
+                name="TrangThai"
+                label="Trạng thái bảo hành"
+                rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+              >
+                <Select>
+                  <Select.Option value={1}>Chờ xử lý</Select.Option>
+                  <Select.Option value={2}>Đang xử lý</Select.Option>
+                  <Select.Option value={3}>Hoàn thành</Select.Option>
+                </Select>
+              </Form.Item>
+              
+              <Form.Item
+                noStyle
+                shouldUpdate={(prevValues, currentValues) => prevValues.TrangThai !== currentValues.TrangThai}
+              >
+                {({ getFieldValue }) => 
+                  getFieldValue('TrangThai') === 3 ? (
+                    <Form.Item
+                      name="NgayTraBaoHanh"
+                      label="Ngày trả bảo hành"
+                      rules={[{ required: true, message: 'Vui lòng chọn ngày trả bảo hành!' }]}
+                    >
+                      <DatePicker 
+                        format="DD/MM/YYYY" 
+                        placeholder="Chọn ngày trả" 
+                        style={{ width: '100%' }}
+                      />
+                    </Form.Item>
+                  ) : null
+                }
+              </Form.Item>
+              
+              <Form.Item
+                name="MoTa"
+                label="Mô tả"
+              >
+                <TextArea rows={4} placeholder="Nhập mô tả về tình trạng bảo hành" />
+              </Form.Item>
+            </Form>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center p-8">
+            <Spin />
+          </div>
+        )}
       </Modal>
 
       <style jsx="true" global="true">{`
-        .detail-button {
+        .edit-button {
+          background-color: #52c41a !important;
+          border-color: #52c41a !important;
+          color: white !important;
+        }
+
+        .edit-button:hover {
+          background-color: #389e0d !important;
+          border-color: #389e0d !important;
+        }
+        
+        .save-button {
           background-color: #1890ff !important;
           border-color: #1890ff !important;
           color: white !important;
         }
 
-        .detail-button:hover {
+        .save-button:hover {
           background-color: #096dd9 !important;
           border-color: #096dd9 !important;
         }
