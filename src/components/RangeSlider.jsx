@@ -13,8 +13,8 @@ const RangeSlider = ({
   const [minValue, setMinValue] = useState(initialMin);
   const [maxValue, setMaxValue] = useState(initialMax);
   const [values, setValues] = useState({
-    promotion_gte: initialMin,
-    promotion_lte: initialMax,
+    min_price: initialMin,
+    max_price: initialMax,
   });
 
   const handleMin = (e) => {
@@ -24,7 +24,7 @@ const RangeSlider = ({
         setMinValue(parseInt(e.target.value));
         setValues((prevValues) => ({
           ...prevValues,
-          promotion_gte: parseInt(e.target.value),
+          min_price: parseInt(e.target.value),
         }));
       }
     } else {
@@ -32,7 +32,7 @@ const RangeSlider = ({
         setMinValue(parseInt(e.target.value));
         setValues((prevValues) => ({
           ...prevValues,
-          priomotion_gte: parseInt(e.target.value),
+          min_price: parseInt(e.target.value),
         }));
       }
     }
@@ -45,7 +45,7 @@ const RangeSlider = ({
         setMaxValue(parseInt(e.target.value));
         setValues((prevValues) => ({
           ...prevValues,
-          promotion_lte: parseInt(e.target.value),
+          max_price: parseInt(e.target.value),
         }));
       }
     } else {
@@ -53,7 +53,7 @@ const RangeSlider = ({
         setMaxValue(parseInt(e.target.value));
         setValues((prevValues) => ({
           ...prevValues,
-          promotion_lte: parseInt(e.target.value),
+          max_price: parseInt(e.target.value),
         }));
       }
     }

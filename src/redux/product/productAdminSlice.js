@@ -15,6 +15,20 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+export const fetchAllProducts = createAsyncThunk(
+  "productAdmin/fetchAllProducts",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("http://localhost/shoppc/api/sanpham", {
+        params: { page: 0, limit: 1000 }, // Lấy nhiều sản phẩm hơn cho danh sách dropdown
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const fetchCreateProduct = createAsyncThunk(
   "productAdmin/fetchCreateProduct",
   async (data, { rejectWithValue }) => {
@@ -64,6 +78,7 @@ const productAdminSlice = createSlice({
   name: "productAdmin",
   initialState: {
     dataSource: [],
+    allProducts: [], // Thêm state mới để lưu tất cả sản phẩm
     pageNo: 0,
     pageSize: 3,
     totalElements: 0,
@@ -85,6 +100,18 @@ const productAdminSlice = createSlice({
         state.totalElements = action.payload.totalElements;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchAllProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allProducts = action.payload.dataSource;
+      })
+      .addCase(fetchAllProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -115,6 +142,17 @@ const productAdminSlice = createSlice({
           if (index !== -1) {
             state.dataSource[index] = {
               ...state.dataSource[index],
+              ...editedProduct,
+            };
+          }
+
+          // Cập nhật trong allProducts nếu có
+          const allIndex = state.allProducts.findIndex(
+            (product) => product.MaSP === editedProduct.MaSP
+          );
+          if (allIndex !== -1) {
+            state.allProducts[allIndex] = {
+              ...state.allProducts[allIndex],
               ...editedProduct,
             };
           }

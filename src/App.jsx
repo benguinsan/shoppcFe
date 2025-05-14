@@ -1,6 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import React from "react";
-import { AdminProtectedRoute, AuthRedirect } from "./components/routes/ProtectedRoutes";
+import {
+  AdminProtectedRoute,
+  AuthRedirect,
+} from "./components/routes/ProtectedRoutes";
 import Footer from "./components/footer/Footer";
 import HomePage from "./page/HomePage";
 import NotFoundPage from "./page/NotFoundPage";
@@ -25,7 +28,6 @@ import Navbar from "./components/navbar/Navbar";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { key } from "./utils/constants/key";
 
-
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
 import Dashboard from "./page/admin/dashboard";
@@ -40,7 +42,7 @@ import Warranties from "./page/admin/warranty/warranties";
 import Suppliers from "./page/admin/supplier/suppliers";
 import CreateSupplier from "./page/admin/supplier/create";
 import UpdateSupplier from "./page/admin/supplier/update";
-import Role from "./page/admin/role/role";   
+import Role from "./page/admin/role/role";
 import Account from "./page/admin/account/account";
 import User from "./page/admin/user/user";
 
@@ -53,15 +55,15 @@ function App() {
         }}
       >
         <AuthRedirect />
-        
+
         <Routes>
           {/* Route admin - được bảo vệ bởi AdminProtectedRoute */}
-          <Route 
-            path="/admin/*" 
+          <Route
+            path="/admin/*"
             element={
-              <AdminProtectedRoute>
-                <AdminLayout />
-              </AdminProtectedRoute>
+              // <AdminProtectedRoute>
+              <AdminLayout />
+              // </AdminProtectedRoute>
             }
           >
             <Route path="dashboard" element={<Dashboard />} />

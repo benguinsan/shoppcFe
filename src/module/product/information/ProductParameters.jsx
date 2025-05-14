@@ -8,7 +8,7 @@ const ProductParameters = ({ data }) => {
         <thead>
           <tr>
             <td>Bảo hành</td>
-            <td>12</td>
+            <td>{data?.tg_baohanh} tháng</td>
           </tr>
           <tr>
             <td>CPU</td>

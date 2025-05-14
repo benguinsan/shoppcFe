@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, message, Space } from "antd";
+import { Button, message, Space, Modal } from "antd";
 import AdminTable from "../../../components/admin/ui/table";
 import {
   fetchProducts,
@@ -10,6 +10,9 @@ import {
 const Products = () => {
   const dispatch = useDispatch();
   const [sortedInfo, setSortedInfo] = useState({});
+  const [specModalVisible, setSpecModalVisible] = useState(false);
+  const [descModalVisible, setDescModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const { dataSource, pageNo, pageSize, totalElements, loading } = useSelector(
     (state) => state.productAdmin
@@ -33,6 +36,33 @@ const Products = () => {
     setSortedInfo({});
   };
 
+  const showSpecModal = (product) => {
+    setSelectedProduct(product);
+    setSpecModalVisible(true);
+  };
+
+  const showDescModal = (product) => {
+    setSelectedProduct(product);
+    setDescModalVisible(true);
+  };
+
+  const closeModals = () => {
+    setSpecModalVisible(false);
+    setDescModalVisible(false);
+  };
+
+  // Chuyển đổi text xuống dòng thành các phần tử JSX
+  const formatDescription = (text) => {
+    if (!text) return "";
+
+    return text.split("\n").map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        {index < text.split("\n").length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+
   const columns = [
     {
       title: "Mã SP",
@@ -51,38 +81,21 @@ const Products = () => {
     },
     {
       title: "Mô tả",
-      dataIndex: "MoTa",
       key: "description",
-      render: (text) => (
-        <div className="truncate max-w-[200px]" title={text}>
-          {text}
-        </div>
+      render: (_, record) => (
+        <Button type="link" onClick={() => showDescModal(record)}>
+          Xem mô tả
+        </Button>
       ),
     },
     {
-      title: "CPU",
-      dataIndex: "CPU",
-      key: "cpu",
-    },
-    {
-      title: "RAM",
-      dataIndex: "RAM",
-      key: "ram",
-    },
-    {
-      title: "GPU",
-      dataIndex: "GPU",
-      key: "gpu",
-    },
-    {
-      title: "Storage",
-      dataIndex: "Storage",
-      key: "storage",
-    },
-    {
-      title: "Màn hình",
-      dataIndex: "ManHinh",
-      key: "screen",
+      title: "Thông số kỹ thuật",
+      key: "specs",
+      render: (_, record) => (
+        <Button type="link" onClick={() => showSpecModal(record)}>
+          Xem chi tiết
+        </Button>
+      ),
     },
     {
       title: "Giá",
@@ -138,11 +151,11 @@ const Products = () => {
         message.success(
           result.message || "Trạng thái sản phẩm đã được cập nhật!"
         );
-        // Refresh data immediately after successful status change
+        // Giữ nguyên limit là 3 khi refresh dữ liệu
         await dispatch(
           fetchProducts({
             page: pageNo,
-            limit: pageSize,
+            limit: 3,
           })
         );
       } else {
@@ -169,6 +182,97 @@ const Products = () => {
         totalElements={totalElements}
         loading={loading}
       />
+
+      {/* Modal Thông số kỹ thuật */}
+      <Modal
+        title="Thông số kỹ thuật"
+        open={specModalVisible}
+        onCancel={closeModals}
+        footer={[
+          <Button key="close" onClick={closeModals}>
+            Đóng
+          </Button>,
+        ]}
+        width={700}
+      >
+        {selectedProduct && (
+          <div className="space-y-2">
+            <div className="flex">
+              <div className="font-semibold w-24">CPU:</div>
+              <div
+                className="truncate max-w-[500px]"
+                title={selectedProduct.CPU}
+              >
+                {selectedProduct.CPU || "Không có thông tin"}
+              </div>
+            </div>
+            <div className="flex">
+              <div className="font-semibold w-24">RAM:</div>
+              <div
+                className="truncate max-w-[500px]"
+                title={selectedProduct.RAM}
+              >
+                {selectedProduct.RAM || "Không có thông tin"}
+              </div>
+            </div>
+            <div className="flex">
+              <div className="font-semibold w-24">GPU:</div>
+              <div
+                className="truncate max-w-[500px]"
+                title={selectedProduct.GPU}
+              >
+                {selectedProduct.GPU || "Không có thông tin"}
+              </div>
+            </div>
+            <div className="flex">
+              <div className="font-semibold w-24">Storage:</div>
+              <div
+                className="truncate max-w-[500px]"
+                title={selectedProduct.Storage}
+              >
+                {selectedProduct.Storage || "Không có thông tin"}
+              </div>
+            </div>
+            <div className="flex">
+              <div className="font-semibold w-24">Màn hình:</div>
+              <div
+                className="truncate max-w-[500px]"
+                title={selectedProduct.ManHinh}
+              >
+                {selectedProduct.ManHinh || "Không có thông tin"}
+              </div>
+            </div>
+            <div className="flex">
+              <div className="font-semibold w-24">Bảo hành:</div>
+              <div
+                className="truncate max-w-[500px]"
+                title={`${selectedProduct.tg_baohanh || 12} tháng`}
+              >
+                {selectedProduct.tg_baohanh || 12} tháng
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Modal Mô tả */}
+      <Modal
+        title="Mô tả sản phẩm"
+        open={descModalVisible}
+        onCancel={closeModals}
+        footer={[
+          <Button key="close" onClick={closeModals}>
+            Đóng
+          </Button>,
+        ]}
+        width={700}
+      >
+        {selectedProduct && (
+          <div className="whitespace-pre-line">
+            {formatDescription(selectedProduct.MoTa) || "Không có mô tả"}
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };

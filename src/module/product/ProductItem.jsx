@@ -23,7 +23,7 @@ const ProductItem = ({ product, className = "", selected }) => {
 
   return (
     <div
-      className={`flex flex-col rounded-lg p-3 bg-white h-full mx-2 cursor-pointer  ${className}`}
+      className={`flex flex-col rounded-lg p-3 bg-white h-[55%] mx-2 cursor-pointer  ${className}`}
       onClick={() => handleClick(product)}
     >
       <img

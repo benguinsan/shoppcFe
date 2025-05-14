@@ -13,6 +13,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchProducts,
+  fetchAllProducts,
   fetchEditProduct,
 } from "../../../redux/product/productAdminSlice";
 import { fetchCategories } from "../../../redux/category/categoryAdminSlice";
@@ -41,17 +42,17 @@ const uploadToCloudinary = async (file) => {
 const ProductEdit = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const { dataSource, loading } = useSelector((state) => state.productAdmin);
+  const { allProducts, loading } = useSelector((state) => state.productAdmin);
   const categoryState = useSelector((state) => state.categoryAdmin);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchProducts({ page: 0, limit: 1000 }));
+    dispatch(fetchAllProducts());
     dispatch(fetchCategories());
   }, [dispatch]);
 
   const handleProductSelect = (productId) => {
-    const product = dataSource.find((p) => p.MaSP === productId);
+    const product = allProducts.find((p) => p.MaSP === productId);
     if (product) {
       form.setFieldsValue({
         id: product.MaSP,
@@ -64,6 +65,7 @@ const ProductEdit = () => {
         storage: product.Storage,
         screen: product.ManHinh,
         price: product.Gia,
+        tg_baohanh: product.tg_baohanh,
         image: [],
       });
       setSelectedProduct(product);
@@ -94,14 +96,15 @@ const ProductEdit = () => {
         MaSP: values.id,
         MaLoaiSP: values.categoryCode,
         TenSP: values.name,
-        MoTa: values.description,
+        MoTa: values.description?.trim() || "",
         CPU: values.cpu || "",
         RAM: values.ram || "",
         GPU: values.gpu || "",
         Storage: values.storage || "",
         ManHinh: values.screen || "",
         Gia: values.price,
-        ImgUrl: imgUrl,
+        tg_baohanh: values.tg_baohanh,
+        ImgUrl: imgUrl || selectedProduct.ImgUrl,
         TrangThai: true,
       };
 
@@ -109,8 +112,8 @@ const ProductEdit = () => {
 
       if (result.success) {
         message.success(result.message || "Cập nhật sản phẩm thành công!");
-        dispatch(fetchProducts({ page: 0, limit: 3 }));
         form.resetFields();
+        setSelectedProduct(null);
       } else {
         throw new Error(result.message || "Cập nhật thất bại");
       }
@@ -134,7 +137,7 @@ const ProductEdit = () => {
           rules={[{ required: true, message: "Vui lòng chọn sản phẩm" }]}
         >
           <Select placeholder="Chọn sản phẩm" onChange={handleProductSelect}>
-            {dataSource.map((product) => (
+            {allProducts.map((product) => (
               <Option key={product.MaSP} value={product.MaSP}>
                 {product.MaSP} - {product.TenSP}
               </Option>
@@ -175,7 +178,12 @@ const ProductEdit = () => {
           name="description"
           rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
         >
-          <TextArea rows={3} placeholder="Nhập mô tả sản phẩm" />
+          <TextArea
+            placeholder="Nhập mô tả sản phẩm"
+            autoSize={{ minRows: 4, maxRows: 100 }}
+            showCount={false}
+            style={{ whiteSpace: "pre-wrap" }}
+          />
         </Form.Item>
 
         <Form.Item label="CPU" name="cpu">
@@ -210,6 +218,20 @@ const ProductEdit = () => {
           />
         </Form.Item>
 
+        <Form.Item
+          label="Thời gian bảo hành"
+          name="tg_baohanh"
+          rules={[
+            { required: true, message: "Vui lòng nhập thời gian bảo hành" },
+          ]}
+        >
+          <InputNumber
+            min={12}
+            max={24}
+            style={{ width: "100%" }}
+            placeholder="Nhập giá thời gian bảo hành"
+          />
+        </Form.Item>
         <Form.Item
           label="Hình ảnh"
           name="image"

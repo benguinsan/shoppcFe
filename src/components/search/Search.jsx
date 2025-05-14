@@ -8,15 +8,18 @@ import { useEffect } from "react";
 // import { getProductSearch } from "../../redux/product/productSlice";
 import Skeleton from "../skeleton/Skeleton";
 
-const Search = ({ onClickItem }) => {
-  const { searchResults, searchStatus } = useSelector((state) => state.product);
+const Search = ({ onClickItem, results, status }) => {
   const navigate = useNavigate();
 
   const handleClick = (item) => {
     const path = slugify(item.TenSP, { strict: true });
-    navigate(`/product/${item.MaSP}`);
+    navigate(`/${path}/${item.MaSP}`);
     onClickItem();
   };
+
+  // Sử dụng kết quả được truyền từ Navbar thay vì từ Redux store
+  const searchResults = results;
+  const searchStatus = status;
 
   return (
     <div className="absolute top-14 left-0 w-full rounded-lg h-[350px] z-10 bg-white shadow-lg overflow-hidden overflow-y-auto">
