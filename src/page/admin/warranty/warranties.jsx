@@ -2,130 +2,178 @@ import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { message as antdMessage, Button, Card, DatePicker, Form, Input, Modal, Select, Space, Table } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import warrantyApi from "../../../api/warrantyApi";
+import { 
+  Table, 
+  Button, 
+  Modal, 
+  Space, 
+  Card, 
+  message, 
+  Pagination, 
+  Input, 
+  Form,
+  Select,
+  DatePicker,
+  Spin,
+  Typography,
+  Popconfirm
+} from "antd";
+import { EditOutlined, SearchOutlined, DeleteOutlined } from "@ant-design/icons";
+import moment from 'moment';
 import AdminTable from "../../../components/admin/ui/table";
+import warrantyApi from "../../../api/warrantyApi";
+
+const { TextArea } = Input;
+const { Title } = Typography;
 
 const Warranties = () => {
-  const [sortedInfo, setSortedInfo] = useState({});
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedWarrantyId, setSelectedWarrantyId] = useState(null);
   const [warranties, setWarranties] = useState([]);
-  const [warrantyDetails, setWarrantyDetails] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedWarranty, setSelectedWarranty] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [search, setSearch] = useState("");
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [isEditDetailModalVisible, setIsEditDetailModalVisible] = useState(false);
-  const [selectedWarranty, setSelectedWarranty] = useState(null);
-  const [selectedWarrantyDetail, setSelectedWarrantyDetail] = useState(null);
+  const [totalItems, setTotalItems] = useState(0);
+  const [savingWarranty, setSavingWarranty] = useState(false);
+  const [deletingWarranty, setDeletingWarranty] = useState(false);
   const [form] = Form.useForm();
-  const [detailForm] = Form.useForm();
+  const pageSize = 10;
+  const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    const fetchWarranties = async () => {
-      try {
-        let response;
-        if (search.trim() !== "") {
-          response = await warrantyApi.searchWarranties(search, currentPage);
-        } else {
-          response = await warrantyApi.getWarranties(currentPage);
-        }
-        setWarranties(response?.data || []);
-        setTotalPages(response?.pagination?.last_page || 1);
-      } catch (error) {
-        antdMessage.error(error.message || "Có lỗi xảy ra khi tải danh sách bảo hành");
-        setWarranties([]);
-        setTotalPages(1);
-      }
-    };
-    fetchWarranties();
-  }, [currentPage, search]);
-
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const showWarrantyDetails = async (warrantyId) => {
+  // Hàm tải danh sách bảo hành
+  const fetchWarranties = async (page = 1, search = "") => {
     try {
-      setSelectedWarrantyId(warrantyId);
-      setIsModalVisible(true);
-      const response = await warrantyApi.getWarrantyDetails(warrantyId);
-      setWarrantyDetails(response.data);
+      setLoading(true);
+      const response = await warrantyApi.getWarranties(page, pageSize, search);
+      
+      if (response && response.data) {
+        setWarranties(response.data);
+        if (response.pagination) {
+          setTotalPages(response.pagination.last_page);
+          setTotalItems(response.pagination.total);
+          setCurrentPage(response.pagination.current_page);
+        }
+      } else {
+        message.error("Không thể tải danh sách bảo hành");
+      }
     } catch (error) {
-      antdMessage.error(error.message || "Có lỗi xảy ra khi tải chi tiết bảo hành");
+      console.error("Lỗi khi tải danh sách bảo hành:", error);
+      message.error("Lỗi khi tải danh sách bảo hành: " + (error.message || "Lỗi không xác định"));
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
+  // Hàm cập nhật trạng thái bảo hành
+  const updateWarrantyStatus = async (values) => {
+    if (!selectedWarranty || !selectedWarranty.MaBH) return;
+    
+    try {
+      setSavingWarranty(true);
+      
+      const formattedData = {
+        TrangThai: values.TrangThai,
+        MoTa: values.MoTa,
+        NgayTraBaoHanh: values.NgayTraBaoHanh ? values.NgayTraBaoHanh.format('YYYY-MM-DD') : null
+      };
+      
+      const response = await warrantyApi.updateWarrantyStatus(selectedWarranty.MaBH, formattedData);
+      
+      if (response) {
+        message.success("Cập nhật trạng thái bảo hành thành công");
+        setIsModalVisible(false);
+        fetchWarranties(currentPage, searchQuery); // Refresh list
+      } else {
+        message.error("Không thể cập nhật trạng thái bảo hành");
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trạng thái bảo hành:", error);
+      message.error("Lỗi khi cập nhật trạng thái bảo hành: " + (error.message || "Lỗi không xác định"));
+    } finally {
+      setSavingWarranty(false);
+    }
   };
 
-  const clearAll = () => {
-    setSortedInfo({});
+  // Hàm xóa mềm bảo hành
+  const softDeleteWarranty = async (warrantyId) => {
+    if (!warrantyId) return;
+    
+    try {
+      setDeletingWarranty(true);
+      const response = await warrantyApi.softDeleteWarranty(warrantyId);
+      
+      if (response) {
+        message.success("Xóa bảo hành thành công");
+        fetchWarranties(currentPage, searchQuery); // Refresh list
+      } else {
+        message.error("Không thể xóa bảo hành");
+      }
+    } catch (error) {
+      console.error("Lỗi khi xóa bảo hành:", error);
+      message.error("Lỗi khi xóa bảo hành: " + (error.message || "Lỗi không xác định"));
+    } finally {
+      setDeletingWarranty(false);
+    }
+  };
+
+  // Load danh sách bảo hành khi component mount hoặc khi trang thay đổi
+  useEffect(() => {
+    fetchWarranties(currentPage, searchQuery);
+  }, [currentPage]);
+
+  const handleSearch = () => {
+    setCurrentPage(1); // Reset về trang 1 khi tìm kiếm
+    fetchWarranties(1, searchQuery);
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const showEditModal = (record) => {
-    setSelectedWarranty(record);
+  const handleEdit = (warranty) => {
+    setSelectedWarranty(warranty);
+    setIsModalVisible(true);
+    
+    // Đặt giá trị mặc định cho form
     form.setFieldsValue({
-      MaHD: record.MaHD,
-      MaSeri: record.MaSeri,
-      NgayMua: moment(record.NgayMua),
-      HanBaoHanh: moment(record.HanBaoHanh),
-      MoTa: record.MoTa
+      TrangThai: warranty.TrangThai,
+      MoTa: warranty.MoTa,
+      NgayTraBaoHanh: warranty.NgayTraBaoHanh ? moment(warranty.NgayTraBaoHanh) : null
     });
-    setIsEditModalVisible(true);
   };
 
-  const showEditDetailModal = (record) => {
-    setSelectedWarrantyDetail(record);
-    detailForm.setFieldsValue({
-      MaBH: record.MaBH,
-      NgayBaoHanh: moment(record.NgayBaoHanh),
-      NgayHoanThanh: record.NgayHoanThanh ? moment(record.NgayHoanThanh) : null,
-      TinhTrang: record.TinhTrang,
-      ChiTiet: record.ChiTiet
-    });
-    setIsEditDetailModalVisible(true);
+  const handleDelete = (warrantyId) => {
+    softDeleteWarranty(warrantyId);
   };
 
-  const handleEditWarranty = async (values) => {
-    try {
-      const response = await warrantyApi.updateWarranty(selectedWarranty.MaBH, values);
-      if (response.status === "success" || response.message?.includes("thành công")) {
-        antdMessage.success(response.message || "Cập nhật bảo hành thành công");
-        setIsEditModalVisible(false);
-        form.resetFields();
-        const updatedResponse = await warrantyApi.getWarranties(currentPage);
-        setWarranties(updatedResponse.data);
-      } else {
-        antdMessage.error(response.message || "Cập nhật bảo hành thất bại");
-      }
-    } catch (error) {
-      antdMessage.error(error.message || "Có lỗi xảy ra khi cập nhật bảo hành");
-    }
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    form.resetFields();
   };
 
-  const handleEditWarrantyDetail = async (values) => {
-    try {
-      const response = await warrantyApi.updateWarrantyDetail(selectedWarrantyDetail.MaCTBH, values);
-      if (response.status === "success" || response.message?.includes("thành công")) {
-        antdMessage.success(response.message || "Cập nhật chi tiết bảo hành thành công");
-        setIsEditDetailModalVisible(false);
-        detailForm.resetFields();
-        const updatedResponse = await warrantyApi.getWarrantyDetails(selectedWarrantyDetail.MaBH);
-        setWarrantyDetails(updatedResponse.data);
-        const warrantiesResponse = await warrantyApi.getWarranties(currentPage);
-        setWarranties(warrantiesResponse.data);
-      } else {
-        antdMessage.error(response.message || "Cập nhật chi tiết bảo hành thất bại");
-      }
-    } catch (error) {
-      antdMessage.error(error.message || "Có lỗi xảy ra khi cập nhật chi tiết bảo hành");
+  const handleSaveWarranty = () => {
+    form.validateFields()
+      .then(values => {
+        updateWarrantyStatus(values);
+      })
+      .catch(info => {
+        console.log('Validate Failed:', info);
+      });
+  };
+
+  // Xác định trạng thái CSS dựa trên TrangThai
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 1:
+        return { color: '#faad14', backgroundColor: '#fffbe6' }; // Chờ xử lý
+      case 2:
+        return { color: '#52c41a', backgroundColor: '#f6ffed' }; // Đang xử lý
+      case 3:
+        return { color: '#1890ff', backgroundColor: '#e6f7ff' }; // Hoàn thành
+      case 0:
+        return { color: '#f5222d', backgroundColor: '#fff1f0' }; // Đã hủy
+      default:
+        return { color: '#f5222d', backgroundColor: '#fff1f0' }; // Mặc định màu đỏ
     }
   };
 
@@ -134,287 +182,243 @@ const Warranties = () => {
       title: "Mã Bảo Hành",
       dataIndex: "MaBH",
       key: "MaBH",
+      width: 120,
     },
     {
       title: "Mã Hoá Đơn",
       dataIndex: "MaHD",
       key: "MaHD",
+      width: 120,
     },
     {
       title: "Mã Seri",
       dataIndex: "MaSeri",
       key: "MaSeri",
+      width: 120,
     },
     {
-      title: "Ngày Mua",
-      dataIndex: "NgayMua",
-      key: "NgayMua",
-      render: (date) => new Date(date).toLocaleDateString("vi-VN"),
+      title: "Nhân viên xử lý",
+      dataIndex: "TenNhanVien",
+      key: "TenNhanVien",
+      width: 150,
     },
     {
-      title: "Hạn Bảo Hành",
-      dataIndex: "HanBaoHanh",
-      key: "HanBaoHanh",
-      render: (date) => new Date(date).toLocaleDateString("vi-VN"),
+      title: "Ngày Gửi Bảo Hành",
+      dataIndex: "NgayGuiBaoHanh",
+      key: "NgayGuiBaoHanh",
+      width: 150,
+      render: (date) => (date ? new Date(date).toLocaleDateString("vi-VN") : "N/A"),
+    },
+    {
+      title: "Ngày Trả Bảo Hành",
+      dataIndex: "NgayTraBaoHanh",
+      key: "NgayTraBaoHanh",
+      width: 150,
+      render: (date) => (date ? new Date(date).toLocaleDateString("vi-VN") : "Chưa trả"),
     },
     {
       title: "Mô Tả",
       dataIndex: "MoTa",
       key: "MoTa",
+      ellipsis: true,
+    },
+    {
+      title: "Trạng Thái",
+      dataIndex: "TrangThaiText",
+      key: "TrangThaiText",
+      width: 120,
+      render: (text, record) => (
+        <div 
+          style={{
+            display: 'inline-block',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            ...getStatusStyle(record.TrangThai)
+          }}
+        >
+          {text}
+        </div>
+      ),
     },
     {
       title: "Thao tác",
       key: "actions",
+      width: 180,
       render: (_, record) => (
         <Space>
           <Button
             type="primary"
-            icon={<EyeOutlined />}
-            onClick={() => showWarrantyDetails(record.MaBH)}
-            className="detail-button"
-          >
-            Chi tiết
-          </Button>
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => showEditModal(record)}
+            icon={<EditOutlined style={{ fontSize: '16px' }} />}
+            onClick={() => handleEdit(record)}
+            disabled={record.TrangThai === 0}
             className="edit-button"
           >
             Sửa
           </Button>
+          <Popconfirm
+            title="Xác nhận xóa?"
+            description="Bạn có chắc chắn muốn xóa bảo hành này?"
+            onConfirm={() => handleDelete(record.MaBH)}
+            okText="Đồng ý"
+            cancelText="Hủy"
+            okButtonProps={{ style: { backgroundColor: '#1677ff', borderColor: '#1677ff' } }}
+            disabled={record.TrangThai === 0}
+          >
+            <Button
+              type="primary"
+              danger
+              icon={<DeleteOutlined style={{ fontSize: '16px' }} />}
+              loading={deletingWarranty}
+              disabled={record.TrangThai === 0}
+            >
+              Xóa
+            </Button>
+          </Popconfirm>
         </Space>
-      ),
-    },
-  ];
-
-  const detailColumns = [
-    {
-      title: "Mã chi tiết bảo hành",
-      dataIndex: "MaCTBH",
-      key: "MaCTBH",
-    },
-    {
-      title: "Mã Bảo Hành",
-      dataIndex: "MaBH",
-      key: "MaBH",
-    },
-    {
-      title: "Ngày Bảo Hành",
-      dataIndex: "NgayBaoHanh",
-      key: "NgayBaoHanh",
-      render: (date) => new Date(date).toLocaleDateString("vi-VN"),
-    },
-    {
-      title: "Ngày Hoàn Thành",
-      dataIndex: "NgayHoanThanh",
-      key: "NgayHoanThanh",
-      render: (date) => date ? new Date(date).toLocaleDateString("vi-VN") : "Chưa hoàn thành",
-    },
-    {
-      title: "Tình Trạng",
-      dataIndex: "TinhTrang",
-      key: "TinhTrang",
-      render: (status) => {
-        const statusText = {
-          'pending': 'Đang xử lý',
-          'in_progress': 'Đang sửa chữa',
-          'completed': 'Đã hoàn thành',
-          'cancelled': 'Đã hủy'
-        };
-        return statusText[status] || status;
-      }
-    },
-    {
-      title: "Chi Tiết",
-      dataIndex: "ChiTiet",
-      key: "ChiTiet",
-    },
-    {
-      title: "Thao tác",
-      key: "actions",
-      render: (_, record) => (
-        <Button
-          type="primary"
-          icon={<EditOutlined />}
-          onClick={() => showEditDetailModal(record)}
-          className="edit-button"
-        >
-          Sửa
-        </Button>
       ),
     },
   ];
 
   return (
     <div className="p-4">
-      <Card>
-        <Space style={{ marginBottom: 16 }}>
-          <Input.Search
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Danh sách bảo hành</h2>
+        <Space>
+          <Input 
             placeholder="Tìm kiếm bảo hành..."
-            onChange={handleSearchChange}
-            style={{ width: 300 }}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ width: 250 }}
+            onPressEnter={handleSearch}
           />
-          <Button onClick={clearAll} className="clear-button" danger>
-            Clear
+          <Button 
+            type="primary" 
+            icon={<SearchOutlined style={{ fontSize: '16px' }} />}
+            onClick={handleSearch}
+          >
+            Tìm kiếm
           </Button>
         </Space>
-        <AdminTable
+      </div>
+
+      <Card>
+        <Table
           columns={columns}
           dataSource={warranties}
           rowKey="MaBH"
-          handleChange={() => {}}
-          pageNo={currentPage}
-          pageSize={10}
-          totalElements={totalPages * 10}
+          loading={loading}
+          pagination={false}
+          scroll={{ x: 1300 }}
         />
+        
+        <div className="flex justify-end mt-4">
+          <Pagination
+            current={currentPage}
+            total={totalItems}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showTotal={(total, range) => `${range[0]}-${range[1]} của ${total} mục`}
+            showSizeChanger={false}
+          />
+        </div>
       </Card>
 
       <Modal
-        title={`Chi tiết bảo hành - Mã bảo hành: ${selectedWarrantyId}`}
+        title={`Cập nhật bảo hành - Mã bảo hành: ${selectedWarranty?.MaBH}`}
         open={isModalVisible}
         onCancel={handleCloseModal}
-        width={1000}
+        width={700}
         footer={[
-          <Button key="close" type="primary" onClick={handleCloseModal}>
-            Đóng
+          <Button key="cancel" onClick={handleCloseModal}>
+            Hủy
+          </Button>,
+          <Button 
+            key="save" 
+            type="primary" 
+            onClick={handleSaveWarranty}
+            loading={savingWarranty}
+            className="save-button"
+          >
+            Lưu
           </Button>,
         ]}
       >
-        <Table
-          dataSource={warrantyDetails}
-          columns={detailColumns}
-          rowKey="MaCTBH"
-          pagination={false}
-        />
+        {selectedWarranty ? (
+          <div className="warranty-detail">
+            <div className="warranty-info mb-4">
+              <Title level={5}>Thông tin bảo hành</Title>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p><strong>Mã bảo hành:</strong> {selectedWarranty.MaBH}</p>
+                  <p><strong>Mã hóa đơn:</strong> {selectedWarranty.MaHD}</p>
+                  <p><strong>Mã seri:</strong> {selectedWarranty.MaSeri}</p>
+                </div>
+                <div>
+                  <p><strong>Nhân viên xử lý:</strong> {selectedWarranty.TenNhanVien || 'N/A'}</p>
+                  <p><strong>Ngày gửi:</strong> {selectedWarranty.NgayGuiBaoHanh ? new Date(selectedWarranty.NgayGuiBaoHanh).toLocaleDateString("vi-VN") : 'N/A'}</p>
+                </div>
+              </div>
+            </div>
+            
+            <Form
+              form={form}
+              layout="vertical"
+              initialValues={{
+                TrangThai: selectedWarranty.TrangThai,
+                MoTa: selectedWarranty.MoTa,
+                NgayTraBaoHanh: selectedWarranty.NgayTraBaoHanh ? moment(selectedWarranty.NgayTraBaoHanh) : null
+              }}
+            >
+              <Form.Item
+                name="TrangThai"
+                label="Trạng thái bảo hành"
+                rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+              >
+                <Select>
+                  <Select.Option value={1}>Chờ xử lý</Select.Option>
+                  <Select.Option value={2}>Đang xử lý</Select.Option>
+                  <Select.Option value={3}>Hoàn thành</Select.Option>
+                  <Select.Option value={0}>Đã hủy</Select.Option>
+                </Select>
+              </Form.Item>
+              
+              <Form.Item
+                noStyle
+                shouldUpdate={(prevValues, currentValues) => prevValues.TrangThai !== currentValues.TrangThai}
+              >
+                {({ getFieldValue }) => 
+                  getFieldValue('TrangThai') === 3 ? (
+                    <Form.Item
+                      name="NgayTraBaoHanh"
+                      label="Ngày trả bảo hành"
+                      rules={[{ required: true, message: 'Vui lòng chọn ngày trả bảo hành!' }]}
+                    >
+                      <DatePicker 
+                        format="DD/MM/YYYY" 
+                        placeholder="Chọn ngày trả" 
+                        style={{ width: '100%' }}
+                      />
+                    </Form.Item>
+                  ) : null
+                }
+              </Form.Item>
+              
+              <Form.Item
+                name="MoTa"
+                label="Mô tả"
+              >
+                <TextArea rows={4} placeholder="Nhập mô tả về tình trạng bảo hành" />
+              </Form.Item>
+            </Form>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center p-8">
+            <Spin />
+          </div>
+        )}
       </Modal>
 
-      <Modal
-        title="Chỉnh sửa bảo hành"
-        open={isEditModalVisible}
-        onCancel={() => setIsEditModalVisible(false)}
-        footer={null}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleEditWarranty}
-        >
-          <Form.Item
-            name="MaHD"
-            label="Mã hóa đơn"
-            rules={[{ required: true, message: "Vui lòng nhập mã hóa đơn" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="MaSeri"
-            label="Mã seri"
-            rules={[{ required: true, message: "Vui lòng nhập mã seri" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="NgayMua"
-            label="Ngày mua"
-            rules={[{ required: true, message: "Vui lòng chọn ngày mua" }]}
-          >
-            <DatePicker style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item
-            name="HanBaoHanh"
-            label="Hạn bảo hành"
-            rules={[{ required: true, message: "Vui lòng chọn hạn bảo hành" }]}
-          >
-            <DatePicker style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item
-            name="MoTa"
-            label="Mô tả"
-          >
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item>
-            <Space>
-              <Button type="primary" htmlType="submit">
-                Cập nhật
-              </Button>
-              <Button onClick={() => setIsEditModalVisible(false)}>
-                Hủy
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Chỉnh sửa chi tiết bảo hành"
-        open={isEditDetailModalVisible}
-        onCancel={() => setIsEditDetailModalVisible(false)}
-        footer={null}
-      >
-        <Form
-          form={detailForm}
-          layout="vertical"
-          onFinish={handleEditWarrantyDetail}
-        >
-          <Form.Item
-            name="NgayBaoHanh"
-            label="Ngày bảo hành"
-            rules={[{ required: true, message: "Vui lòng chọn ngày bảo hành" }]}
-          >
-            <DatePicker style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item
-            name="NgayHoanThanh"
-            label="Ngày hoàn thành"
-          >
-            <DatePicker style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item
-            name="TinhTrang"
-            label="Tình trạng"
-            rules={[{ required: true, message: "Vui lòng chọn tình trạng" }]}
-          >
-            <Select>
-              <Select.Option value="pending">Đang xử lý</Select.Option>
-              <Select.Option value="in_progress">Đang sửa chữa</Select.Option>
-              <Select.Option value="completed">Đã hoàn thành</Select.Option>
-              <Select.Option value="cancelled">Đã hủy</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="ChiTiet"
-            label="Chi tiết"
-            rules={[{ required: true, message: "Vui lòng nhập chi tiết" }]}
-          >
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item>
-            <Space>
-              <Button type="primary" htmlType="submit">
-                Cập nhật
-              </Button>
-              <Button onClick={() => setIsEditDetailModalVisible(false)}>
-                Hủy
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <style>{`
-        .detail-button {
-          background-color: #1890ff !important;
-          border-color: #1890ff !important;
-          color: white !important;
-        }
-
-        .detail-button:hover {
-          background-color: #096dd9 !important;
-          border-color: #096dd9 !important;
-        }
-
+      <style jsx="true" global="true">{`
         .edit-button {
           background-color: #52c41a !important;
           border-color: #52c41a !important;
@@ -425,16 +429,32 @@ const Warranties = () => {
           background-color: #389e0d !important;
           border-color: #389e0d !important;
         }
-
-        .clear-button {
-          background-color: #ff4d4f !important;
-          border-color: #ff4d4f !important;
+        
+        .edit-button[disabled] {
+          background-color: #d9d9d9 !important;
+          border-color: #d9d9d9 !important;
+          color: rgba(0, 0, 0, 0.25) !important;
+        }
+        
+        .save-button {
+          background-color: #1890ff !important;
+          border-color: #1890ff !important;
           color: white !important;
         }
 
-        .clear-button:hover {
-          background-color: #d9363e !important;
-          border-color: #d9363e !important;
+        .save-button:hover {
+          background-color: #096dd9 !important;
+          border-color: #096dd9 !important;
+        }
+        
+        .ant-table-thead > tr > th,
+        .ant-table-tbody > tr > td {
+          text-align: center !important;
+          vertical-align: middle !important;
+        }
+
+        .ant-table-cell .ant-space {
+          justify-content: center !important;
         }
       `}</style>
     </div>

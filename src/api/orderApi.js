@@ -8,8 +8,19 @@ const orderApi = {
   },
 
   // Tìm kiếm đơn hàng
-  searchOrders(search, page = 1) {
-    const url = `/api/hoadon/search?search=${encodeURIComponent(search)}&page=${page}`;
+  searchOrders(search, page = 1, fromDate = null, toDate = null) {
+    // Xây dựng URL cơ bản
+    let url = `/api/hoadon/search?=${encodeURIComponent(search)}&page=${page}`;
+    
+    // Thêm tham số từ ngày và đến ngày nếu có
+    if (fromDate) {
+      url += `&from_date=${fromDate}`;
+    }
+    if (toDate) {
+      url += `&to_date=${toDate}`;
+    }
+    
+    console.log("URL tìm kiếm:", url);
     return axiosClient.get(url);
   },
 

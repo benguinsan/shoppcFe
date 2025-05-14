@@ -216,7 +216,7 @@ export const productData = [
     inventory: 5
   },
   {
-    id: "9",
+    id: "SP004",
     _id: "prod009",
     title: "Laptop Dell Inspiron 15",
     description: "Laptop đa năng cho công việc và giải trí",
@@ -243,7 +243,7 @@ export const productData = [
     inventory: 25
   },
   {
-    id: "10",
+    id: "SP010",
     _id: "prod010",
     title: "Laptop HP Pavilion 14",
     description: "Laptop nhỏ gọn cho công việc hàng ngày",

@@ -24,7 +24,9 @@ import SignInPage from "./page/SignInPage";
 import SignUpPage from "./page/SignUpPage";
 import VerifyPage from "./page/VerifyPage";
 import { key } from "./utils/constants/key";
-
+import ChatStream from "./components/chat/ChatStream";
+import PaymentSuccessPage from "./page/PaymentSuccessPage";
+import WarrantyCheck from "./page/WarrantyCheck";
 
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
@@ -45,6 +47,7 @@ import Suppliers from "./page/admin/supplier/suppliers";
 import UpdateSupplier from "./page/admin/supplier/update";
 import User from "./page/admin/user/user";
 import Warranties from "./page/admin/warranty/warranties";
+import CreateWarranty from "./page/admin/warranty/createWarranty";
 
 import Statistics from "./page/admin/statistics/statistics";
 function App() {
@@ -86,6 +89,7 @@ function App() {
             <Route path="roles" element={<Role />} />
             <Route path="accounts" element={<Account />} />
             <Route path="statistics" element={<Statistics />} />
+            <Route path="warranty/create" element={<CreateWarranty />} />
           </Route>
 
           {/* Public and authenticated user routes */}
@@ -107,6 +111,7 @@ function App() {
                     path="/forgot-password"
                     element={<ForgotPasswordPage />}
                   />
+                  <Route path="/warranty-check" element={<WarrantyCheck />} />
 
                   <Route element={<DashboardLayout />}>
                     <Route path="/account" element={<UserAccount />} />
@@ -128,6 +133,7 @@ function App() {
                   <Route path="/product" element={<ProductFilterPage />} />
                   <Route path="/payment-cash" element={<PaymentCash />} />
                   <Route path="/payment-bank" element={<PaymentBank />} />
+                  <Route path="/payment/success" element={<PaymentSuccessPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
                 <Footer />

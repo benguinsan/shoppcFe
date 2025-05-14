@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, Space, Card, Pagination, Input, Form, InputNumber, DatePicker, message as antdMessage, Select } from "antd";
-import AdminTable from "../../../components/admin/ui/table";
-import { EyeOutlined, EditOutlined } from "@ant-design/icons";
+import { Table, Button, Modal, Space, Card, Pagination, Input, Form, InputNumber, DatePicker, message as antdMessage, Select, Row, Col } from "antd";
+import { EyeOutlined, EditOutlined, SearchOutlined, CalendarOutlined } from "@ant-design/icons";
 import moment from "moment";
 import orderApi from "../../../api/orderApi";
+
+const { RangePicker } = DatePicker;
 
 const Orders = () => {
   const [sortedInfo, setSortedInfo] = useState({});
@@ -12,36 +13,73 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [orderDetails, setOrderDetails] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState("");
+  const [dateRange, setDateRange] = useState(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isEditDetailModalVisible, setIsEditDetailModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedOrderDetail, setSelectedOrderDetail] = useState(null);
   const [form] = Form.useForm();
   const [detailForm] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+
+  const fetchOrders = async (page = currentPage, searchTerm = search, dates = dateRange) => {
+    try {
+      setLoading(true);
+      let response;
+      
+      let fromDate = null;
+      let toDate = null;
+      
+      if (dates && dates[0] && dates[1]) {
+        fromDate = dates[0].format('YYYY-MM-DD');
+        toDate = dates[1].format('YYYY-MM-DD');
+      }
+      
+      if (searchTerm.trim() !== "" || (fromDate && toDate)) {
+        console.log(`Đang tìm kiếm với từ khóa: "${searchTerm}", từ ngày: ${fromDate}, đến ngày: ${toDate}`);
+        response = await orderApi.searchOrders(searchTerm, page, fromDate, toDate);
+        console.log("Kết quả tìm kiếm:", response);
+      } else {
+        response = await orderApi.getOrders(page);
+      }
+      
+      if (response && response.data) {
+        setOrders(response.data);
+        setTotalItems(response.pagination?.total || response.pagination?.last_page * pageSize || 0);
+      } else {
+        setOrders([]);
+        setTotalItems(0);
+        antdMessage.warning("Không có dữ liệu phù hợp");
+      }
+      
+      setLoading(false);
+    } catch (error) {
+      console.error("Lỗi khi tải dữ liệu:", error);
+      antdMessage.error(error.message || "Có lỗi xảy ra khi tải danh sách đơn hàng");
+      setLoading(false);
+      setOrders([]);
+      setTotalItems(0);
+    }
+  };
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        let response;
-        if (search.trim() !== "") {
-          response = await orderApi.searchOrders(search, currentPage);
-        } else {
-          response = await orderApi.getOrders(currentPage);
-        }
-        setOrders(response.data);
-        setTotalPages(response.pagination.last_page);
-      } catch (error) {
-        antdMessage.error(error.message || "Có lỗi xảy ra khi tải danh sách đơn hàng");
-      }
-    };
-    fetchOrders();
-  }, [currentPage, search]);
+    fetchOrders(currentPage, search, dateRange);
+  }, [currentPage]);
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
+  };
+
+  const handleDateRangeChange = (dates) => {
+    setDateRange(dates);
+  };
+
+  const handleSearch = () => {
     setCurrentPage(1);
+    fetchOrders(1, search, dateRange);
   };
 
   const showOrderDetails = async (orderId) => {
@@ -61,17 +99,20 @@ const Orders = () => {
 
   const clearAll = () => {
     setSortedInfo({});
+    setSearch("");
+    setDateRange(null);
+    setCurrentPage(1);
+    fetchOrders(1, "", null);
   };
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page, size) => {
     setCurrentPage(page);
+    setPageSize(size);
   };
 
   const showEditModal = (record) => {
     setSelectedOrder(record);
     form.setFieldsValue({
-      MaNguoiDung: record.MaNguoiDung,
-      MaNhanVien: record.MaNhanVien,
       NgayLap: moment(record.NgayLap),
       TongTien: record.TongTien,
       TrangThai: record.TrangThai
@@ -92,7 +133,26 @@ const Orders = () => {
 
   const handleEditOrder = async (values) => {
     try {
-      const response = await orderApi.updateOrder(selectedOrder.MaHD, values);
+      const userStr = localStorage.getItem("user");
+      if (!userStr) {
+        antdMessage.error("Không tìm thấy thông tin đăng nhập!");
+        return;
+      }
+      
+      const user = JSON.parse(userStr);
+      const maTK = user.nguoiDung?.MaTK || user.MaTK || user.maTK;
+      
+      if (!maTK) {
+        antdMessage.error("Không tìm thấy mã tài khoản người dùng!");
+        return;
+      }
+      
+      const updatedValues = {
+        ...values,
+        MaTK: maTK
+      };
+      
+      const response = await orderApi.updateOrder(selectedOrder.MaHD, updatedValues);
       if (response.status === "success") {
         const updatedResponse = await orderApi.getOrders(currentPage);
         setOrders(updatedResponse.data);
@@ -112,18 +172,33 @@ const Orders = () => {
         setOrderDetails(updatedResponse.data);
         setIsEditDetailModalVisible(false);
 
-        // Tính lại tổng tiền và cập nhật hóa đơn
         const chiTietList = updatedResponse.data;
         const tongTien = chiTietList.reduce((sum, item) => sum + (parseFloat(item.DonGia) || 0), 0);
         const hoaDon = orders.find(hd => hd.MaHD === selectedOrderDetail.MaHD);
+        
         if (hoaDon) {
+          const userStr = localStorage.getItem("user");
+          if (!userStr) {
+            antdMessage.error("Không tìm thấy thông tin đăng nhập!");
+            return;
+          }
+          
+          const user = JSON.parse(userStr);
+          const maTK = user.nguoiDung?.MaTK || user.MaTK || user.maTK;
+          
+          if (!maTK) {
+            antdMessage.error("Không tìm thấy mã tài khoản người dùng!");
+            return;
+          }
+          
           await orderApi.updateOrder(hoaDon.MaHD, {
             MaNguoiDung: hoaDon.MaNguoiDung,
-            MaNhanVien: hoaDon.MaNhanVien,
             NgayLap: hoaDon.NgayLap,
             TongTien: tongTien,
-            TrangThai: hoaDon.TrangThai
+            TrangThai: hoaDon.TrangThai,
+            MaTK: maTK
           });
+          
           const refreshOrders = await orderApi.getOrders(currentPage);
           setOrders(refreshOrders.data);
         }
@@ -143,27 +218,44 @@ const Orders = () => {
       title: "Mã Hoá Đơn",
       dataIndex: "MaHD",
       key: "MaHD",
+      width: 120,
     },
     {
       title: "Mã Người Dùng",
       dataIndex: "MaNguoiDung",
       key: "MaNguoiDung",
+      width: 150,
+    },
+    {
+      title: "Tên Người Dùng",
+      dataIndex: "TenNguoiDung",
+      key: "TenNguoiDung",
+      width: 180,
     },
     {
       title: "Mã Nhân Viên",
       dataIndex: "MaNhanVien",
       key: "MaNhanVien",
+      width: 150,
+    },
+    {
+      title: "Tên Nhân Viên",
+      dataIndex: "TenNhanVien",
+      key: "TenNhanVien",
+      width: 180,
     },
     {
       title: "Ngày Lập",
       dataIndex: "NgayLap",
       key: "NgayLap",
+      width: 120,
       render: (date) => new Date(date).toLocaleDateString("vi-VN"),
     },
     {
       title: "Tổng Tiền",
       dataIndex: "TongTien",
       key: "TongTien",
+      width: 150,
       render: (amount) => `${amount.toLocaleString()} VND`,
     },
     {
@@ -272,35 +364,73 @@ const Orders = () => {
   ];
 
   return (
-    <div className="p-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Space style={{ marginBottom: 16 }}>
-        <Input
-          placeholder="Tìm kiếm hóa đơn, người dùng, nhân viên..."
-          value={search}
-          onChange={handleSearchChange}
-          style={{ width: 300 }}
-          allowClear
-        />
-        <Button onClick={clearAll}>Clear</Button>
-      </Space>
-      <div style={{ width: '100%', maxWidth: 1100 }}>
-        <AdminTable
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold mb-3">Danh sách hóa đơn</h2>
+        <Row gutter={16}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Input
+              placeholder="Tìm kiếm hóa đơn, người dùng, nhân viên..."
+              value={search}
+              onChange={handleSearchChange}
+              style={{ width: '100%' }}
+              onPressEnter={handleSearch}
+              allowClear
+              prefix={<SearchOutlined />}
+            />
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <RangePicker
+              style={{ width: '100%' }}
+              onChange={handleDateRangeChange}
+              format="DD/MM/YYYY"
+              placeholder={['Từ ngày', 'Đến ngày']}
+              value={dateRange}
+              allowClear
+            />
+          </Col>
+        </Row>
+        <Row className="mt-3">
+          <Col span={24}>
+            <Space>
+              <Button onClick={handleSearch} type="primary" className="detail-button" icon={<SearchOutlined />}>
+                Tìm kiếm
+              </Button>
+              <Button onClick={clearAll} icon={<CalendarOutlined />}>
+                Xóa bộ lọc
+              </Button>
+            </Space>
+          </Col>
+        </Row>
+      </div>
+      <div className="mb-2">
+        <small className="text-gray-500">
+          * Có thể tìm kiếm theo: Mã hóa đơn (HD001), Mã người dùng (ND...), Mã nhân viên, Tên người dùng, Tên nhân viên
+        </small>
+      </div>
+      
+      <Card>
+        <Table
           columns={columns}
           dataSource={orders}
           rowKey="MaHD"
-          handleChange={() => {}}
-          pageNo={currentPage}
-          pageSize={10}
-          totalElements={orders.length}
+          pagination={false}
+          loading={loading}
+          scroll={{ x: 1500 }}
         />
-        <Pagination
-          current={currentPage}
-          total={totalPages * 10}
-          pageSize={10}
-          onChange={handlePageChange}
-          style={{ marginTop: 16, textAlign: 'center' }}
-        />
-      </div>
+        
+        <div className="flex justify-end mt-4">
+          <Pagination
+            current={currentPage}
+            total={totalItems}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showTotal={(total, range) => `${range[0]}-${range[1]} của ${total} mục`}
+            showSizeChanger={true}
+            pageSizeOptions={['10', '20', '50']}
+          />
+        </div>
+      </Card>
 
       <Modal
         title={`Chi tiết hoá đơn - Mã hoá đơn: ${selectedOrderId}`}
@@ -335,13 +465,6 @@ const Orders = () => {
           onFinish={handleEditOrder}
           layout="vertical"
         >
-          <Form.Item
-            name="MaNhanVien"
-            label="Mã nhân viên"
-            rules={[{ required: true, message: 'Vui lòng nhập mã nhân viên!' }]}
-          >
-            <Input />
-          </Form.Item>
           <Form.Item
             name="NgayLap"
             label="Ngày lập"

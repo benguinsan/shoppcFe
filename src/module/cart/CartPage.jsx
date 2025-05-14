@@ -49,6 +49,38 @@ const CartPage = () => {
   const handleCheckout = () => {
     navigate("/checkout");
   };
+  const handleVnpayPayment = async () => {
+    const cartLocal = JSON.parse(localStorage.getItem('cart')) || [];
+    const amount = cartLocal.reduce((sum, item) => {
+      const price = item.product.promotion || item.product.price;
+      return sum + price * item.quantity;
+    }, 0);
+    const orderId = 'ORDER' + Date.now();
+    try {
+      const response = await fetch('http://localhost/shoppc/api/payment/vnpay/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: amount,
+          orderId: orderId,
+          orderInfo: 'Thanh toán đơn hàng HC.VN',
+          returnUrl: 'http://localhost:5173/payment/success'
+        })
+      });
+      const data = await response.json();
+      if (data.paymentUrl) {
+        window.location.href = data.paymentUrl;
+      } else {
+        alert('Không nhận được URL thanh toán!');
+        console.error('Không nhận được URL thanh toán:', data);
+      }
+    } catch (error) {
+      alert('Có lỗi khi tạo thanh toán!');
+      console.error('Lỗi:', error);
+    }
+  };
   return (
     <div className="mt-10">
       <div className="container">
@@ -166,7 +198,7 @@ const CartPage = () => {
                 ) : (
                   <button
                     className=" bg-blue-700 text-white rounded-lg mx-auto py-2 mt-4 w-full"
-                    onClick={handleCheckout}
+                    onClick={handleVnpayPayment}
                   >
                     <span className="font-medium text-base ">TIẾP TỤC</span>
                   </button>
