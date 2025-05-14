@@ -27,7 +27,6 @@ import { key } from "./utils/constants/key";
 
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
-import Account from "./page/admin/account/account";
 import Categories from "./page/admin/category/category";
 import CreateCategory from "./page/admin/category/create";
 import EditCategory from "./page/admin/category/edit";
@@ -38,7 +37,6 @@ import Orders from "./page/admin/order/orders";
 import ProductCreate from "./page/admin/product/create";
 import ProductEdit from "./page/admin/product/edit";
 import Products from "./page/admin/product/products";
-import Role from "./page/admin/role/role";
 import CreateSupplier from "./page/admin/supplier/create";
 import Suppliers from "./page/admin/supplier/suppliers";
 import UpdateSupplier from "./page/admin/supplier/update";
