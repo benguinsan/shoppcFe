@@ -70,8 +70,6 @@ const Orders = () => {
   const showEditModal = (record) => {
     setSelectedOrder(record);
     form.setFieldsValue({
-      MaNguoiDung: record.MaNguoiDung,
-      MaNhanVien: record.MaNhanVien,
       NgayLap: moment(record.NgayLap),
       TongTien: record.TongTien,
       TrangThai: record.TrangThai
@@ -92,7 +90,28 @@ const Orders = () => {
 
   const handleEditOrder = async (values) => {
     try {
-      const response = await orderApi.updateOrder(selectedOrder.MaHD, values);
+      // Lấy thông tin user từ localStorage
+      const userStr = localStorage.getItem("user");
+      if (!userStr) {
+        antdMessage.error("Không tìm thấy thông tin đăng nhập!");
+        return;
+      }
+      
+      const user = JSON.parse(userStr);
+      const maTK = user.nguoiDung?.MaTK || user.MaTK || user.maTK;
+      
+      if (!maTK) {
+        antdMessage.error("Không tìm thấy mã tài khoản người dùng!");
+        return;
+      }
+      
+      // Bổ sung mã tài khoản vào values
+      const updatedValues = {
+        ...values,
+        MaTK: maTK  // Thêm MaTK vào dữ liệu gửi đi
+      };
+      
+      const response = await orderApi.updateOrder(selectedOrder.MaHD, updatedValues);
       if (response.status === "success") {
         const updatedResponse = await orderApi.getOrders(currentPage);
         setOrders(updatedResponse.data);
@@ -116,14 +135,31 @@ const Orders = () => {
         const chiTietList = updatedResponse.data;
         const tongTien = chiTietList.reduce((sum, item) => sum + (parseFloat(item.DonGia) || 0), 0);
         const hoaDon = orders.find(hd => hd.MaHD === selectedOrderDetail.MaHD);
+        
         if (hoaDon) {
+          // Lấy thông tin user từ localStorage
+          const userStr = localStorage.getItem("user");
+          if (!userStr) {
+            antdMessage.error("Không tìm thấy thông tin đăng nhập!");
+            return;
+          }
+          
+          const user = JSON.parse(userStr);
+          const maTK = user.nguoiDung?.MaTK || user.MaTK || user.maTK;
+          
+          if (!maTK) {
+            antdMessage.error("Không tìm thấy mã tài khoản người dùng!");
+            return;
+          }
+          
           await orderApi.updateOrder(hoaDon.MaHD, {
             MaNguoiDung: hoaDon.MaNguoiDung,
-            MaNhanVien: hoaDon.MaNhanVien,
             NgayLap: hoaDon.NgayLap,
             TongTien: tongTien,
-            TrangThai: hoaDon.TrangThai
+            TrangThai: hoaDon.TrangThai,
+            MaTK: maTK // Thêm MaTK
           });
+          
           const refreshOrders = await orderApi.getOrders(currentPage);
           setOrders(refreshOrders.data);
         }
@@ -150,9 +186,9 @@ const Orders = () => {
       key: "MaNguoiDung",
     },
     {
-      title: "Mã Nhân Viên",
-      dataIndex: "MaNhanVien",
-      key: "MaNhanVien",
+      title: "Mã Tài Khoản",
+      dataIndex: "MaTK",
+      key: "MaTK",
     },
     {
       title: "Ngày Lập",
@@ -335,13 +371,6 @@ const Orders = () => {
           onFinish={handleEditOrder}
           layout="vertical"
         >
-          <Form.Item
-            name="MaNhanVien"
-            label="Mã nhân viên"
-            rules={[{ required: true, message: 'Vui lòng nhập mã nhân viên!' }]}
-          >
-            <Input />
-          </Form.Item>
           <Form.Item
             name="NgayLap"
             label="Ngày lập"
