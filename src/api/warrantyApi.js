@@ -33,6 +33,11 @@ const warrantyApi = {
   // Xóa mềm bảo hành
   softDeleteWarranty: async (warrantyId) => {
     return axiosClient.put(`/api/baohanh/${warrantyId}/soft-delete`);
+  },
+  
+  // Kiểm tra tình trạng bảo hành dựa trên mã hóa đơn và số seri
+  checkWarrantyStatus: async (invoiceId, serialNumber) => {
+    return axiosClient.get(`/api/baohanh/check-by-invoice-serial?invoice_id=${invoiceId}&serial_number=${serialNumber}`);
   }
 };
 

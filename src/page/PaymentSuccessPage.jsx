@@ -33,9 +33,9 @@ const PaymentSuccessPage = () => {
         // Tạo hóa đơn - KHÔNG gửi TongTien để server tự tính
         const orderData = {
           MaTK: user.MaTK,
-          NgayLap: new Date().toISOString().slice(0, 19).replace("T", " "),
+            NgayLap: new Date().toISOString().slice(0, 19).replace("T", " "),
           // Không gửi TongTien, để server tự tính từ các chi tiết
-          TrangThai: 1,
+            TrangThai: 1,
         };
         
         const dataOrder = await paymentApi.createOrder(orderData);
@@ -65,7 +65,7 @@ const PaymentSuccessPage = () => {
           // Tạo nhiều chi tiết hóa đơn dựa trên số lượng thay vì một chi tiết với số lượng > 1
           for (let i = 0; i < soLuong; i++) {
             const orderDetailData = {
-              MaHD: MaHD,
+            MaHD: MaHD,
               MaSP: maSP,
               DonGia: donGia,
               SoLuong: 1 // Luôn đặt số lượng là 1 cho mỗi chi tiết hóa đơn
@@ -76,13 +76,13 @@ const PaymentSuccessPage = () => {
             const dataDetail = await paymentApi.createOrderDetail(orderDetailData);
             console.log(`Kết quả tạo chi tiết hóa đơn thứ ${i+1}:`, dataDetail);
             
-            if (dataDetail.status !== "success") {
+          if (dataDetail.status !== "success") {
               console.error(`Lỗi tạo chi tiết hóa đơn thứ ${i+1}:`, dataDetail);
               setMessage(`Tạo chi tiết hóa đơn thứ ${i+1} thất bại: ` + (dataDetail.message || ''));
-              setLoading(false);
-              return;
-            }
+            setLoading(false);
+            return;
           }
+        }
         }
         
         // Cập nhật lại tổng tiền chính xác nếu cần

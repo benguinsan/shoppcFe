@@ -258,6 +258,7 @@ const Warranties = () => {
             onConfirm={() => handleDelete(record.MaBH)}
             okText="Đồng ý"
             cancelText="Hủy"
+            okButtonProps={{ style: { backgroundColor: '#1677ff', borderColor: '#1677ff' } }}
             disabled={record.TrangThai === 0}
           >
             <Button
@@ -441,6 +442,16 @@ const Warranties = () => {
         .save-button:hover {
           background-color: #096dd9 !important;
           border-color: #096dd9 !important;
+        }
+        
+        .ant-table-thead > tr > th,
+        .ant-table-tbody > tr > td {
+          text-align: center !important;
+          vertical-align: middle !important;
+        }
+
+        .ant-table-cell .ant-space {
+          justify-content: center !important;
         }
       `}</style>
     </div>

@@ -25,6 +25,7 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { key } from "./utils/constants/key";
 import ChatStream from "./components/chat/ChatStream";
 import PaymentSuccessPage from "./page/PaymentSuccessPage";
+import WarrantyCheck from "./page/user/warranty/WarrantyCheck";
 
 // import admin
 import AdminLayout from "./components/admin/layoutAdmin";
@@ -81,6 +82,7 @@ function App() {
                     path="/forgot-password"
                     element={<ForgotPasswordPage />}
                   />
+                  <Route path="/warranty-check" element={<WarrantyCheck />} />
 
                   <Route element={<DashboardLayout />}>
                     <Route path="/account" element={<UserAccount />} />
