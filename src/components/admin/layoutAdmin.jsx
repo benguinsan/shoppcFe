@@ -67,6 +67,7 @@ const pageTitles = {
   imports: "Danh sách nhập hàng",
   guarantee: "Danh sách bảo hành",
   statistic: "Thống kê",
+  statistics: "Thống kê doanh thu",
 };
 const MemoizedMenuItem = React.memo(Menu.Item);
 

@@ -44,6 +44,7 @@ import Role from "./page/admin/role/role";
 import Account from "./page/admin/account/account";
 import User from "./page/admin/user/user";
 
+import Statistics from "./page/admin/statistics/statistics";
 function App() {
   return (
     <>
@@ -79,6 +80,7 @@ function App() {
             <Route path="users" element={<User />} />
             <Route path="roles" element={<Role />} />
             <Route path="accounts" element={<Account />} />
+            <Route path="statistics" element={<Statistics />} />
           </Route>
 
           {/* Public and authenticated user routes */}
