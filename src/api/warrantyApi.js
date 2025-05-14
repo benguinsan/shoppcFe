@@ -28,6 +28,11 @@ const warrantyApi = {
   // Lấy chi tiết hóa đơn để tạo bảo hành
   getOrderDetails: async (orderId) => {
     return axiosClient.get(`/api/hoadon/${orderId}/chitiet`);
+  },
+  
+  // Xóa mềm bảo hành
+  softDeleteWarranty: async (warrantyId) => {
+    return axiosClient.put(`/api/baohanh/${warrantyId}/soft-delete`);
   }
 };
 

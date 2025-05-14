@@ -12,9 +12,10 @@ import {
   Select,
   DatePicker,
   Spin,
-  Typography
+  Typography,
+  Popconfirm
 } from "antd";
-import { EditOutlined, SearchOutlined } from "@ant-design/icons";
+import { EditOutlined, SearchOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment from 'moment';
 import AdminTable from "../../../components/admin/ui/table";
 import warrantyApi from "../../../api/warrantyApi";
@@ -31,6 +32,7 @@ const Warranties = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [savingWarranty, setSavingWarranty] = useState(false);
+  const [deletingWarranty, setDeletingWarranty] = useState(false);
   const [form] = Form.useForm();
   const pageSize = 10;
   const [searchQuery, setSearchQuery] = useState("");
@@ -89,6 +91,28 @@ const Warranties = () => {
     }
   };
 
+  // Hàm xóa mềm bảo hành
+  const softDeleteWarranty = async (warrantyId) => {
+    if (!warrantyId) return;
+    
+    try {
+      setDeletingWarranty(true);
+      const response = await warrantyApi.softDeleteWarranty(warrantyId);
+      
+      if (response) {
+        message.success("Xóa bảo hành thành công");
+        fetchWarranties(currentPage, searchQuery); // Refresh list
+      } else {
+        message.error("Không thể xóa bảo hành");
+      }
+    } catch (error) {
+      console.error("Lỗi khi xóa bảo hành:", error);
+      message.error("Lỗi khi xóa bảo hành: " + (error.message || "Lỗi không xác định"));
+    } finally {
+      setDeletingWarranty(false);
+    }
+  };
+
   // Load danh sách bảo hành khi component mount hoặc khi trang thay đổi
   useEffect(() => {
     fetchWarranties(currentPage, searchQuery);
@@ -115,6 +139,10 @@ const Warranties = () => {
     });
   };
 
+  const handleDelete = (warrantyId) => {
+    softDeleteWarranty(warrantyId);
+  };
+
   const handleCloseModal = () => {
     setIsModalVisible(false);
     form.resetFields();
@@ -139,10 +167,10 @@ const Warranties = () => {
         return { color: '#52c41a', backgroundColor: '#f6ffed' }; // Đang xử lý
       case 3:
         return { color: '#1890ff', backgroundColor: '#e6f7ff' }; // Hoàn thành
-      case 4:
-        return { color: '#f5222d', backgroundColor: '#fff1f0' }; // Hủy
+      case 0:
+        return { color: '#f5222d', backgroundColor: '#fff1f0' }; // Đã hủy
       default:
-        return { color: '#000000', backgroundColor: '#f0f0f0' }; // Mặc định
+        return { color: '#f5222d', backgroundColor: '#fff1f0' }; // Mặc định màu đỏ
     }
   };
 
@@ -212,16 +240,37 @@ const Warranties = () => {
     {
       title: "Thao tác",
       key: "actions",
-      width: 100,
+      width: 180,
       render: (_, record) => (
-        <Button
-          type="primary"
-          icon={<EditOutlined />}
-          onClick={() => handleEdit(record)}
-          className="edit-button"
-        >
-          Sửa
-        </Button>
+        <Space>
+          <Button
+            type="primary"
+            icon={<EditOutlined style={{ fontSize: '16px' }} />}
+            onClick={() => handleEdit(record)}
+            disabled={record.TrangThai === 0}
+            className="edit-button"
+          >
+            Sửa
+          </Button>
+          <Popconfirm
+            title="Xác nhận xóa?"
+            description="Bạn có chắc chắn muốn xóa bảo hành này?"
+            onConfirm={() => handleDelete(record.MaBH)}
+            okText="Đồng ý"
+            cancelText="Hủy"
+            disabled={record.TrangThai === 0}
+          >
+            <Button
+              type="primary"
+              danger
+              icon={<DeleteOutlined style={{ fontSize: '16px' }} />}
+              loading={deletingWarranty}
+              disabled={record.TrangThai === 0}
+            >
+              Xóa
+            </Button>
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
@@ -240,7 +289,7 @@ const Warranties = () => {
           />
           <Button 
             type="primary" 
-            icon={<SearchOutlined />}
+            icon={<SearchOutlined style={{ fontSize: '16px' }} />}
             onClick={handleSearch}
           >
             Tìm kiếm
@@ -255,7 +304,7 @@ const Warranties = () => {
           rowKey="MaBH"
           loading={loading}
           pagination={false}
-          scroll={{ x: 1200 }}
+          scroll={{ x: 1300 }}
         />
         
         <div className="flex justify-end mt-4">
@@ -325,6 +374,7 @@ const Warranties = () => {
                   <Select.Option value={1}>Chờ xử lý</Select.Option>
                   <Select.Option value={2}>Đang xử lý</Select.Option>
                   <Select.Option value={3}>Hoàn thành</Select.Option>
+                  <Select.Option value={0}>Đã hủy</Select.Option>
                 </Select>
               </Form.Item>
               
@@ -374,6 +424,12 @@ const Warranties = () => {
         .edit-button:hover {
           background-color: #389e0d !important;
           border-color: #389e0d !important;
+        }
+        
+        .edit-button[disabled] {
+          background-color: #d9d9d9 !important;
+          border-color: #d9d9d9 !important;
+          color: rgba(0, 0, 0, 0.25) !important;
         }
         
         .save-button {
