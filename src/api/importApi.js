@@ -19,17 +19,7 @@ const importApi = {
     return axiosClient.get(url);
   },
   getImportDetails: (maPN) => {
-    let url = `${DETAIL_API_URL}`;
-    const params = { ma_phieu_nhap: maPN };
-    const query = buildQuery(params);
-    if (query) url += `?${query}`;
-    return axiosClient.get(url);
-  },
-  getStatistics: (params = {}) => {
-    let url = `${API_URL}/getStatistics`;
-    const query = buildQuery(params);
-    if (query) url += `?${query}`;
-    return axiosClient.get(url);
+    return axiosClient.get(`${DETAIL_API_URL}/${maPN}`);
   },
   createImport: (data) => {
     return axiosClient.post(`${API_URL}`, data);
@@ -38,7 +28,16 @@ const importApi = {
     return axiosClient.post(`/shoppc/api/chitietphieunhap/create/`, data);
   },
   createSeri: (data) => {
-    return axiosClient.post("/shoppc/api/seri/create", data);
+    return axiosClient.post("/api/seri/create", data);
+  },
+  updateImport: (id, data) => {
+    return axiosClient.put(`${API_URL}/update/${id}`, data);
+  },
+  updateImportDetail: (id, data) => {
+    return axiosClient.put(`${DETAIL_API_URL}/update/${id}`, data);
+  },
+  updateImportTotalAmount: (id) => {
+    return axiosClient.put(`${API_URL}/${id}/updateTongTien`, {});
   }
 };
 

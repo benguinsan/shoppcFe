@@ -186,15 +186,6 @@ const CreateImport = () => {
             })
           ));
 
-          // Tạo seri song song
-          await Promise.all(rows.flatMap(row =>
-            Array.from({ length: row.SoLuong }).map(() =>
-              axiosClient.post("/api/seri/create", {
-                MaSP: row.MaSP
-              })
-            )
-          ));
-
           antdMessage.success("Tạo phiếu nhập thành công!");
           form.resetFields();
           setRows([{ MaSP: undefined, SoLuong: 0, DonGia: 0, ThanhTien: 0 }]);
@@ -418,6 +409,12 @@ const CreateImport = () => {
                 icon={<SaveOutlined />}
                 htmlType="submit" 
                 loading={loading}
+                style={{
+                  backgroundColor: '#1890ff', 
+                  borderColor: '#1890ff',
+                  boxShadow: 'none'
+                }}
+                className="no-hover-button"
               >
                 Lưu phiếu nhập
               </Button>
@@ -425,6 +422,15 @@ const CreateImport = () => {
           </div>
         </Form>
       </Card>
+      <style jsx="true">{`
+        .no-hover-button:hover,
+        .no-hover-button:focus,
+        .no-hover-button:active {
+          background-color: #1890ff !important;
+          border-color: #1890ff !important;
+          box-shadow: none !important;
+        }
+      `}</style>
     </div>
   );
 };
